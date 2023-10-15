@@ -1,0 +1,11 @@
+{
+  "name": "dbms_group4_banking",
+  "version": "1.0.0",
+  "description": "Our group project for database systems module - A banking system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
