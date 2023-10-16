@@ -1,0 +1,86 @@
+.loginBody{
+    background: linear-gradient(to bottom right, #00BFFF, #87CEFA, #00BFFF); /* added another color to the gradient */
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+h1{
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 32px;
+    font-family: 'Roboto', sans-serif;
+    color: #87CEFA; /* changed color to a lighter blue */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    transition: color 0.3s ease;
+}
+
+h3{
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+h1:hover {
+    color: #0066CC; /* changed hover color to a darker blue */
+}
+
+.loginForm{
+    width: 70%;
+    max-width: 400px; /* decreased max-width */
+    margin: 0 auto;
+    padding: 40px 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.2);
+}
+
+
+input{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    margin-right: 10px; /* added margin to the right */
+    margin-bottom: 10px; /* added margin to the bottom */
+    margin-top: 5px;
+}
+
+
+.loginButton{
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 5px;
+    background-color: #00BFFF; /* changed color to light blue */
+    color: #fff;
+    font-size: 16px;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.loginButton:hover {
+    background-color: #0066CC; /* changed hover color to a darker blue */
+}
+
+footer{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    color: #333;
+}
