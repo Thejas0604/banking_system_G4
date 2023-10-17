@@ -4,12 +4,20 @@ import bodyParser from 'body-parser';
 import ejs from 'ejs';
 import {checkCredentials} from './database/database.js';
 
+const express = require("express");
+const bodyParser = require("body-parser");
+const ejs = require("ejs");
+
+
 // Set up the express app
 const app = express();
-app.set('view engine', 'ejs');
+app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static("public"));
 
+app.get("/", function (req, res) {
+  res.render("login");
+});
 
 
 app.get('/', (req, res)=> {
@@ -29,9 +37,6 @@ app.post('/login', async (req, res) => {
       });
 
 });
-
-
-
 
 
 app.listen(3000, function() {
