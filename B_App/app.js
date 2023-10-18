@@ -2,7 +2,7 @@
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
-import { checkCredentials } from "./database/database.js";
+import { checkCredentials } from "./database/loginCheck.js";
 
 // Set up the express app
 const app = express();
@@ -28,6 +28,10 @@ app.post("/login", async (req, res) => {
       res.redirect("/");
     }
   });
+});
+
+app.get("/about", (req, res) => {
+  res.render("about.ejs");
 });
 
 app.listen(3000, function () {
