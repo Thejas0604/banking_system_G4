@@ -1,5 +1,5 @@
-.loginBody{
-    background: linear-gradient(to bottom right, #00BFFF, #87CEFA, #00BFFF); /* added another color to the gradient */
+.loginBody {
+    background: linear-gradient(to bottom right, #00BFFF, #87CEFA, #00BFFF);
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
     color: #333;
@@ -11,7 +11,7 @@
     height: 100vh;
 }
 
-h1{
+h1 {
     text-align: center;
     margin-bottom: 20px;
     font-size: 32px;
@@ -19,9 +19,14 @@ h1{
     color: #87CEFA; /* changed color to a lighter blue */
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     transition: color 0.3s ease;
+    cursor: pointer;
 }
 
-h3{
+h1:hover {
+    color: #0066CC; /* changed hover color to a darker blue */
+}
+
+h3 {
     text-align: center;
     margin-bottom: 20px;
     font-size: 16px;
@@ -30,22 +35,17 @@ h3{
     transition: color 0.3s ease;
 }
 
-h1:hover {
-    color: #0066CC; /* changed hover color to a darker blue */
-}
-
-.loginForm{
+.loginForm {
     width: 70%;
-    max-width: 400px; /* decreased max-width */
+    max-width: 300px; /* decreased max-width */
     margin: 0 auto;
     padding: 40px 20px;
     background-color: #fff;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(0, 0, 0, 0.2);
 }
 
-
-input{
+input {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
@@ -58,14 +58,13 @@ input{
     margin-top: 5px;
 }
 
-
-.loginButton{
+.loginButton {
     width: 100%;
     padding: 10px;
     box-sizing: border-box;
     border: 0;
     border-radius: 5px;
-    background-color: #00BFFF; /* changed color to light blue */
+    background-color: #87CEFA; /* changed color to light blue */
     color: #fff;
     font-size: 16px;
     font-family: 'Roboto', sans-serif;
@@ -77,7 +76,7 @@ input{
     background-color: #0066CC; /* changed hover color to a darker blue */
 }
 
-footer{
+footer {
     text-align: center;
     margin-top: 20px;
     font-size: 14px;
