@@ -91,7 +91,7 @@ li {
   color: #4caf50; /* Change color to a green shade */
 }
 
-h3 {
+.footer-h3 {
   text-align: center;
   margin-bottom: 20px;
   font-size: 16px;
@@ -142,30 +142,15 @@ input {
 }
 
 footer {
-    text-align: center;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    background: #333; /* Dark background for the footer */
-    padding: 5px 0; /* Smaller padding for top and bottom */
-    color: #fff; /* White text color */
+  text-align: center;
+  position: relative;
+  width: 100%;
+  background: #333; /* Dark background for the footer */
+  padding: 5px 0; /* Smaller padding for top and bottom */
+  color: #fff; /* White text color */
 }
 
-.h1-about {
-    font-size: 36px;
-    margin: 0;
-    padding: 30px;
-    text-align: center;
-    color: #ffffff;
+.para-footer-about {
+  margin-bottom: 15px;
 }
-.p-about {
-    margin: 20px;
-    font-size: 18px;
-}
-.container-about {
-    background-color: #ffffff;
-    padding: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-}
+

@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+<style>
+  .greeting-dashboard {
+    color: white;
+    background-color: #1a1a1a;
+    padding: 1rem;
+    padding-left: 2rem;
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+  .tiles-container {
+    display: flex;
+    color: white;
+    background-color: #1a1a1a;
+    padding: 2rem;
+    padding-left: 2rem;
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+  .tile {
+    background-color: white;
+    margin: 2rem;
+    width: 100%;
+    height: 250px;
+    border-radius: 1rem;
+  }
+  .tile-items {
+    padding: 1rem;
+    color: black;
+    margin: 1rem;
+  }
+  .transactions-container {
+    display: flex;
+    color: white;
+    background-color: #1a1a1a;
+    padding: 2rem;
+    padding-left: 2rem;
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+</style>
+<div class="greeting-dashboard">
+  <h3>Hello</h3>
+  <h2><%= userName %>,</h2>
+</div>
+<div class="tiles-container">
+  <div class="tile" id="savings">
+    <div class="tile-items">
+      <h3 style="margin-bottom: 3rem">Savings Details:</h3>
+      <h2>Account No: 210383L</h2>
+      <h2>Savings Balance: 5000</h2>
+      <h2>Withdrawals left: 3</h2>
+    </div>
+  </div>
+  <div class="tile" id="current">
+    <div class="tile-items">
+      <h3 style="margin-bottom: 4rem">Current Details:</h3>
+      <h2>Account No: 210383L</h2>
+      <h2>Current Balance: 5000</h2>
+    </div>
+  </div>
+</div>
+<div class="transactions-container">
+  <div class="transactions">
+    <h3>Recent Transactions:</h3>
+    <table  cellspacing="10">
+      <tr>
+        <th>Transaction ID</th>
+        <th>Date</th>
+        <th>Amount</th>
+      </tr>
+      <tr>
+        <td>2001</td>
+        <td>2001.06.04</td>
+        <td>Rs.5000</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
