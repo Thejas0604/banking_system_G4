@@ -11,18 +11,19 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 //authentication
+let un;
+let isAuthenticated = false;
 app.get("/", (req, res) => {
   res.render("login");
 });
 
-let isAuthenticated = false;
-app.post("/login", async (req, res) => {
-  const un = req.body.username;
+app.post("/dashboard", async (req, res) => {
+  un = req.body.username;
   const pw = req.body.password;
 
   await checkCredentials(un, pw).then((result) => {
     if (result) {
-      res.render("dashboard", { userName: "Thejas" }); //connect and render dashboard
+      res.render("dashboard", { userName: un }); //connect and render dashboard
       isAuthenticated = true;
     } else {
       res.redirect("/");
@@ -32,7 +33,7 @@ app.post("/login", async (req, res) => {
 
 app.get("/dashboard", (req, res) => {
   if (isAuthenticated) {
-    res.render("dashboard.ejs", { userName: "Thejas" });
+    res.render("dashboard.ejs", { userName: un });
   } else {
     res.redirect("/");
   }
