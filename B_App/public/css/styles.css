@@ -1,86 +1,156 @@
-.loginBody{
-    background: linear-gradient(to bottom right, #00BFFF, #87CEFA, #00BFFF); /* added another color to the gradient */
-    font-family: 'Roboto', sans-serif;
-    font-size: 16px;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-h1{
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 32px;
-    font-family: 'Roboto', sans-serif;
-    color: #87CEFA; /* changed color to a lighter blue */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    transition: color 0.3s ease;
+body {
+  font-family: "Roboto", sans-serif;
+  background: #454545;
 }
 
-h3{
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    color: #333;
-    transition: color 0.3s ease;
+a {
+  text-decoration: none;
 }
 
-h1:hover {
-    color: #0066CC; /* changed hover color to a darker blue */
+li {
+  list-style: none;
 }
 
-.loginForm{
-    width: 70%;
-    max-width: 400px; /* decreased max-width */
-    margin: 0 auto;
-    padding: 40px 20px;
-    background-color: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3), 0 0 20px rgba(0,0,0,0.2);
+/* NAVBAR STYLING STARTS */
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: #333;
+  color: #fff;
 }
 
-
-input{
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    margin-right: 10px; /* added margin to the right */
-    margin-bottom: 10px; /* added margin to the bottom */
-    margin-top: 5px;
+.nav-links a {
+  color: #fff;
 }
 
+/* LOGO */
+.logo {
+  font-size: 32px;
+}
 
-.loginButton{
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    border: 0;
-    border-radius: 5px;
-    background-color: #00BFFF; /* changed color to light blue */
-    color: #fff;
-    font-size: 16px;
-    font-family: 'Roboto', sans-serif;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
+/* NAVBAR MENU */
+.menu {
+  display: flex;
+  gap: 1em;
+  font-size: 18px;
+}
+
+.menu li:hover {
+  background-color: #454545;
+  border-radius: 5px;
+  transition: 0.3s ease;
+}
+
+.menu li {
+  padding: 5px 14px;
+}
+
+.loginBody {
+  font-family: "Roboto", sans-serif;
+  font-size: 16px;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+  background: #454545;
+}
+
+.login-h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-family: "Roboto", sans-serif;
+  color: #333;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  transition: color 0.3s ease;
+  cursor: pointer;
+}
+
+.login-h1:hover {
+  color: #454545;
+}
+
+.about-h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 32px;
+  font-family: "Roboto", sans-serif;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  transition: color 0.3s ease;
+  color: #4caf50; /* Change color to a green shade */
+}
+
+.footer-h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.loginForm {
+  width: 70%;
+  max-width: 400px; /* Increased max-width for better form layout */
+  margin: 0 auto;
+  padding: 40px 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* Increased box-shadow */
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-top: 5px;
+}
+
+.loginButton {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: 5px;
+  background-color: #333; /* Green button background */
+  color: #fff;
+  font-size: 16px;
+  font-family: "Roboto", sans-serif;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .loginButton:hover {
-    background-color: #0066CC; /* changed hover color to a darker blue */
+  background-color: #454545;
 }
 
-footer{
-    text-align: center;
-    margin-top: 20px;
-    font-size: 14px;
-    font-family: 'Roboto', sans-serif;
-    color: #333;
+footer {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  background: #333; /* Dark background for the footer */
+  padding: 5px 0; /* Smaller padding for top and bottom */
+  color: #fff; /* White text color */
 }
+
+.para-footer-about {
+  margin-bottom: 15px;
+}
+
