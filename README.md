@@ -14,3 +14,4 @@ npm i
 ```
 nodemon app.js
 ```
+**4. View using browser. Go to your [localhost:3000](url) .**
