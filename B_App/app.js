@@ -10,7 +10,8 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-//authentication
+////////////////////////////////////////////////////////////////////////////
+//authentication + dashboard
 let un;
 let isAuthenticated = false;
 app.get("/", (req, res) => {
@@ -23,7 +24,14 @@ app.post("/dashboard", async (req, res) => {
 
   await checkCredentials(un, pw).then((result) => {
     if (result) {
-      res.render("dashboard", { userName: un }); //connect and render dashboard
+      res.render("dashboard", {
+        userName: un,
+        savingsAccountNo: "210383L",
+        savingsAccountBalance: 5000,
+        WithdrawalsLeft: 3,
+        currentAccountNo: "210383L",
+        currentAccountBalance: 5000,
+      }); //connect and render dashboard
       isAuthenticated = true;
     } else {
       res.redirect("/");
@@ -33,12 +41,32 @@ app.post("/dashboard", async (req, res) => {
 
 app.get("/dashboard", (req, res) => {
   if (isAuthenticated) {
-    res.render("dashboard.ejs", { userName: un });
+    res.render("dashboard.ejs", {
+      userName: un,
+      savingsAccountNo: "210383L",
+      savingsAccountBalance: 5000,
+      WithdrawalsLeft: 3,
+      currentAccountNo: "210383L",
+      currentAccountBalance: 5000,
+    });
   } else {
     res.redirect("/");
   }
 });
 
+////////////////////////////////////////////////////////////////////////////
+//savings account
+app.get("/savings", (req, res) => {
+  res.render("savings", {userName: un});  
+});
+
+////////////////////////////////////////////////////////////////////////////
+//current account
+app.get("/current", (req, res) => {
+  res.render("current", {userName: un});
+});
+
+////////////////////////////////////////////////////////////////////////////
 app.get("/logout", (req, res) => {
   isAuthenticated = false;
   res.redirect("/");

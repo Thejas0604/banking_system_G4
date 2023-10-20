@@ -38,6 +38,21 @@
     border-radius: 1rem;
     margin: 1rem;
   }
+  button {
+    background-color: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #333333;
+  }
+  
 </style>
 <div class="greeting-dashboard">
   <h3>Hello</h3>
@@ -46,24 +61,30 @@
 <div class="tiles-container">
   <div class="tile" id="savings">
     <div class="tile-items">
-      <h3 style="margin-bottom: 3rem">Savings Details:</h3>
-      <h2>Account No: 210383L</h2>
-      <h2>Savings Balance: 5000</h2>
-      <h2>Withdrawals left: 3</h2>
+      <h3 style="margin-bottom: 1.5rem">Savings Details:</h3>
+      <h2>Account No: <%= savingsAccountNo %></h2>
+      <h2>Savings Balance: <%= savingsAccountBalance %></h2>
+      <h2 style="margin-bottom: 1rem">
+        Withdrawals left: <%= WithdrawalsLeft %>
+      </h2>
+      <a href="/savings"><button>Check your Savings Account</button></a>
     </div>
   </div>
   <div class="tile" id="current">
     <div class="tile-items">
-      <h3 style="margin-bottom: 4rem">Current Details:</h3>
-      <h2>Account No: 210383L</h2>
-      <h2>Current Balance: 5000</h2>
+      <h3 style="margin-bottom: 2rem">Current Details:</h3>
+      <h2>Account No: <%= currentAccountNo %></h2>
+      <h2 style="margin-bottom: 2rem">
+        Current Balance: <%= currentAccountBalance %>
+      </h2>
+      <a href="/current"><button>Check your Current Account</button></a>
     </div>
   </div>
 </div>
 <div class="transactions-container">
   <div class="transactions">
     <h3>Recent Transactions:</h3>
-    <table  cellspacing="10">
+    <table cellspacing="10">
       <tr>
         <th>Transaction ID</th>
         <th>Date</th>
