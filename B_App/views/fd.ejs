@@ -1,3 +1,48 @@
 <%- include('partials/header') %>
-<h1>FD</h1>
+<style>
+    h2{
+        color: white;
+        text-align: left;
+        margin: 3rem;
+    }
+    .fd-details-container{
+        display: flex;
+        flex-direction: column;
+        color: white;
+        background-color: #1a1a1a;
+        padding: 2rem;
+        padding-left: 2rem;
+        border-radius: 1rem;
+        margin: 3rem 8rem;
+    }
+    p{
+        margin: 1rem;
+    }
+    .items{
+        display: flex;
+    }
+    .items-items{
+        width: 100%;    
+    }
+    #right{
+        font-weight:bold ;
+    }
+</style>
+<h2>Fixed Deposits</h2>
+<div class="fd-details-container">
+    <div class="items">
+        <div class="items-items" id="left">
+            <p>Status: </p>
+            <p>Account No: </p>
+            <p>Balance: </p>
+            <p>Deposit Period: </p>
+            <p>Interest Rate: </p>
+            <p>Maturatity: </p>
+            <p>Start Date: </p>
+        </div>
+        <div class="items-items" id="right">
+            <h3>Interest Rate: </h3>
+        </div>
+    </div>
+</div>
 <%- include('partials/footer') %>

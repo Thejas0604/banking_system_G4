@@ -55,13 +55,13 @@ app.get("/dashboard", (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//savings account
+//savings
 app.get("/savings", (req, res) => {
   res.render("savings", {userName: un});  
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//current account
+//current
 app.get("/current", (req, res) => {
   res.render("current", {userName: un});
 });
@@ -80,21 +80,26 @@ app.get("/loan", (req, res) => {
 
 
 ////////////////////////////////////////////////////////////////////////////
+//logout
 app.get("/logout", (req, res) => {
   isAuthenticated = false;
   res.redirect("/");
 });
 
+////////////////////////////////////////////////////////////////////////////
 //about page
 app.get("/about", (req, res) => {
   res.render("about.ejs");
 });
 
+////////////////////////////////////////////////////////////////////////////
 //contact page
 app.get("/contact", (req, res) => {
   res.render("contact.ejs");
 });
 
+////////////////////////////////////////////////////////////////////////////
+//starting server
 app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
