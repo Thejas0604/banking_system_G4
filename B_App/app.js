@@ -57,13 +57,19 @@ app.get("/dashboard", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //savings
 app.get("/savings", (req, res) => {
-  res.render("savings", {userName: un});  
+  res.render("savings", {
+    userName: un,
+    savingsAccountNo: "210383L",
+    savingsAccountBalance: 5000,
+    WithdrawalsLeft: 3,
+    interestRate:"10%"
+  });
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //current
 app.get("/current", (req, res) => {
-  res.render("current", {userName: un});
+  res.render("current", { userName: un });
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -77,7 +83,6 @@ app.get("/fd", (req, res) => {
 app.get("/loan", (req, res) => {
   res.render("loan");
 });
-
 
 ////////////////////////////////////////////////////////////////////////////
 //logout
