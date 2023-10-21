@@ -75,13 +75,27 @@ app.get("/current", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //Fixed-Deposits
 app.get("/fd", (req, res) => {
-  res.render("fd");
+  res.render("fd",{
+    status:"Active",
+    accountNo: "210383L",
+    balance: "LKR.5,000,000",
+    period: "1 year",
+    matuarity: "12/12/2021",
+    startDate: "12/12/2020",
+    rate: "17.5%",
+  });
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //Loans
 app.get("/loan", (req, res) => {
   res.render("loan");
+});
+
+////////////////////////////////////////////////////////////////////////////
+//loan-request
+app.post("/request-loan", (req, res) => {
+  res.render("loanRequests");
 });
 
 ////////////////////////////////////////////////////////////////////////////
