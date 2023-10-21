@@ -62,7 +62,7 @@ app.get("/savings", (req, res) => {
     savingsAccountNo: "210383L",
     savingsAccountBalance: 5000,
     WithdrawalsLeft: 3,
-    interestRate:"10%"
+    interestRate: "10%",
   });
 });
 
@@ -75,8 +75,8 @@ app.get("/current", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //Fixed-Deposits
 app.get("/fd", (req, res) => {
-  res.render("fd",{
-    status:"Active",
+  res.render("fd", {
+    status: "Active",
     accountNo: "210383L",
     balance: "LKR.5,000,000",
     period: "1 year",
@@ -87,15 +87,17 @@ app.get("/fd", (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//Loans
-app.get("/loan", (req, res) => {
-  res.render("loan");
+//loan-request
+app.post("/request-loan", (req, res) => {
+  const amount = req.body.amount;
+  const duration = req.body.duration;
+  res.render("loanRequests", { amount: amount, duration: duration });
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//loan-request
-app.post("/request-loan", (req, res) => {
-  res.render("loanRequests");
+//Loans
+app.get("/loan", (req, res) => {
+  res.render("loan");
 });
 
 ////////////////////////////////////////////////////////////////////////////
