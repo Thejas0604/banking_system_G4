@@ -5,7 +5,7 @@
 git clone https://github.com/Thejas0604/banking_system_G4.git
 ```
 
-**2. Install node modules.** 
+**2. Install node modules in to the respective folder.** 
 ```
 npm i
 ```
