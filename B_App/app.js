@@ -81,7 +81,18 @@ app.get("/transfers-savings", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //current
 app.get("/current", (req, res) => {
-  res.render("current", { userName: USERNAME });
+  res.render("current", {
+    userName: USERNAME,
+    currentAccountNo: "210383L",
+    currentAccountBalance: 5000,
+    interestRate: "10%",
+  });
+});
+
+////////////////////////////////////////////////////////////////////////////
+//current-transfers
+app.get("/transfers-current", (req, res) => {
+  res.render("current-transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
