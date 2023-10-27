@@ -4,6 +4,9 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import { checkCredentials } from "./database/database.js";
 import { getUserName } from "./database/database.js";
+import { getSavingsAccountNo } from "./database/database.js";
+import { getSavingsAccountBalance } from "./database/database.js";
+import { getSavingsAccountWithdrawalsLeft } from "./database/database.js";
 
 // Set up the express app
 const app = express();
@@ -25,13 +28,13 @@ app.post("/dashboard", async (req, res) => {
   USERNAME = await getUserName(user_id);
   const pw = req.body.password;
 
-  await checkCredentials(user_id, pw).then((result) => {
+  await checkCredentials(user_id, pw).then(async (result) => {
     if (result) {
       res.render("dashboard", {
         userName: USERNAME,
-        savingsAccountNo: "210383L",
-        savingsAccountBalance: 5000,
-        WithdrawalsLeft: 3,
+        savingsAccountNo: await getSavingsAccountNo(user_id),
+        savingsAccountBalance: await getSavingsAccountBalance(user_id),
+        WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
         currentAccountNo: "210383L",
         currentAccountBalance: 5000,
       }); //connect and render dashboard
@@ -42,13 +45,13 @@ app.post("/dashboard", async (req, res) => {
   });
 });
 
-app.get("/dashboard", (req, res) => {
+app.get("/dashboard", async(req, res) => {
   if (isAuthenticated) {
     res.render("dashboard.ejs", {
       userName: USERNAME,
-      savingsAccountNo: "210383L",
-      savingsAccountBalance: 5000,
-      WithdrawalsLeft: 3,
+      savingsAccountNo: await getSavingsAccountNo(user_id),
+      savingsAccountBalance: await getSavingsAccountBalance(user_id),
+      WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
       currentAccountNo: "210383L",
       currentAccountBalance: 5000,
     });
@@ -59,12 +62,12 @@ app.get("/dashboard", (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //savings
-app.get("/savings", (req, res) => {
+app.get("/savings",async (req, res) => {
   res.render("savings", {
     userName: USERNAME,
-    savingsAccountNo: "210383L",
-    savingsAccountBalance: 5000,
-    WithdrawalsLeft: 3,
+    savingsAccountNo: await getSavingsAccountNo(user_id),
+    savingsAccountBalance: await getSavingsAccountBalance(user_id),
+    WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
     interestRate: "10%",
   });
 });

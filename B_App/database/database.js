@@ -9,6 +9,8 @@ const pool = mysql.createPool({
     database: process.env.DB_NAME 
 }).promise()
 
+/////----------Login----------////////////////
+//Credentials check
 export async function checkCredentials(username, password) {
     try {
         const [rows] = await pool.query(
@@ -24,13 +26,81 @@ export async function checkCredentials(username, password) {
         return false
     }
 };
+///////////////////////////////////////////////
 
+//Get user name
 export async function getUserName(uid){
     try {
         const [rows] = await pool.query(
             'SELECT name FROM customer WHERE customer_id = ?', [uid]
             )
         return rows[0].name
+    } catch (err) {
+        console.log(err)
+        return false
+    }
+}
+
+/////----------Dashboard----------////////////////
+//Get Savings Account Number
+export async function getSavingsAccountNo(uid){
+    try {
+        const [rows] = await pool.query(
+            'SELECT account_no FROM savings_account WHERE customer_id = ?', [uid] 
+            )
+        return rows[0].account_no
+    } catch (err) {
+        console.log(err)
+        return false
+    }
+}
+
+//Get Savings Account Balance
+export async function getSavingsAccountBalance(uid){
+    try {
+        const [rows] = await pool.query(
+            'SELECT balance FROM savings_account WHERE customer_id = ?', [uid] 
+            )
+        return rows[0].balance
+    } catch (err) {
+        console.log(err)
+        return false
+    }
+}
+
+//Get Savings Account Withdrawals Left
+export async function getSavingsAccountWithdrawalsLeft(uid){
+    try {
+        const [rows] = await pool.query(
+            'SELECT remaining_withdrawals FROM savings_account WHERE customer_id = ?', [uid] 
+            )
+        return rows[0].remaining_withdrawals
+    } catch (err) {
+        console.log(err)
+        return false
+    }
+}
+
+//Get Current Account Number - Not finished
+export async function getCurrentAccountNo(uid){
+    try {
+        const [rows] = await pool.query(
+            '', [uid] //insert query here
+            )
+        return rows[0].account_no
+    } catch (err) {
+        console.log(err)
+        return false
+    }
+}
+
+//Get Current Account Balance - Not finished
+export async function getCurrentAccountBalance(uid){
+    try {
+        const [rows] = await pool.query(
+            '', [uid] //insert query here
+            )
+        return rows[0].balance
     } catch (err) {
         console.log(err)
         return false
