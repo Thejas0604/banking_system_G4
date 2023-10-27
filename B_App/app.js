@@ -45,7 +45,7 @@ app.post("/dashboard", async (req, res) => {
   });
 });
 
-app.get("/dashboard", async(req, res) => {
+app.get("/dashboard", async (req, res) => {
   if (isAuthenticated) {
     res.render("dashboard.ejs", {
       userName: USERNAME,
@@ -62,7 +62,7 @@ app.get("/dashboard", async(req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //savings
-app.get("/savings",async (req, res) => {
+app.get("/savings", async (req, res) => {
   res.render("savings", {
     userName: USERNAME,
     savingsAccountNo: await getSavingsAccountNo(user_id),
@@ -70,6 +70,12 @@ app.get("/savings",async (req, res) => {
     WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
     interestRate: "10%",
   });
+});
+
+////////////////////////////////////////////////////////////////////////////
+//savings-transfers
+app.get("/transfers-savings", (req, res) => {
+  res.render("savings-transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -103,7 +109,17 @@ app.post("/request-loan", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //Loans
 app.get("/loan", (req, res) => {
-  res.render("loan");
+  res.render("loan", {
+    interestRate: "7.5%",
+    accountNo: "210383L",
+    loanAmount: "LKR.5,000,000",
+    duration: "1 year",
+    remainingPeriod: "11 months",
+    totalInterest: "LKR.375,000",
+    oneInstallment: "LKR.468,750",
+    noOfInstallmets: "12",
+    payPerIns: "LKR.39,062.50",
+  });
 });
 
 ////////////////////////////////////////////////////////////////////////////

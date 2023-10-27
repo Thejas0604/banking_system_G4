@@ -66,7 +66,7 @@ export async function getSavingsAccountBalance(uid){
         console.log(err)
         return false
     }
-}
+}   
 
 //Get Savings Account Withdrawals Left
 export async function getSavingsAccountWithdrawalsLeft(uid){
@@ -106,3 +106,5 @@ export async function getCurrentAccountBalance(uid){
         return false
     }
 }
+
+///////////////////////////////////////////////

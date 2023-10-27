@@ -38,6 +38,7 @@
   }
   .savings-container {
     display: flex;
+    flex-direction: column;
     color: white;
     background-color: #1a1a1a;
     padding: 2rem;
@@ -50,6 +51,13 @@
     border-radius: 1rem;
     padding: 2rem;
     background-color: white;
+    color: black;
+    margin: 1rem;
+  }
+  .bank-transfer-button {
+    width: 100%;
+    border-radius: 1rem;
+    padding: 2rem;;
     color: black;
     margin: 1rem;
   }
@@ -69,6 +77,9 @@
     <h2>Savings Balance: <%= savingsAccountBalance %></h2>
     <h2>Withdrawals left: <%= WithdrawalsLeft %></h2>
     <h2>Interest Rate: <%= interestRate %></h2>
+  </div>
+  <div class="bank-transfer-button">
+    <button onclick="window.location.href='/transfers-savings';">Bank Transfers</button>
   </div>
 </div>
 <%- include('partials/footer') %>

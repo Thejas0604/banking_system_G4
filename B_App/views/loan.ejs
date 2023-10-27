@@ -1,3 +1,43 @@
 <%- include('partials/header') %>
-<h1>Loans</h1>
+<style>
+    .loan-container {
+        color: black;
+        background-color: white ;
+        text-align: left;
+        margin: 3rem;
+        padding: 2rem;
+        border-radius: 2rem;
+    }
+    .loan-heading {
+        color: black;
+        text-align: left;
+        margin-bottom: 1.5rem;
+    }
+    .p-loan {
+        color: black;
+        text-align: left;
+        margin-bottom: 0.5rem;
+        font-weight: bold;
+    }
+    .loan-installments {
+        color: black;
+        text-align: left;
+        margin: 1rem;
+        margin-left: 0;
+        font-weight: bold;
+    }
+</style>
+<div class="loan-container">
+    <h1 class="loan-heading">Loan</h1>
+    <p class="p-loan">Account No: <%= accountNo %></p>
+    <p class="p-loan">Interest Rate: <%= interestRate %></p>
+    <p class="p-loan">Loan Amount: <%= loanAmount %></p>
+    <p class="p-loan">Duration: <%= duration %></p>
+    <p class="p-loan">Remaining Period: <%= remainingPeriod %></p>
+    <p class="p-loan">Total Interest: <%= totalInterest %></p>
+    <h2 class="loan-installments">Installments</h2>
+    <p class="p-loan">1 Installment: <%= oneInstallment %></p>
+    <p class="p-loan">No.of Installments: <%= noOfInstallmets %></p>
+    <p class="p-loan">Payment per installment: <%= payPerIns %></p>
+</div>
 <%- include('partials/footer') %>
