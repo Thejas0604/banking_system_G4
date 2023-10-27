@@ -3,6 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
 import { checkCredentials } from "./database/database.js";
+import { getUserName } from "./database/database.js";
 
 // Set up the express app
 const app = express();
@@ -13,6 +14,7 @@ app.use(express.static("public"));
 ////////////////////////////////////////////////////////////////////////////
 //authentication + dashboard
 let un;
+let USERNAME;
 let isAuthenticated = false;
 app.get("/", (req, res) => {
   res.render("login");
@@ -20,12 +22,13 @@ app.get("/", (req, res) => {
 
 app.post("/dashboard", async (req, res) => {
   un = req.body.username;
+  USERNAME = await getUserName(un);
   const pw = req.body.password;
 
   await checkCredentials(un, pw).then((result) => {
     if (result) {
       res.render("dashboard", {
-        userName: un,
+        userName: USERNAME,
         savingsAccountNo: "210383L",
         savingsAccountBalance: 5000,
         WithdrawalsLeft: 3,
@@ -42,7 +45,7 @@ app.post("/dashboard", async (req, res) => {
 app.get("/dashboard", (req, res) => {
   if (isAuthenticated) {
     res.render("dashboard.ejs", {
-      userName: un,
+      userName: USERNAME,
       savingsAccountNo: "210383L",
       savingsAccountBalance: 5000,
       WithdrawalsLeft: 3,
@@ -58,7 +61,7 @@ app.get("/dashboard", (req, res) => {
 //savings
 app.get("/savings", (req, res) => {
   res.render("savings", {
-    userName: un,
+    userName: USERNAME,
     savingsAccountNo: "210383L",
     savingsAccountBalance: 5000,
     WithdrawalsLeft: 3,
