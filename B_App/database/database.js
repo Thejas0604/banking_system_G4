@@ -25,10 +25,10 @@ export async function checkCredentials(username, password) {
     }
 };
 
-export async function getUserName(un){
+export async function getUserName(uid){
     try {
         const [rows] = await pool.query(
-            'SELECT name FROM customer WHERE customer_id = ?', [un]
+            'SELECT name FROM customer WHERE customer_id = ?', [uid]
             )
         return rows[0].name
     } catch (err) {

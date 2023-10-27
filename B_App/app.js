@@ -13,7 +13,7 @@ app.use(express.static("public"));
 
 ////////////////////////////////////////////////////////////////////////////
 //authentication + dashboard
-let un;
+let user_id;
 let USERNAME;
 let isAuthenticated = false;
 app.get("/", (req, res) => {
@@ -21,11 +21,11 @@ app.get("/", (req, res) => {
 });
 
 app.post("/dashboard", async (req, res) => {
-  un = req.body.username;
-  USERNAME = await getUserName(un);
+  user_id = req.body.userID;
+  USERNAME = await getUserName(user_id);
   const pw = req.body.password;
 
-  await checkCredentials(un, pw).then((result) => {
+  await checkCredentials(user_id, pw).then((result) => {
     if (result) {
       res.render("dashboard", {
         userName: USERNAME,
@@ -72,7 +72,7 @@ app.get("/savings", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //current
 app.get("/current", (req, res) => {
-  res.render("current", { userName: un });
+  res.render("current", { userName: USERNAME });
 });
 
 ////////////////////////////////////////////////////////////////////////////
