@@ -9,6 +9,8 @@ import { getSavingsAccountBalance } from "./database/database.js";
 import { getSavingsAccountWithdrawalsLeft } from "./database/database.js";
 import { validateSavingsAccount } from "./database/database.js";
 import { validateTransferAmount } from "./database/database.js";
+import { getCurrentAccountNo } from "./database/database.js";
+import { getCurrentAccountBalance } from "./database/database.js";
 
 // Set up the express app
 const app = express();
@@ -37,8 +39,8 @@ app.post("/dashboard", async (req, res) => {
         savingsAccountNo: await getSavingsAccountNo(user_id),
         savingsAccountBalance: await getSavingsAccountBalance(user_id),
         WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
-        currentAccountNo: "210383L",
-        currentAccountBalance: 5000,
+        currentAccountNo: await getCurrentAccountNo(user_id),
+        currentAccountBalance: await getCurrentAccountBalance(user_id),
       }); //connect and render dashboard
       isAuthenticated = true;
     } else {
@@ -54,8 +56,8 @@ app.get("/dashboard", async (req, res) => {
       savingsAccountNo: await getSavingsAccountNo(user_id),
       savingsAccountBalance: await getSavingsAccountBalance(user_id),
       WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
-      currentAccountNo: "210383L",
-      currentAccountBalance: 5000,
+      currentAccountNo: await getCurrentAccountNo(user_id),
+      currentAccountBalance: await getCurrentAccountBalance(user_id),
     });
   } else {
     res.redirect("/");
@@ -91,7 +93,7 @@ app.post("/transfer-savings-do", async (req, res) => {
 
   if ((validateSender == 1) && (validateReceiver == 1) && (validateAmount ) ) {
     res.render("savings-transfers-do", {
-      status: "Success",
+      status: "Successful",
     });
   } else {
     res.render("savings-transfers-do", {
@@ -102,11 +104,11 @@ app.post("/transfer-savings-do", async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //current
-app.get("/current", (req, res) => {
+app.get("/current",async (req, res) => {
   res.render("current", {
     userName: USERNAME,
-    currentAccountNo: "210383L",
-    currentAccountBalance: 5000,
+    currentAccountNo: await getCurrentAccountNo(user_id),
+    currentAccountBalance: await getCurrentAccountBalance(user_id),
     interestRate: "10%",
   });
 });

@@ -127,23 +127,23 @@ export async function validateTransferAmount(amount, account_no) {
 
 //Get Current Account Number - Not finished
 export async function getCurrentAccountNo(uid) {
-  try {
-    const [rows] = await pool.query(
-      "",
-      [uid] //insert query here
-    );
-    return rows[0].account_no;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
+    try {
+        const [rows] = await pool.query(
+          "SELECT account_no FROM current_account WHERE customer_id = ?",
+          [uid]
+        );
+        return rows[0].account_no;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
 }
 
 //Get Current Account Balance - Not finished
 export async function getCurrentAccountBalance(uid) {
   try {
     const [rows] = await pool.query(
-      "",
+      "SELECT balance FROM current_account WHERE customer_id = ?",
       [uid] //insert query here
     );
     return rows[0].balance;
