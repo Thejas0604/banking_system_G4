@@ -105,6 +105,26 @@ export async function validateSavingsAccount(account_no) {
   }
 }
 
+// validate transfer amount
+export async function validateTransferAmount(amount, account_no) {
+  try {
+    const [results] = await pool.query(
+      "SELECT balance FROM savings_account WHERE account_no = ?",
+      [account_no]
+    );
+    if (results.length > 0 && results[0].balance >= amount) {
+      // Balance is sufficient; proceed with the transfer
+      return true;
+    } else {
+      // Insufficient balance; show an error message
+      return false;
+    }
+  } catch (error) {
+    console.error("Error:", error);
+    throw error; // You can handle the error further up the call stack
+  }
+}
+
 //Get Current Account Number - Not finished
 export async function getCurrentAccountNo(uid) {
   try {

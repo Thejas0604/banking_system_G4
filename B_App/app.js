@@ -8,6 +8,7 @@ import { getSavingsAccountNo } from "./database/database.js";
 import { getSavingsAccountBalance } from "./database/database.js";
 import { getSavingsAccountWithdrawalsLeft } from "./database/database.js";
 import { validateSavingsAccount } from "./database/database.js";
+import { validateTransferAmount } from "./database/database.js";
 
 // Set up the express app
 const app = express();
@@ -85,9 +86,10 @@ app.post("/transfer-savings-do", async (req, res) => {
   const validateSender = await validateSavingsAccount(req.body.fromAccount);
   const validateReceiver = await validateSavingsAccount(req.body.toAccount);
 
-  const amount = req.body.amount;
+  const amount = parseFloat(req.body.amount);
+  const validateAmount = await validateTransferAmount(amount, req.body.fromAccount);
 
-  if ((validateSender == 1) && (validateReceiver == 1)) {
+  if ((validateSender == 1) && (validateReceiver == 1) && (validateAmount ) ) {
     res.render("savings-transfers-do", {
       status: "Success",
     });
