@@ -402,13 +402,13 @@ DROP TABLE IF EXISTS `loan_payment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loan_payment` (
-  `payment_id` int NOT NULL AUTO_INCREMENT,
+  `payment_id` varchar(20) NOT NULL,
   `loan_id` varchar(20) DEFAULT NULL,
   `settle_date` date DEFAULT NULL,
   PRIMARY KEY (`payment_id`),
   KEY `loan_payment_ibfk_1_idx` (`loan_id`),
   CONSTRAINT `loan_payment_ibfk_1` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`loan_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -417,9 +417,28 @@ CREATE TABLE `loan_payment` (
 
 LOCK TABLES `loan_payment` WRITE;
 /*!40000 ALTER TABLE `loan_payment` DISABLE KEYS */;
-INSERT INTO `loan_payment` VALUES (1,'LN1','2023-08-21'),(2,'LN2','2023-09-04'),(3,'LN3','2023-09-21'),(4,'LN1','2023-09-21'),(5,'LN2','2023-10-04');
+INSERT INTO `loan_payment` VALUES ('LPAY1','LN1','2023-08-21'),('LPAY2','LN2','2023-09-04'),('LPAY3','LN3','2023-09-21'),('LPAY4','LN1','2023-09-21'),('LPAY5','LN2','2023-10-04');
 /*!40000 ALTER TABLE `loan_payment` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `increment_loan_paymrnt_id` BEFORE INSERT ON `loan_payment` FOR EACH ROW BEGIN
+    DECLARE max_payment_id INT;
+    SET max_payment_id = IFNULL((SELECT MAX(CAST(SUBSTRING(payment_id, 5) AS SIGNED)) FROM loan_payment), 0);
+    SET NEW.payment_id = CONCAT('LPAY', max_payment_id + 1);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `loan_request`
@@ -429,7 +448,7 @@ DROP TABLE IF EXISTS `loan_request`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loan_request` (
-  `request_id` int NOT NULL AUTO_INCREMENT,
+  `request_id` varchar(20) NOT NULL,
   `loan_id` varchar(20) DEFAULT NULL,
   `customer_id` varchar(20) DEFAULT NULL,
   `loan_amount` decimal(10,2) DEFAULT NULL,
@@ -441,7 +460,7 @@ CREATE TABLE `loan_request` (
   KEY `loan_request_ibfk_2_idx` (`loan_id`),
   CONSTRAINT `loan_request_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
   CONSTRAINT `loan_request_ibfk_2` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`loan_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -450,9 +469,28 @@ CREATE TABLE `loan_request` (
 
 LOCK TABLES `loan_request` WRITE;
 /*!40000 ALTER TABLE `loan_request` DISABLE KEYS */;
-INSERT INTO `loan_request` VALUES (1,'LN5','CUS10',100000.00,12.50,1,'EMP5');
+INSERT INTO `loan_request` VALUES ('LREQ1','LN5','CUS10',100000.00,12.50,1,'EMP5');
 /*!40000 ALTER TABLE `loan_request` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `increment_loan_request_id` BEFORE INSERT ON `loan_request` FOR EACH ROW BEGIN
+    DECLARE max_request_id INT;
+    SET max_request_id = IFNULL((SELECT MAX(CAST(SUBSTRING(request_id, 5) AS SIGNED)) FROM loan_request), 0);
+    SET NEW.request_id = CONCAT('LREQ', max_request_id + 1);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `organization`
@@ -719,4 +757,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-30 20:37:07
+-- Dump completed on 2023-10-30 20:48:54
