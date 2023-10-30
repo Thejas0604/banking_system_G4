@@ -123,12 +123,12 @@ app.get("/transfers-current", (req, res) => {
 //Fixed-Deposits
 app.get("/fd", (req, res) => {
   res.render("fd", {
-    status: "Active",
-    accountNo: "210383L",
-    balance: "LKR.5,000,000",
+    fd_id: "210383L",
+    amount: "LKR.5,000,000",
     period: "1 year",
     matuarity: "12/12/2021",
     startDate: "12/12/2020",
+    endDate: "12/12/2021",
     rate: "17.5%",
   });
 });

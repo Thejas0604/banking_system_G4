@@ -153,4 +153,17 @@ export async function getCurrentAccountBalance(uid) {
   }
 }
 
+//Get fd info
+export async function getFDInfo(uid) {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM fixed_deposit WHERE customer_id = ?",
+      [uid]
+    );
+    return rows[0];
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
 ///////////////////////////////////////////////
