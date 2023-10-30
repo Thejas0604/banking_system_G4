@@ -53,7 +53,7 @@ DROP TABLE IF EXISTS `branch`;
 CREATE TABLE `branch` (
   `branch_id` int NOT NULL AUTO_INCREMENT,
   `branch_name` varchar(50) DEFAULT NULL,
-  `manager_id` int DEFAULT NULL,
+  `manager_id` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`branch_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -64,7 +64,7 @@ CREATE TABLE `branch` (
 
 LOCK TABLES `branch` WRITE;
 /*!40000 ALTER TABLE `branch` DISABLE KEYS */;
-INSERT INTO `branch` VALUES (1,'Main Branch',2),(2,'Downtown Branch',3),(3,'West Branch',5);
+INSERT INTO `branch` VALUES (1,'Main Branch','2'),(2,'Downtown Branch','3'),(3,'West Branch','5');
 /*!40000 ALTER TABLE `branch` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,7 +76,7 @@ DROP TABLE IF EXISTS `current_account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `current_account` (
-  `account_no` int NOT NULL AUTO_INCREMENT,
+  `account_no` varchar(20) NOT NULL,
   `customer_id` varchar(20) DEFAULT NULL,
   `branch_id` int DEFAULT NULL,
   `start_date` date DEFAULT NULL,
@@ -86,7 +86,7 @@ CREATE TABLE `current_account` (
   KEY `current_account_ibfk_1_idx` (`customer_id`),
   CONSTRAINT `current_account_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
   CONSTRAINT `current_account_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -95,7 +95,7 @@ CREATE TABLE `current_account` (
 
 LOCK TABLES `current_account` WRITE;
 /*!40000 ALTER TABLE `current_account` DISABLE KEYS */;
-INSERT INTO `current_account` VALUES (1,'CUS3',1,'2023-09-11',500000.00),(2,'CUS6',1,'2023-10-10',350000.00),(3,'CUS8',1,'2023-10-15',560000.00);
+INSERT INTO `current_account` VALUES ('C1','CUS3',1,'2023-09-11',500000.00),('C2','CUS6',1,'2023-10-10',350000.00),('C3','CUS8',1,'2023-10-15',560000.00);
 /*!40000 ALTER TABLE `current_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -166,15 +166,13 @@ DROP TABLE IF EXISTS `fixed_deposit`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `fixed_deposit` (
   `fd_id` int NOT NULL AUTO_INCREMENT,
-  `account_no` int DEFAULT NULL,
+  `account_no` varchar(20) DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `duration` int DEFAULT NULL,
   `rate` decimal(4,2) DEFAULT NULL,
   `end_date` datetime DEFAULT NULL,
-  PRIMARY KEY (`fd_id`),
-  KEY `fixed_deposit_ibfk_1_idx` (`account_no`),
-  CONSTRAINT `fixed_deposit_ibfk_1` FOREIGN KEY (`account_no`) REFERENCES `savings_account` (`account_no`)
+  PRIMARY KEY (`fd_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -184,7 +182,7 @@ CREATE TABLE `fixed_deposit` (
 
 LOCK TABLES `fixed_deposit` WRITE;
 /*!40000 ALTER TABLE `fixed_deposit` DISABLE KEYS */;
-INSERT INTO `fixed_deposit` VALUES (1,1,250000.00,'2023-06-20',12,7.50,'2024-06-20 00:00:00'),(2,2,400000.00,'2023-06-21',12,7.50,'2024-06-21 00:00:00'),(3,4,50000.00,'2023-07-15',24,8.50,'2025-07-15 00:00:00'),(4,6,1000000.00,'2023-08-02',12,7.50,'2024-08-02 00:00:00'),(5,7,150000.00,'2023-08-20',36,9.50,'2026-08-20 00:00:00'),(6,8,300000.00,'2023-09-20',6,9.50,'2024-03-20 00:00:00'),(7,9,50000.00,'2023-10-20',12,7.50,'2024-10-20 00:00:00');
+INSERT INTO `fixed_deposit` VALUES (1,'S1',250000.00,'2023-06-20',12,7.50,'2024-06-20 00:00:00'),(2,'S2',400000.00,'2023-06-21',12,7.50,'2024-06-21 00:00:00'),(3,'S4',50000.00,'2023-07-15',24,8.50,'2025-07-15 00:00:00'),(4,'S6',1000000.00,'2023-08-02',12,7.50,'2024-08-02 00:00:00'),(5,'S7',150000.00,'2023-08-20',36,9.50,'2026-08-20 00:00:00'),(6,'S8',300000.00,'2023-09-20',6,9.50,'2024-03-20 00:00:00'),(7,'S9',50000.00,'2023-10-20',12,7.50,'2024-10-20 00:00:00');
 /*!40000 ALTER TABLE `fixed_deposit` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -301,6 +299,7 @@ CREATE TABLE `loan_request` (
 
 LOCK TABLES `loan_request` WRITE;
 /*!40000 ALTER TABLE `loan_request` DISABLE KEYS */;
+INSERT INTO `loan_request` VALUES (1,5,'CUS10',100000.00,12.50,1,'EMP5');
 /*!40000 ALTER TABLE `loan_request` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -363,7 +362,7 @@ DROP TABLE IF EXISTS `savings_account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `savings_account` (
-  `account_no` int NOT NULL AUTO_INCREMENT,
+  `account_no` varchar(20) NOT NULL,
   `account_type` varchar(15) DEFAULT NULL,
   `customer_id` varchar(20) DEFAULT NULL,
   `branch_id` int DEFAULT NULL,
@@ -377,7 +376,7 @@ CREATE TABLE `savings_account` (
   KEY `savings_account_ibfk_2_idx` (`branch_id`),
   CONSTRAINT `savings_account_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
   CONSTRAINT `savings_account_ibfk_2` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -386,7 +385,7 @@ CREATE TABLE `savings_account` (
 
 LOCK TABLES `savings_account` WRITE;
 /*!40000 ALTER TABLE `savings_account` DISABLE KEYS */;
-INSERT INTO `savings_account` VALUES (1,'Adult','CUS1',1,'2023-05-10',100000.00,90000.00,5),(2,'Adult','CUS2',1,'2023-05-10',50000.00,45000.00,3),(3,'Adult','CUS4',1,'2023-05-17',20000.00,6500.00,2),(4,'Senior','CUS5',2,'2023-06-01',1250000.00,1250000.00,5),(5,'organization','CUS6',1,'2023-06-16',250000.00,200000.00,4),(6,'Teen','CUS7',2,'2023-06-28',10000.00,9000.00,1),(7,'Organization','CUS8',1,'2023-08-17',6000000.00,5500000.00,2),(8,'Children','CUS9',2,'2023-09-17',5000.00,5000.00,3),(9,'Adult','CUS10',3,'2023-10-17',350000.00,350000.00,5);
+INSERT INTO `savings_account` VALUES ('S1','Adult','CUS1',1,'2023-05-10',100000.00,90000.00,5),('S2','Adult','CUS2',1,'2023-05-10',50000.00,45000.00,3),('S3','Adult','CUS4',1,'2023-05-17',20000.00,6500.00,2),('S4','Senior','CUS5',2,'2023-06-01',1250000.00,1250000.00,5),('S5','organization','CUS6',1,'2023-06-16',250000.00,200000.00,4),('S6','Teen','CUS7',2,'2023-06-28',10000.00,9000.00,1),('S7','Organization','CUS8',1,'2023-08-17',6000000.00,5500000.00,2),('S8','Children','CUS9',2,'2023-09-17',5000.00,5000.00,3),('S9','Adult','CUS10',3,'2023-10-17',350000.00,350000.00,5);
 /*!40000 ALTER TABLE `savings_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -429,7 +428,7 @@ CREATE TABLE `transactions` (
   `type` varchar(15) DEFAULT NULL,
   `amount` decimal(10,2) DEFAULT NULL,
   `branch_id` int DEFAULT NULL,
-  `account_no` int DEFAULT NULL,
+  `account_no` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   KEY `transactions_ibfk_1_idx` (`branch_id`),
   KEY `transactions_ibfk_2_idx` (`account_no`),
@@ -511,4 +510,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-27 23:05:43
+-- Dump completed on 2023-10-30 17:12:41
