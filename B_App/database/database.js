@@ -90,18 +90,20 @@ export async function getSavingsAccountWithdrawalsLeft(uid) {
 
 // Validate savings account
 export async function validateSavingsAccount(account_no) {
-    try {
-      const [results] = await pool.execute(
-        'CALL ValidateSavingsAccount(?, @is_valid); SELECT @is_valid AS is_valid',
-        [account_no]
-      );
-  
-      const is_valid = results[1][0].is_valid;
-      return is_valid === 1;
-    } catch (error) {
-      console.error(error);
-    }
-  }   
+  {
+    // Execute the stored procedure and retrieve the result
+    const [rows] = await pool.execute(
+      "CALL ValidateSavingsAccount(?, @p_is_valid)",
+      [account_no]
+    );
+    const result = await pool.query("SELECT @p_is_valid as is_valid");
+    const is_valid = result[0][0].is_valid;
+
+    // Release the connection pool
+
+    return is_valid;
+  }
+}
 
 //Get Current Account Number - Not finished
 export async function getCurrentAccountNo(uid) {

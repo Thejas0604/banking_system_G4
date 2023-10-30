@@ -86,7 +86,8 @@ app.post("/transfer-savings-do", async (req, res) => {
   const validateReceiver = await validateSavingsAccount(req.body.toAccount);
 
   const amount = req.body.amount;
-  if (validateSender && validateReceiver) {
+
+  if ((validateSender == 1) && (validateReceiver == 1)) {
     res.render("savings-transfers-do", {
       status: "Success",
     });
