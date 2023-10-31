@@ -12,7 +12,7 @@ const pool = mysql.createPool({
 export async function checkCredentials(username, password) {
     try {
         const [rows] = await pool.query(
-            'SELECT * FROM users WHERE username = ? AND password = ?', [username, password]
+            'SELECT * FROM user WHERE user_name = ? AND password_hash = ?', [username, password]
             )
         if (rows.length > 0) {
             return true
