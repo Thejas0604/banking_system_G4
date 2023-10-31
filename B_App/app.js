@@ -46,7 +46,7 @@ app.post("/dashboard", async (req, res) => {
         const token = jwt.sign(
           { un: userName, role: "customer" },
           "jwt_User_privateKey",  ///this is a password ///////////
-          { expiresIn: "5m" }
+          { expiresIn: "5s" }
         );
         console.log(token);
 
@@ -83,7 +83,6 @@ app.post("/dashboard", async (req, res) => {
       });
      
 
-        isAuthenticated = true;
       }
 
       else if (user_type == "employee") {
@@ -162,7 +161,7 @@ app.get("/dashboard", async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //savings
-app.get("/savings", authenticateAdminToken , async (req, res) => {
+app.get("/savings", authenticateUserToken , async (req, res) => {
 
   let cDet = await getCDetails(userId);
   let sDet =  await getSavingsDetails(userId);

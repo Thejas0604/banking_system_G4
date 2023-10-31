@@ -30,9 +30,11 @@ const authenticateAdminToken = (req, res, next) => {
   
     try {
       jwt.verify(storedTKN, "jwt_User_privateKey");
+      console.log("valid token")
       next();
     } catch (err) {
-      return res.status(403).render("User_login");
+        console.log("invalid token")
+      return res.status(403).redirect("/");
     }
   };
 
