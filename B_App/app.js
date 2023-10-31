@@ -2,18 +2,22 @@
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
+import cookieParser from "cookie-parser";
+import jwt from "jsonwebtoken";
 import { checkCredentials, getCDetails, getCusId, getEDetails } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { validateSavingsAccount } from "./database/database.js";
 import { validateTransferAmount } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
+import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 
 // Set up the express app
 const app = express();
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(cookieParser());
 
 ////////////////////////////////////////////////////////////////////////////
 //authentication + dashboard
@@ -39,6 +43,16 @@ app.post("/dashboard", async (req, res) => {
 
       if (user_type == "customer") {
 
+        const token = jwt.sign(
+          { un: userName, role: "customer" },
+          "jwt_User_privateKey",  ///this is a password ///////////
+          { expiresIn: "5m" }
+        );
+        console.log(token);
+
+        res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
+
+
         let cDet = await getCDetails(userId);
         let sDet =  await getSavingsDetails(userId);
         let cuDet=  await getCurrentDetails(userId);
@@ -63,7 +77,7 @@ app.post("/dashboard", async (req, res) => {
           "name": cDet.name,
           "savingsAccountNo": savingsAccountNo,
           "savingsAccountBalance": savingsAccountBalance,
-          "WithdrawalsLeft": withdrawalsLeft,
+          "withdrawalsLeft": withdrawalsLeft,
           "currentAccountNo": currentAccountNo,
           "currentAccountBalance": currentAccountBalance
       });
@@ -73,6 +87,16 @@ app.post("/dashboard", async (req, res) => {
       }
 
       else if (user_type == "employee") {
+
+        const token = jwt.sign(
+          { un: userName, role: "employee" },
+          "jwt_Admin_privateKey",  ///this is a password ///////////
+          { expiresIn: "5m" }
+        );
+        console.log(token);
+
+        res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
+
         let eDet = await getEDetails(userId);
 
         res.render("employeeDash", {
@@ -138,7 +162,7 @@ app.get("/dashboard", async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //savings
-app.get("/savings", async (req, res) => {
+app.get("/savings", authenticateAdminToken , async (req, res) => {
 
   let cDet = await getCDetails(userId);
   let sDet =  await getSavingsDetails(userId);
@@ -148,7 +172,7 @@ app.get("/savings", async (req, res) => {
     "name": cDet.name,
     "savingsAccountNo": sDet.account_no,
     "savingsAccountBalance": sDet.balance,
-    "WithdrawalsLeft": sDet.remaining_withdrawals,
+    "withdrawalsLeft": sDet.remaining_withdrawals,
     "accountType": sDet.account_type,
     "interestRate": sType.interest_rate  ///////////////////////////////////////////////////////////// check
   });
@@ -241,7 +265,7 @@ app.get("/loan", (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //logout
 app.get("/logout", (req, res) => {
-  isAuthenticated = false;
+  res.clearCookie("jwt");
   res.redirect("/");
 });
 
@@ -274,45 +298,47 @@ app.post("/search-customer", async (req, res) => {
   if (cusId == false) {
     res.redirect("/dashboard");
   }
-
-  let cDet = await getCDetails(cusId);
-  let sDet =  await getSavingsDetails(cusId);
-  let cuDet=  await getCurrentDetails(cusId);
-
-  let savingsAccountNo;
-  let savingsAccountBalance;
-  let withdrawalsLeft;
-  let currentAccountNo; 
-  let currentAccountBalance;
-  let accountType;
-  let savingsBId;
-  let currentBId;
-
-
-  if (sDet != undefined) {
-    savingsAccountNo = sDet.account_no;
-    savingsAccountBalance = sDet.balance;
-    withdrawalsLeft = sDet.remaining_withdrawals;
-    accountType = sDet.account_type;
-
+  else{
+    let cDet = await getCDetails(cusId);
+    let sDet =  await getSavingsDetails(cusId);
+    let cuDet=  await getCurrentDetails(cusId);
+  
+    let savingsAccountNo;
+    let savingsAccountBalance;
+    let withdrawalsLeft;
+    let currentAccountNo; 
+    let currentAccountBalance;
+    let accountType;
+    let savingsBId;
+    let currentBId;
+  
+  
+    if (sDet != undefined) {
+      savingsAccountNo = sDet.account_no;
+      savingsAccountBalance = sDet.balance;
+      withdrawalsLeft = sDet.remaining_withdrawals;
+      accountType = sDet.account_type;
+  
+    }
+    if (cuDet != undefined) {
+      currentAccountNo = cuDet.account_no;
+      currentAccountBalance = cuDet.balance;
+    }
+  
+    res.render("customer",{
+      "name": cDet.name,
+      "account_type": accountType,
+      "address": cDet.address,
+      "phone": cDet.telephone,
+      "savingsAccountNo": savingsAccountNo,
+      "savingsAccountBalance": savingsAccountBalance,
+      "withdrawalsLeft": withdrawalsLeft,
+      "savingsBId": savingsBId,
+      "currentAccountNo": currentAccountNo,
+      "currentAccountBalance": currentAccountBalance,
+      "currentBId": currentBId,
+    });
   }
-  if (cuDet != undefined) {
-    currentAccountNo = cuDet.account_no;
-    currentAccountBalance = cuDet.balance;
-  }
 
-  res.render("customer",{
-    "name": cDet.name,
-    "account_type": accountType,
-    "address": cDet.address,
-    "phone": cDet.telephone,
-    "savingsAccountNo": savingsAccountNo,
-    "savingsAccountBalance": savingsAccountBalance,
-    "withdrawalsLeft": withdrawalsLeft,
-    "savingsBId": savingsBId,
-    "currentAccountNo": currentAccountNo,
-    "currentAccountBalance": currentAccountBalance,
-    "currentBId": currentBId,
-  });
 });
 

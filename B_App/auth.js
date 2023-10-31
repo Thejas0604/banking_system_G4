@@ -1,19 +1,19 @@
 // Middleware for Admin authentication
+import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
+
 const authenticateAdminToken = (req, res, next) => {
     let storedTKN = req.cookies.jwt;
   
     if (!storedTKN) {
-      return res.status(401).render("SuccessMsg", {
-        showSuccessCard: false,
-        message: "Connection Lost. Please Login Again.",
-      });
+      return res.status(401).send("Dead Token!");
     }
   
     try {
       jwt.verify(storedTKN, "jwt_Admin_privateKey");
       next();
     } catch (err) {
-      return res.status(403).render("Admin_login");
+      return res.status(403).redirect("/");
     }
   };
   
@@ -36,6 +36,7 @@ const authenticateAdminToken = (req, res, next) => {
     }
   };
 
+export { authenticateAdminToken, authenticateUserToken };
 
 
 
@@ -43,32 +44,31 @@ const authenticateAdminToken = (req, res, next) => {
 
 
 
-
-  app.post("/Admin_Mode", (req, res) => {
-    const { email, password } = req.body;
+//   app.post("/Admin_Mode", (req, res) => {
+//     const { email, password } = req.body;
   
-    const sql = "SELECT * FROM admin WHERE Email_Address = ? AND Password = ?";
+//     const sql = "SELECT * FROM admin WHERE Email_Address = ? AND Password = ?";
   
-    db.query(sql, [email, password], (err, result) => {
-      if (err) {
-        res.status(400).render("SuccessMsg", {
-          showSuccessCard: false,
-          message: "No Token Provided !",
-        });
-      }
+//     db.query(sql, [email, password], (err, result) => {
+//       if (err) {
+//         res.status(400).render("SuccessMsg", {
+//           showSuccessCard: false,
+//           message: "No Token Provided !",
+//         });
+//       }
   
-      if (result.length >= 1) {
-        const token = jwt.sign(
-          { email: email, Role: "Admin" },
-          "jwt_Admin_privateKey",
-          { expiresIn: "20m" }
-        );
+//       if (result.length >= 1) {
+//         const token = jwt.sign(
+//           { email: email, Role: "Admin" },
+//           "jwt_Admin_privateKey",
+//           { expiresIn: "20m" }
+//         );
   
-        // Set the token as an HTTP-only cookie
-        res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
-        res.redirect("/admin_portfolio");
-      } else {
-        res.status(400).render("Admin_login");
-      }
-    });
-  });
+//         // Set the token as an HTTP-only cookie
+//         res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
+//         res.redirect("/admin_portfolio");
+//       } else {
+//         res.status(400).render("Admin_login");
+//       }
+//     });
+//   });
