@@ -30,7 +30,7 @@
     margin: 1rem;
   }
   .transactions-container {
-    display: flex;
+    display: block;
     color: white;
     background-color: #1a1a1a;
     padding: 2rem;
@@ -72,9 +72,9 @@
     box-shadow: 0 1px 4px 0px rgba(0, 0, 50, 0.3);
   }
   .table-head {
-    background:white;
+    background: white;
     box-shadow: none;
-    color:black;
+    color: black;
     font-weight: 600;
     border-radius: 2rem;
   }
@@ -97,7 +97,6 @@
     border-right: none;
   }
 
-
   @media only screen and (max-width: 600px) {
     .table-row {
       font-size: 11px;
@@ -106,9 +105,11 @@
 </style>
 <div class="greeting-dashboard">
   <h3>Hello</h3>
-  <h2><%= userName %>,</h2>
+  <h2><%= name %>,</h2>
 </div>
-<div class="tiles-container">
+
+<% if (savingsAccountNo){ %>
+<div class="tiles-container d-block">
   <div class="tile" id="savings">
     <div class="tile-items">
       <h3 style="margin-bottom: 1.5rem">Savings Details:</h3>
@@ -120,59 +121,62 @@
       <a href="/savings"><button>Check your Savings Account</button></a>
     </div>
   </div>
-  <div class="tile" id="current">
-    <div class="tile-items">
-      <h3 style="margin-bottom: 2rem">Current Details:</h3>
-      <h2>Account No: <%= currentAccountNo %></h2>
-      <h2 style="margin-bottom: 2rem">
-        Current Balance: <%= currentAccountBalance %>
-      </h2>
-      <a href="/current"><button>Check your Current Account</button></a>
+  <% } %> <% if (currentAccountNo){ %>
+  <div class="tiles-container d-block">
+    <div class="tile" id="current">
+      <div class="tile-items">
+        <h3 style="margin-bottom: 2rem">Current Details:</h3>
+        <h2>Account No: <%= currentAccountNo %></h2>
+        <h2 style="margin-bottom: 2rem">
+          Current Balance: <%= currentAccountBalance %>
+        </h2>
+        <a href="/current"><button>Check your Current Account</button></a>
+      </div>
     </div>
   </div>
-</div>
-<div class="transactions-container">
-  <div style="width: 100%;" class="transactions">
-    <h3 style="margin-left: 2rem;">Recent Transactions:</h3>
-    <div class="table-box">
-      <div class="table-row table-head">
-        <div class="table-cell first-cell">
-          <p>Transaction ID</p>
+  <% } %>
+
+  <div class="transactions-container">
+    <div style="width: 100%" class="transactions">
+      <h3 style="margin-left: 2rem">Recent Transactions:</h3>
+      <div class="table-box">
+        <div class="table-row table-head">
+          <div class="table-cell first-cell">
+            <p>Transaction ID</p>
+          </div>
+          <div class="table-cell">
+            <p>Date</p>
+          </div>
+          <div class="table-cell last-cell">
+            <p>Amount</p>
+          </div>
         </div>
-        <div class="table-cell">
-          <p>Date</p>
+
+        <div class="table-row">
+          <div class="table-cell first-cell">
+            <p>000000</p>
+          </div>
+          <div class="table-cell">
+            <p>999</p>
+          </div>
+          <div class="table-cell last-cell">
+            <p>Random</p>
+          </div>
         </div>
-        <div class="table-cell last-cell">
-          <p>Amount</p>
+
+        <div class="table-row">
+          <div class="table-cell first-cell">
+            <p>111111</p>
+          </div>
+          <div class="table-cell">
+            <p>999</p>
+          </div>
+          <div class="table-cell last-cell">
+            <p>Random</p>
+          </div>
         </div>
       </div>
-
-      <div class="table-row">
-        <div class="table-cell first-cell">
-          <p>000000</p>
-        </div>
-        <div class="table-cell">
-          <p>999</p>
-        </div>
-        <div class="table-cell last-cell">
-          <p>Random</p>
-        </div>
-      </div>
-
-      <div class="table-row">
-        <div class="table-cell first-cell">
-          <p>111111</p>
-        </div>
-        <div class="table-cell">
-          <p>999</p>
-        </div>
-        <div class="table-cell last-cell">
-          <p>Random</p>
-        </div>
-      </div>
-
     </div>
   </div>
+  <%- include('partials/footer') %>
 </div>
-
-<%- include('partials/footer') %>

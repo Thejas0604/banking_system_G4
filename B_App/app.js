@@ -3,7 +3,7 @@ import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
 import { checkCredentials } from "./database/database.js";
-import { getUserName } from "./database/database.js";
+import { getName } from "./database/database.js";
 import { getSavingsAccountNo } from "./database/database.js";
 import { getSavingsAccountBalance } from "./database/database.js";
 import { getSavingsAccountWithdrawalsLeft } from "./database/database.js";
@@ -20,29 +20,47 @@ app.use(express.static("public"));
 
 ////////////////////////////////////////////////////////////////////////////
 //authentication + dashboard
-let user_id;
-let USERNAME;
+
 let isAuthenticated = false;
 app.get("/", (req, res) => {
   res.render("login");
 });
 
+//basic details
+let userId = "";
+let name = "";
+let user_type = "";
+
 app.post("/dashboard", async (req, res) => {
-  user_id = req.body.userID;
-  USERNAME = await getUserName(user_id);
+  const name = req.body.name;
   const pw = req.body.password;
 
-  await checkCredentials(user_id, pw).then(async (result) => {
+
+
+  await checkCredentials(name, pw).then(async (result) => {
     if (result) {
-      res.render("dashboard", {
-        userName: USERNAME,
-        savingsAccountNo: await getSavingsAccountNo(user_id),
-        savingsAccountBalance: await getSavingsAccountBalance(user_id),
-        WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
-        currentAccountNo: await getCurrentAccountNo(user_id),
-        currentAccountBalance: await getCurrentAccountBalance(user_id),
-      }); //connect and render dashboard
-      isAuthenticated = true;
+      userId = result[0].user_id;
+      name = await getName(userId);
+      user_type = result[0].user_type;
+
+      if (user_type == "customer") {
+        res.render("dashboard", {
+          name: await getName(userId),
+          savingsAccountNo: await getSavingsAccountNo(userId),
+          savingsAccountBalance: await getSavingsAccountBalance(userId),
+          WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(userId),
+          currentAccountNo: await getCurrentAccountNo(userId),
+          currentAccountBalance: await getCurrentAccountBalance(userId),
+        }); //connect and render dashboard
+        isAuthenticated = true;
+      }
+      else if (user_type == "employee") {
+        res.send("employee dashboard")
+      //   res.render("employeeDashboard", {
+      //     name: await getName(result),
+      //   }); //connect and render employee dashboard
+      //   isAuthenticated = true;
+      }
     } else {
       res.redirect("/");
     }
@@ -52,12 +70,12 @@ app.post("/dashboard", async (req, res) => {
 app.get("/dashboard", async (req, res) => {
   if (isAuthenticated) {
     res.render("dashboard.ejs", {
-      userName: USERNAME,
-      savingsAccountNo: await getSavingsAccountNo(user_id),
-      savingsAccountBalance: await getSavingsAccountBalance(user_id),
-      WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
-      currentAccountNo: await getCurrentAccountNo(user_id),
-      currentAccountBalance: await getCurrentAccountBalance(user_id),
+      name: name,
+      savingsAccountNo: await getSavingsAccountNo(userId),
+      savingsAccountBalance: await getSavingsAccountBalance(userId),
+      WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(userId),
+      currentAccountNo: await getCurrentAccountNo(userId),
+      currentAccountBalance: await getCurrentAccountBalance(userId),
     });
   } else {
     res.redirect("/");
@@ -68,10 +86,10 @@ app.get("/dashboard", async (req, res) => {
 //savings
 app.get("/savings", async (req, res) => {
   res.render("savings", {
-    userName: USERNAME,
-    savingsAccountNo: await getSavingsAccountNo(user_id),
-    savingsAccountBalance: await getSavingsAccountBalance(user_id),
-    WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(user_id),
+    name: name,
+    savingsAccountNo: await getSavingsAccountNo(userId),
+    savingsAccountBalance: await getSavingsAccountBalance(userId),
+    WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(userId),
     interestRate: "10%",
   });
 });
@@ -106,9 +124,9 @@ app.post("/transfer-savings-do", async (req, res) => {
 //current
 app.get("/current",async (req, res) => {
   res.render("current", {
-    userName: USERNAME,
-    currentAccountNo: await getCurrentAccountNo(user_id),
-    currentAccountBalance: await getCurrentAccountBalance(user_id),
+    name: name,
+    currentAccountNo: await getCurrentAccountNo(userId),
+    currentAccountBalance: await getCurrentAccountBalance(userId),
     interestRate: "10%",
   });
 });

@@ -2,25 +2,24 @@ import mysql from "mysql2";
 import dotenv from "dotenv";
 dotenv.config();
 
-const pool = mysql
-  .createPool({
+const pool = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-  })
-  .promise();
+  }).promise();
 
 /////----------Login----------////////////////
 //Credentials check
 export async function checkCredentials(username, password) {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM user WHERE user_id = ? AND password_hash = ?",
+      "SELECT * FROM user WHERE user_name = ? AND password_hash = ?",
       [username, password]
     );
     if (rows.length > 0) {
-      return true;
+      return rows;
+      // return true;
     } else {
       return false;
     }
@@ -31,13 +30,14 @@ export async function checkCredentials(username, password) {
 }
 ///////////////////////////////////////////////
 
-//Get user name
-export async function getUserName(uid) {
+//Get user name 
+export async function getName(cus_id) {
   try {
     const [rows] = await pool.query(
       "SELECT name FROM customer WHERE customer_id = ?",
-      [uid]
+      [cus_id]
     );
+    console.log(rows);
     return rows[0].name;
   } catch (err) {
     console.log(err);
