@@ -36,7 +36,31 @@
     background-color: #333333;
     color: white;
   }
-
+  .savings-container {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    background-color: #1a1a1a;
+    padding: 2rem;
+    padding-left: 2rem;
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+  .savings-items {
+    width: 100%;
+    border-radius: 1rem;
+    padding: 2rem;
+    background-color: white;
+    color: black;
+    margin: 1rem;
+  }
+  .bank-transfer-button {
+    width: 100%;
+    border-radius: 1rem;
+    padding: 2rem;;
+    color: black;
+    margin: 1rem;
+  }
 </style>
 <div class="greeting-dashboard">
   <h3>Hello</h3>
@@ -45,5 +69,17 @@
 <div class="loan-fd-container">
   <Button onclick="window.location.href='/fd';">Fixed Deposits</Button>
   <Button onclick="window.location.href='/loan';">Loans</Button>
+</div>
+<div class="savings-container">
+  <div class="savings-items">
+    <h3 style="margin-bottom: 1.5rem">Savings Details:</h3>
+    <h2>Account No: <%= savingsAccountNo %></h2>
+    <h2>Savings Balance: <%= savingsAccountBalance %></h2>
+    <h2>Withdrawals left: <%= WithdrawalsLeft %></h2>
+    <h2>Interest Rate: <%= interestRate %></h2>
+  </div>
+  <div class="bank-transfer-button">
+    <button onclick="window.location.href='/transfers-savings';">Bank Transfers</button>
+  </div>
 </div>
 <%- include('partials/footer') %>

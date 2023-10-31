@@ -1,0 +1,36 @@
+<%- include('partials/header') %>
+<style>
+    .transfer-status {
+        display: flex;
+        flex-direction: column ;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        padding: 2rem;
+        margin: 5rem;
+        border-radius: 2rem;
+    }
+    .transfer-status p {
+        margin: 0;
+    }
+    .transfer-status button {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .transfer-status button:hover {
+        background-color: #bebebe;
+    }
+</style>
+
+<div class="transfer-status">
+    <h2>Transfer Status</h2>
+    <p>Your transfer has been <%= status %></p>
+    <button style="margin-top: 1rem" onclick="window.location.href='/savings'">Return to Savings</button>
+</div>
+
+<%- include('partials/footer') %>
+
