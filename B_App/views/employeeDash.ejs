@@ -1,0 +1,141 @@
+<%- include('partials/header.ejs') %>
+
+<style>
+  .dashboard-container {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .greeting-dashboard {
+    color: white;
+    background-color: #1a1a1a;
+    padding: 1rem;
+    padding-left: 4rem;
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+  .tiles-container {
+    display: flex;
+    color: white;
+    background-color: #1a1a1a;
+    padding: 2rem;
+    padding-left: 2rem;
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+  .tile {
+    background-color: white;
+    margin: 2rem;
+    width: 100%;
+    height: 250px;
+    border-radius: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+  .tile-items {
+    padding: 1rem;
+    color: black;
+    margin: 1rem;
+  }
+  .transactions-container {
+    display: block;
+    color: white;
+    background-color: #1a1a1a;
+    padding: 2rem;
+    padding-left: 2rem;
+    border-radius: 1rem;
+    margin: 1rem;
+  }
+  button {
+    background-color: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 1rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+    cursor: pointer;
+  }
+  button:hover {
+    background-color: #333333;
+  }
+  * {
+    margin: 0;
+    padding: 0;
+  }
+  .table-box {
+    margin: 50px auto;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-family: "Roboto", sans-serif;
+    font-size: 16px;
+    color: #333;
+    margin: 0;
+    padding: 0;
+    display: table;
+  }
+  .search-container {
+    margin: 1rem auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .search-container form {
+    display: flex;
+    align-items: center;
+  }
+  .search-container input[type="text"] {
+    padding: 0.5rem;
+    border-radius: 1rem 0 0 1rem;
+    border: none;
+    width: 70%;
+  }
+  .search-container button[type="submit"] {
+    background-color: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 0 1rem 1rem 0;
+    padding: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    width: 30%;
+  }
+  .search-container button[type="submit"]:hover {
+    background-color: #333333;
+  }
+</style>
+
+<div class="greeting-dashboard">
+  <h3>Hello</h3>
+  <h2><%= name %>,</h2>
+</div>
+
+<div class="search-container">
+  <form action="/search-customer" method="POST">
+    <input
+      type="text"
+      placeholder="Search for a customer"
+      name="customerSearch"
+    />
+    <button type="submit">Search</button>
+  </form>
+</div>
+
+<div class="dashboard-container">
+  <div class="tiles-container">
+    <div class="tile" onclick="location.href='/create-customer'">
+      <div class="tile-items">
+        <h3>Create New Customer</h3>
+      </div>
+    </div>
+  </div>
+</div>
+
+ <%- include('partials/footer.ejs') %>

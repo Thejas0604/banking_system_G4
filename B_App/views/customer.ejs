@@ -1,0 +1,44 @@
+<%- include('partials/header.ejs') %>
+
+<style>
+  .customer-details {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px #ccc;
+  }
+  .customer-details h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  .customer-details h3 {
+    font-size: 20px;
+    margin-bottom: 5px;
+  }
+  .customer-details p {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+</style>
+<div class="customer-details">
+  <h1>Customer Details</h1>
+  <p>Name: <%= name %></p>
+  <p>Address: <%= address %></p>
+  <p>Phone: <%= phone %></p>
+  <% if (savingsAccountNo){ %>
+  <h3>Savings Details</h3>
+  <p>Savings Account: <%= savingsAccountNo %></p>
+  <p>Savings Balance: <%= savingsAccountBalance %></p>
+  <p>Remaining Withdrawals: <%= withdrawalsLeft %></p>
+  <p>Branch ID: <%= savingsBId %></p>
+  <% } %> <% if (currentAccountNo){ %>
+  <h3>Current A/C Details</h3>
+  <p>Current Account: <%= currentAccountNo %></p>
+  <p>Current Balance: <%= currentAccountBalance %></p>
+  <p>Branch ID: <%= currentBId %></p>
+
+  <% } %>
+</div>
+
+<%- include('partials/footer.ejs') %>

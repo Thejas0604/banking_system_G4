@@ -57,14 +57,14 @@
   .bank-transfer-button {
     width: 100%;
     border-radius: 1rem;
-    padding: 2rem;;
+    padding: 2rem;
     color: black;
     margin: 1rem;
   }
 </style>
 <div class="greeting-dashboard">
   <h3>Hello</h3>
-  <h2><%= userName %>,</h2>
+  <h2><%= name %>,</h2>
 </div>
 <div class="loan-fd-container">
   <Button onclick="window.location.href='/fd';">Fixed Deposits</Button>
@@ -75,11 +75,13 @@
     <h3 style="margin-bottom: 1.5rem">Savings Details:</h3>
     <h2>Account No: <%= savingsAccountNo %></h2>
     <h2>Savings Balance: <%= savingsAccountBalance %></h2>
-    <h2>Withdrawals left: <%= WithdrawalsLeft %></h2>
+    <h2>Withdrawals left: <%= withdrawalsLeft %></h2>
     <h2>Interest Rate: <%= interestRate %></h2>
   </div>
   <div class="bank-transfer-button">
-    <button onclick="window.location.href='/transfers-savings';">Bank Transfers</button>
+    <button onclick="window.location.href='/transfers-savings';">
+      Bank Transfers
+    </button>
   </div>
 </div>
 <%- include('partials/footer') %>
