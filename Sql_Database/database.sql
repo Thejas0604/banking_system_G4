@@ -48,6 +48,35 @@ LOCK TABLES `account` WRITE;
 INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00,NULL,NULL,NULL,NULL),('C2','CUS6','current','BR1','2023-10-10',350000.00,NULL,NULL,NULL,NULL),('C3','CUS8','current','BR1','2023-10-15',560000.00,NULL,NULL,NULL,NULL),('S1','CUS1','savings','BR1','2023-05-10',100000.00,1,0,1,1),('S2','CUS2','savings','BR1','2023-05-10',50000.00,1,0,1,0),('S3','CUS4','savings','BR1','2023-05-17',20000.00,1,0,1,0),('S4','CUS5','savings','BR2','2023-06-01',1250000.00,1,0,0,0),('S5','CUS6','savings','BR1','2023-06-16',250000.00,1,1,1,1),('S6','CUS7','savings','BR2','2023-06-28',10000.00,1,0,1,1),('S7','CUS8','savings','BR1','2023-08-17',6000000.00,1,1,1,1),('S8','CUS9','savings','BR2','2023-09-17',5000.00,1,0,1,0),('S9','CUS10','savings','BR3','2023-10-17',350000.00,1,0,0,1);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `increment_account_no` BEFORE INSERT ON `account` FOR EACH ROW BEGIN
+    DECLARE last_id INT;
+    DECLARE new_id INT;
+
+    -- Find the last account_no based on account_type
+    IF NEW.account_type = 'current' THEN
+        SELECT MAX(CAST(SUBSTRING(account_no, 2) AS SIGNED)) INTO last_id FROM account WHERE account_type = 'current';
+        SET new_id = IFNULL(last_id, 0) + 1;
+        SET NEW.account_no = CONCAT('C', new_id);
+    ELSEIF NEW.account_type = 'savings' THEN
+        SELECT MAX(CAST(SUBSTRING(account_no, 2) AS SIGNED)) INTO last_id FROM account WHERE account_type = 'savings';
+        SET new_id = IFNULL(last_id, 0) + 1;
+        SET NEW.account_no = CONCAT('S', new_id);
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `branch`
@@ -661,9 +690,28 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'C1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'C2');
+INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `increment_transaction_id` BEFORE INSERT ON `transactions` FOR EACH ROW BEGIN
+    DECLARE max_transaction_id INT;
+    SET max_transaction_id = IFNULL((SELECT MAX(CAST(SUBSTRING(transaction_id, 4) AS SIGNED)) FROM transactions), 0);
+    SET NEW.transaction_id = CONCAT('TRA', max_transaction_id + 1);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `transfer`
@@ -691,6 +739,7 @@ CREATE TABLE `transfer` (
 
 LOCK TABLES `transfer` WRITE;
 /*!40000 ALTER TABLE `transfer` DISABLE KEYS */;
+INSERT INTO `transfer` VALUES ('TRA4','S4','S5');
 /*!40000 ALTER TABLE `transfer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -801,4 +850,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-31 10:20:19
+-- Dump completed on 2023-10-31 11:06:16
