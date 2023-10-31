@@ -616,7 +616,7 @@ CREATE TABLE `savings_account` (
 
 LOCK TABLES `savings_account` WRITE;
 /*!40000 ALTER TABLE `savings_account` DISABLE KEYS */;
-INSERT INTO `savings_account` VALUES ('S1','Adult',90000.00,5),('S2','Adult',45000.00,3),('S3','Adult',6500.00,2),('S4','Senior',1250000.00,5),('S5','organization',200000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
+INSERT INTO `savings_account` VALUES ('S1','Adult',70000.00,5),('S2','Adult',65000.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
 /*!40000 ALTER TABLE `savings_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -690,7 +690,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4');
+INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -739,7 +739,7 @@ CREATE TABLE `transfer` (
 
 LOCK TABLES `transfer` WRITE;
 /*!40000 ALTER TABLE `transfer` DISABLE KEYS */;
-INSERT INTO `transfer` VALUES ('TRA4','S4','S5');
+INSERT INTO `transfer` VALUES ('TRA4','S4','S5'),('TRA5','S1','S2'),('TRA6','S1','S2'),('TRA7','S4','S5');
 /*!40000 ALTER TABLE `transfer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -809,6 +809,102 @@ DELIMITER ;
 --
 -- Dumping routines for database 'banking_system'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `MakeMoneyTransfer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `MakeMoneyTransfer`(
+    IN sender_id VARCHAR(20),
+    IN receiver_id VARCHAR(20),
+    IN transfer_amount DECIMAL(10,2)
+)
+BEGIN
+    DECLARE sender_balance DECIMAL(10,2);
+    DECLARE receiver_balance DECIMAL(10,2);
+    DECLARE sender_account_type VARCHAR(20);
+    DECLARE receiver_account_type VARCHAR(20);
+    DECLARE new_transaction_id VARCHAR(20);
+
+    -- Get the account types of the sender and receiver
+    SELECT account_type INTO sender_account_type FROM account WHERE account_no = sender_id;
+    SELECT account_type INTO receiver_account_type FROM account WHERE account_no = receiver_id;
+
+    -- Check if both sender and receiver accounts exist and are not the same
+    IF sender_account_type IS NOT NULL AND receiver_account_type IS NOT NULL AND sender_id != receiver_id THEN
+        -- Get the current balance of the sender
+        IF sender_account_type = 'current' THEN
+            SELECT balance INTO sender_balance FROM current_account WHERE account_no = sender_id;
+        ELSEIF sender_account_type = 'savings' THEN
+            SELECT balance INTO sender_balance FROM savings_account WHERE account_no = sender_id;
+        END IF;
+
+        -- Check if the sender has enough balance for the transfer
+        IF sender_balance >= transfer_amount THEN
+            -- Update the sender's balance
+            IF sender_account_type = 'current' THEN
+                UPDATE current_account
+                SET balance = sender_balance - transfer_amount
+                WHERE account_no = sender_id;
+            ELSEIF sender_account_type = 'savings' THEN
+                UPDATE savings_account
+                SET balance = sender_balance - transfer_amount
+                WHERE account_no = sender_id;
+            END IF;
+
+            -- Get the current balance of the receiver
+            IF receiver_account_type = 'current' THEN
+                SELECT balance INTO receiver_balance FROM current_account WHERE account_no = receiver_id;
+            ELSEIF receiver_account_type = 'savings' THEN
+                SELECT balance INTO receiver_balance FROM savings_account WHERE account_no = receiver_id;
+            END IF;
+
+            -- Update the receiver's balance
+            IF receiver_account_type = 'current' THEN
+                UPDATE current_account
+                SET balance = receiver_balance + transfer_amount
+                WHERE account_no = receiver_id;
+            ELSEIF receiver_account_type = 'savings' THEN
+                UPDATE savings_account
+                SET balance = receiver_balance + transfer_amount
+                WHERE account_no = receiver_id;
+            END IF;
+
+            -- Insert a record into the transactions table for the transfer
+            INSERT INTO transactions (date, type, amount, account_no)
+            VALUES (NOW(), 'transfer', transfer_amount, sender_id);
+            
+            SELECT transaction_id INTO new_transaction_id
+			FROM transactions
+			WHERE account_no = sender_id AND date = NOW() AND type = 'transfer' AND amount = transfer_amount;
+
+            -- Insert a record into the transfer table to track the transfer
+            INSERT INTO transfer (transfer_id, sender_id, receiver_id)
+            VALUES (new_transaction_id, sender_id, receiver_id);
+
+            -- Commit the transaction
+            COMMIT;
+        ELSE
+            -- Rollback the transaction if the sender doesn't have enough balance
+            ROLLBACK;
+            SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Insufficient balance for the transfer';
+        END IF;
+    ELSE
+        -- Rollback the transaction if sender or receiver accounts are not valid
+        ROLLBACK;
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Invalid sender or receiver account';
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `ValidateSavingsAccount` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -850,4 +946,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-31 11:06:16
+-- Dump completed on 2023-10-31 12:02:55
