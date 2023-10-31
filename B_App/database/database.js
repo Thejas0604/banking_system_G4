@@ -90,38 +90,60 @@ export async function getSavingsAccountWithdrawalsLeft(uid) {
 
 // Validate savings account
 export async function validateSavingsAccount(account_no) {
-    try {
-      const [results] = await pool.execute(
-        'CALL ValidateSavingsAccount(?, @is_valid); SELECT @is_valid AS is_valid',
-        [account_no]
-      );
-  
-      const is_valid = results[1][0].is_valid;
-      return is_valid === 1;
-    } catch (error) {
-      console.error(error);
+  {
+    // Execute the stored procedure and retrieve the result
+    const [rows] = await pool.execute(
+      "CALL ValidateSavingsAccount(?, @p_is_valid)",
+      [account_no]
+    );
+    const result = await pool.query("SELECT @p_is_valid as is_valid");
+    const is_valid = result[0][0].is_valid;
+
+    // Release the connection pool
+
+    return is_valid;
+  }
+}
+
+// validate transfer amount
+export async function validateTransferAmount(amount, account_no) {
+  try {
+    const [results] = await pool.query(
+      "SELECT balance FROM savings_account WHERE account_no = ?",
+      [account_no]
+    );
+    if (results.length > 0 && results[0].balance >= amount) {
+      // Balance is sufficient; proceed with the transfer
+      return true;
+    } else {
+      // Insufficient balance; show an error message
+      return false;
     }
-  }   
+  } catch (error) {
+    console.error("Error:", error);
+    throw error; // You can handle the error further up the call stack
+  }
+}
 
 //Get Current Account Number - Not finished
 export async function getCurrentAccountNo(uid) {
-  try {
-    const [rows] = await pool.query(
-      "",
-      [uid] //insert query here
-    );
-    return rows[0].account_no;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
+    try {
+        const [rows] = await pool.query(
+          "SELECT account_no FROM current_account WHERE customer_id = ?",
+          [uid]
+        );
+        return rows[0].account_no;
+      } catch (err) {
+        console.log(err);
+        return false;
+      }
 }
 
 //Get Current Account Balance - Not finished
 export async function getCurrentAccountBalance(uid) {
   try {
     const [rows] = await pool.query(
-      "",
+      "SELECT balance FROM current_account WHERE customer_id = ?",
       [uid] //insert query here
     );
     return rows[0].balance;
@@ -131,4 +153,17 @@ export async function getCurrentAccountBalance(uid) {
   }
 }
 
+//Get fd info
+export async function getFDInfo(uid) {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM fixed_deposit WHERE customer_id = ?",
+      [uid]
+    );
+    return rows[0];
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
 ///////////////////////////////////////////////
