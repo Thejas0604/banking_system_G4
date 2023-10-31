@@ -2,15 +2,12 @@
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
-import { checkCredentials } from "./database/database.js";
-import { getName } from "./database/database.js";
-import { getSavingsAccountNo } from "./database/database.js";
-import { getSavingsAccountBalance } from "./database/database.js";
-import { getSavingsAccountWithdrawalsLeft } from "./database/database.js";
+import { checkCredentials, getCDetails, getCusId, getEDetails } from "./database/database.js";
+import { getSavTypeDetails } from "./database/database.js";
+import { getSavingsDetails } from "./database/database.js";
 import { validateSavingsAccount } from "./database/database.js";
 import { validateTransferAmount } from "./database/database.js";
-import { getCurrentAccountNo } from "./database/database.js";
-import { getCurrentAccountBalance } from "./database/database.js";
+import { getCurrentDetails } from "./database/database.js";
 
 // Set up the express app
 const app = express();
@@ -32,34 +29,58 @@ let name = "";
 let user_type = "";
 
 app.post("/dashboard", async (req, res) => {
-  const name = req.body.name;
+  const userName = req.body.username;
   const pw = req.body.password;
 
-
-
-  await checkCredentials(name, pw).then(async (result) => {
+  await checkCredentials(userName, pw).then(async (result) => {
     if (result) {
       userId = result[0].user_id;
-      name = await getName(userId);
       user_type = result[0].user_type;
 
       if (user_type == "customer") {
+
+        let cDet = await getCDetails(userId);
+        let sDet =  await getSavingsDetails(userId);
+        let cuDet=  await getCurrentDetails(userId);
+
+        let savingsAccountNo;
+        let savingsAccountBalance;
+        let withdrawalsLeft;
+        let currentAccountNo; 
+        let currentAccountBalance;
+
+        if (sDet != undefined) {
+          savingsAccountNo = sDet.account_no;
+          savingsAccountBalance = sDet.balance;
+          withdrawalsLeft = sDet.remaining_withdrawals;
+        }
+        if (cuDet != undefined) {
+          currentAccountNo = cuDet.account_no;
+          currentAccountBalance = cuDet.balance;
+        }
+
         res.render("dashboard", {
-          name: await getName(userId),
-          savingsAccountNo: await getSavingsAccountNo(userId),
-          savingsAccountBalance: await getSavingsAccountBalance(userId),
-          WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(userId),
-          currentAccountNo: await getCurrentAccountNo(userId),
-          currentAccountBalance: await getCurrentAccountBalance(userId),
-        }); //connect and render dashboard
+          "name": cDet.name,
+          "savingsAccountNo": savingsAccountNo,
+          "savingsAccountBalance": savingsAccountBalance,
+          "WithdrawalsLeft": withdrawalsLeft,
+          "currentAccountNo": currentAccountNo,
+          "currentAccountBalance": currentAccountBalance
+      });
+     
+
         isAuthenticated = true;
       }
+
       else if (user_type == "employee") {
-        res.send("employee dashboard")
-      //   res.render("employeeDashboard", {
-      //     name: await getName(result),
-      //   }); //connect and render employee dashboard
-      //   isAuthenticated = true;
+        let eDet = await getEDetails(userId);
+
+        res.render("employeeDash", {
+          "name": eDet.name
+
+
+        });     
+        isAuthenticated = true;
       }
     } else {
       res.redirect("/");
@@ -69,28 +90,67 @@ app.post("/dashboard", async (req, res) => {
 
 app.get("/dashboard", async (req, res) => {
   if (isAuthenticated) {
-    res.render("dashboard.ejs", {
-      name: name,
-      savingsAccountNo: await getSavingsAccountNo(userId),
-      savingsAccountBalance: await getSavingsAccountBalance(userId),
-      WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(userId),
-      currentAccountNo: await getCurrentAccountNo(userId),
-      currentAccountBalance: await getCurrentAccountBalance(userId),
-    });
-  } else {
+
+    if (user_type == "customer") {
+
+      let cDet = await getCDetails(userId);
+      let sDet =  await getSavingsDetails(userId);
+      let cuDet=  await getCurrentDetails(userId);
+  
+      let savingsAccountNo;
+      let savingsAccountBalance;
+      let withdrawalsLeft;
+      let currentAccountNo; 
+      let currentAccountBalance;
+  
+      if (sDet != undefined) {
+        savingsAccountNo = sDet.account_no;
+        savingsAccountBalance = sDet.balance;
+        withdrawalsLeft = sDet.remaining_withdrawals;
+      }
+      if (cuDet != undefined) {
+        currentAccountNo = cuDet.account_no;
+        currentAccountBalance = cuDet.balance;
+      }
+
+        res.render("dashboard", {
+          "name": cDet.name,
+          "savingsAccountNo": savingsAccountNo,
+          "savingsAccountBalance": savingsAccountBalance,
+          "withdrawalsLeft": withdrawalsLeft,
+          "currentAccountNo": currentAccountNo,
+          "currentAccountBalance": currentAccountBalance
+        }); 
+    }else if (user_type == "employee") {
+      let eDet = await getEDetails(userId);
+
+      res.render("employeeDash.ejs", {
+        "name": eDet.name,  
+
+      });
+    }
+  }else {
     res.redirect("/");
   }
+    
+
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //savings
 app.get("/savings", async (req, res) => {
+
+  let cDet = await getCDetails(userId);
+  let sDet =  await getSavingsDetails(userId);
+  let sType = await getSavTypeDetails(sDet.account_type);
+
   res.render("savings", {
-    name: name,
-    savingsAccountNo: await getSavingsAccountNo(userId),
-    savingsAccountBalance: await getSavingsAccountBalance(userId),
-    WithdrawalsLeft: await getSavingsAccountWithdrawalsLeft(userId),
-    interestRate: "10%",
+    "name": cDet.name,
+    "savingsAccountNo": sDet.account_no,
+    "savingsAccountBalance": sDet.balance,
+    "WithdrawalsLeft": sDet.remaining_withdrawals,
+    "accountType": sDet.account_type,
+    "interestRate": sType.interest_rate  ///////////////////////////////////////////////////////////// check
   });
 });
 
@@ -123,11 +183,14 @@ app.post("/transfer-savings-do", async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //current
 app.get("/current",async (req, res) => {
+  console.log(userId);
+  let cDet = await getCDetails(userId);
+  let cuDet=  await getCurrentDetails(userId);
+  
   res.render("current", {
-    name: name,
-    currentAccountNo: await getCurrentAccountNo(userId),
-    currentAccountBalance: await getCurrentAccountBalance(userId),
-    interestRate: "10%",
+    "name": cDet.name,
+    "currentAccountNo": cuDet.account_no ,
+    "currentAccountBalance": cuDet.balance,
   });
 });
 
@@ -199,3 +262,57 @@ app.get("/contact", (req, res) => {
 app.listen(3000, function () {
   console.log("Server started on port 3000");
 });
+
+
+//////////////////////////////////////////////////////////////////////
+//employee dashboard
+
+app.post("/search-customer", async (req, res) => {
+  console.log(req.body.customerSearch)
+  const cusId = await getCusId(req.body.customerSearch) ;
+
+  if (cusId == false) {
+    res.redirect("/dashboard");
+  }
+
+  let cDet = await getCDetails(cusId);
+  let sDet =  await getSavingsDetails(cusId);
+  let cuDet=  await getCurrentDetails(cusId);
+
+  let savingsAccountNo;
+  let savingsAccountBalance;
+  let withdrawalsLeft;
+  let currentAccountNo; 
+  let currentAccountBalance;
+  let accountType;
+  let savingsBId;
+  let currentBId;
+
+
+  if (sDet != undefined) {
+    savingsAccountNo = sDet.account_no;
+    savingsAccountBalance = sDet.balance;
+    withdrawalsLeft = sDet.remaining_withdrawals;
+    accountType = sDet.account_type;
+
+  }
+  if (cuDet != undefined) {
+    currentAccountNo = cuDet.account_no;
+    currentAccountBalance = cuDet.balance;
+  }
+
+  res.render("customer",{
+    "name": cDet.name,
+    "account_type": accountType,
+    "address": cDet.address,
+    "phone": cDet.telephone,
+    "savingsAccountNo": savingsAccountNo,
+    "savingsAccountBalance": savingsAccountBalance,
+    "withdrawalsLeft": withdrawalsLeft,
+    "savingsBId": savingsBId,
+    "currentAccountNo": currentAccountNo,
+    "currentAccountBalance": currentAccountBalance,
+    "currentBId": currentBId,
+  });
+});
+

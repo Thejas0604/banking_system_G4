@@ -31,14 +31,39 @@ export async function checkCredentials(username, password) {
 ///////////////////////////////////////////////
 
 //Get user name 
-export async function getName(cus_id) {
+export async function getCDetails(cus_id) {
   try {
     const [rows] = await pool.query(
-      "SELECT name FROM customer WHERE customer_id = ?",
+      "SELECT * FROM customer WHERE customer_id = ?",
       [cus_id]
     );
-    console.log(rows);
-    return rows[0].name;
+    return rows[0]
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+export async function getCusId(un) {
+  try {
+    const [rows] = await pool.query(
+      // "CALL getCusID(?, @p_customer_id)",  
+      // [un]
+      "select user_id from user where user_name = ?",
+      [un]
+    );
+    return rows[0].user_id;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+export async function getEDetails(emp_id) {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM employee WHERE employee_id = ?",
+      [emp_id]
+    );
+    return rows[0];
   } catch (err) {
     console.log(err);
     return false;
@@ -46,42 +71,31 @@ export async function getName(cus_id) {
 }
 
 /////----------Dashboard----------////////////////
-//Get Savings Account Number
-export async function getSavingsAccountNo(uid) {
-  try {
-    const [rows] = await pool.query(
-      "SELECT account_no FROM savings_account WHERE customer_id = ?",
-      [uid]
-    );
-    return rows[0].account_no;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-}
 
-//Get Savings Account Balance
-export async function getSavingsAccountBalance(uid) {
-  try {
-    const [rows] = await pool.query(
-      "SELECT balance FROM savings_account WHERE customer_id = ?",
-      [uid]
-    );
-    return rows[0].balance;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-}
+
+
 
 //Get Savings Account Withdrawals Left
-export async function getSavingsAccountWithdrawalsLeft(uid) {
+export async function getSavingsDetails(uid) {
   try {
     const [rows] = await pool.query(
-      "SELECT remaining_withdrawals FROM savings_account WHERE customer_id = ?",
+      "SELECT * FROM savingsdetails WHERE customer_id = ?",
       [uid]
     );
-    return rows[0].remaining_withdrawals;
+    return rows[0];
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+//Get Savings Account Withdrawals Left
+export async function getSavTypeDetails(type) {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM savings_account_type WHERE account_type = ?",
+      [type]
+    );
+    return rows[0];
   } catch (err) {
     console.log(err);
     return false;
@@ -126,32 +140,20 @@ export async function validateTransferAmount(amount, account_no) {
 }
 
 //Get Current Account Number - Not finished
-export async function getCurrentAccountNo(uid) {
+export async function getCurrentDetails(uid) {
     try {
         const [rows] = await pool.query(
-          "SELECT account_no FROM current_account WHERE customer_id = ?",
+          "SELECT * FROM currentdetails WHERE customer_id = ?",
           [uid]
         );
-        return rows[0].account_no;
+        return rows[0];
       } catch (err) {
         console.log(err);
         return false;
       }
 }
 
-//Get Current Account Balance - Not finished
-export async function getCurrentAccountBalance(uid) {
-  try {
-    const [rows] = await pool.query(
-      "SELECT balance FROM current_account WHERE customer_id = ?",
-      [uid] //insert query here
-    );
-    return rows[0].balance;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-}
+
 
 //Get fd info
 export async function getFDInfo(uid) {
