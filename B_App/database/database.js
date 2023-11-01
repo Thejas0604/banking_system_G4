@@ -29,7 +29,6 @@ export async function checkCredentials(username, password) {
   }
 }
 ///////////////////////////////////////////////
-
 //Get user name 
 export async function getCDetails(cus_id) {
   try {
@@ -71,10 +70,6 @@ export async function getEDetails(emp_id) {
 }
 
 /////----------Dashboard----------////////////////
-
-
-
-
 //Get Savings Account Withdrawals Left
 export async function getSavingsDetails(uid) {
   try {
@@ -102,7 +97,7 @@ export async function getSavTypeDetails(type) {
   }
 }
 
-//Transfers
+//Transfers (Savings + Current)
 export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount, callback) {
   pool.query(
     'CALL MakeMoneyTransfer(?, ?, ?)',
@@ -119,7 +114,7 @@ export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount,
   );
 }
 
-//Get Current Account Number - Not finished
+//Get Current Account details
 export async function getCurrentDetails(uid) {
     try {
         const [rows] = await pool.query(
@@ -134,13 +129,12 @@ export async function getCurrentDetails(uid) {
 }
 
 
-
 //Get fd info
-export async function getFDInfo(uid) {
+export async function getFDInfo(savingsAccountNo) {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM fixed_deposit WHERE customer_id = ?",
-      [uid]
+      "SELECT * FROM fixed_deposit WHERE account_no = ?",
+      [savingsAccountNo]
     );
     return rows[0];
   } catch (err) {
@@ -149,9 +143,6 @@ export async function getFDInfo(uid) {
   }
 }
 ///////////////////////////////////////////////
-
-
-
 
 export async function createCurrent(uid, BId, startDate, startAmount) {
   try {

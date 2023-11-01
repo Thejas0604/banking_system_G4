@@ -9,6 +9,7 @@ import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
 import {makeMoneyTransfer} from "./database/database.js";
+import { getFDInfo } from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 
 // Set up the express app
@@ -221,15 +222,38 @@ app.get("/transfers-current", (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //Fixed-Deposits
-app.get("/fd", (req, res) => {
+app.get("/fd", async(req, res) => {
+
+  let savingsData = await getSavingsDetails(userId);
+  let fdData;
+  if (savingsData != undefined) {
+    let fdData = await getFDInfo(savingsData.account_no);
+  }else{
+    console.log("No savings account");
+  }
+  let fd_id;
+  let amount;
+  let start_date;
+  let end_date;
+  let duration;
+  let rate;
+
+
+  if (fdData != undefined) {
+    fd_id = fdData.fd_id;
+    amount = fdData.amount;
+    start_date = fdData.start_date;
+    end_date = fdData.end_date;
+    duration = fdData.duration;
+    rate = fdData.rate;
+  }
   res.render("fd", {
-    fd_id: "210383L",
-    amount: "LKR.5,000,000",
-    period: "1 year",
-    matuarity: "12/12/2021",
-    startDate: "12/12/2020",
-    endDate: "12/12/2021",
-    rate: "17.5%",
+    "fd_id": fd_id,
+    "amount": amount,
+    "startDate": start_date,
+    "endDate": end_date,
+    "rate": rate,
+    "duration": duration
   });
 });
 
