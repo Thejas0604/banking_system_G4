@@ -59,15 +59,17 @@
 
 <% if (!savingsAccountNo){ %>
 <div>
-  <form method="POST" action="/add-savings">
+  <form method="POST" action="/add-account">
     <input type="hidden" name="cusId" value="<%= cusId %>" />
+    <input type="hidden" name="acc_t" value="s" />
     <button type="submit" class="button">Add Savings Account</button>
   </form>
 </div>
 <% } %> <% if (!currentAccountNo){ %>
 <div>
-  <form method="POST" action="/add-current">
+  <form method="POST" action="/add-account">
     <input type="hidden" name="cusId" value="<%= cusId %>" />
+    <input type="hidden" name="acc_t" value="c" />
     <button type="submit" class="button">Add Current Account</button>
   </form>
 </div>
@@ -80,9 +82,9 @@
 </div>
 <% } %> <% if (!loan_exist){ %>
 <div>
-  <form method="POST" action="/add-loan">
+  <form method="POST" action="/request-loan">
     <input type="hidden" name="cusId" value="<%= cusId %>" />
-    <button type="submit" class="button">Add LOAN</button>
+    <button type="submit" class="button">Request LOAN</button>
   </form>
 </div>
 <% } %> <%- include('partials/footer.ejs') %>

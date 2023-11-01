@@ -1,0 +1,29 @@
+<%- include('partials/header.ejs') %> <% if (acc_t == "c"){ %>
+<form action="/added-current" method="POST">
+  <% } %> <% if (acc_t == "s"){ %>
+  <form action="/added-savings" method="POST">
+    <% } %>
+    <input type="hidden" id="cus_id" name="cus_id" value="<%= cusId %>" />
+    <label for="branch_id">Branch ID:</label>
+    <input type="text" id="branch_id" name="branch_id" /><br /><br />
+    <!-- <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" /><br /><br /> -->
+    <label for="start_amount">Start Amount:</label>
+    <input type="number" min="0" id="start_amount" name="start_amount" /><br /><br />
+
+    <% if (acc_t == "s"){ %>
+    <label for="account_type">Savings Account Type:</label>
+    <select id="account_type" name="account_type">
+      <option value="Adult">Adult</option>
+      <option value="Teen">Teen</option>
+      <option value="Children">Children</option>
+      <option value="Senior">Senior</option>
+      <option value="Organization">Organization</option></select
+    ><br /><br />
+    <% } %>
+
+    <input type="submit" value="Submit" />
+  </form>
+
+  <%- include('partials/footer.ejs') %>
+</form>
