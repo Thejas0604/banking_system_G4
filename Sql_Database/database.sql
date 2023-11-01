@@ -41,7 +41,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
+INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('C4','CUS10','current','BR1','2023-11-01',10000.00),('C5','CUS10','current','BR1','2023-11-01',10000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -139,7 +139,7 @@ CREATE TABLE `current_account` (
 
 LOCK TABLES `current_account` WRITE;
 /*!40000 ALTER TABLE `current_account` DISABLE KEYS */;
-INSERT INTO `current_account` VALUES ('C1',500000.00),('C2',350000.00),('C3',560000.00);
+INSERT INTO `current_account` VALUES ('C1',500000.00),('C2',350000.00),('C3',560000.00),('C4',10000.00);
 /*!40000 ALTER TABLE `current_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -805,6 +805,48 @@ DELIMITER ;
 --
 -- Dumping routines for database 'banking_system'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `makeCurrentAccount` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `makeCurrentAccount`(
+    IN user_id VARCHAR(20),
+    IN branch_id VARCHAR(20),
+    IN start_date DATE,
+    IN start_amount DECIMAL(10, 2),
+    IN account_type VARCHAR(20)
+)
+BEGIN
+    DECLARE new_account_no VARCHAR(20);
+    
+    -- Insert into the account table
+    INSERT INTO account (customer_id, account_type, branch_id, start_date, starting_amount)
+    VALUES (user_id, account_type, branch_id, start_date, start_amount);
+    
+    -- Get the auto-generated account_no for the newly created account
+    SELECT account_no INTO new_account_no
+    FROM account
+    WHERE customer_id = user_id AND start_date = start_date
+    AND account_type = account_type AND branch_id = branch_id
+    LIMIT 1; -- Limit the result to one row
+
+    -- Insert into the current_account table
+    INSERT INTO current_account (account_no, balance)
+    VALUES (new_account_no, start_amount);
+    
+    COMMIT;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `MakeMoneyTransfer` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -942,4 +984,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-01 15:20:07
+-- Dump completed on 2023-11-01 17:56:14
