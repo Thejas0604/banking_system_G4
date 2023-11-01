@@ -169,3 +169,20 @@ export async function getFDInfo(uid) {
   }
 }
 ///////////////////////////////////////////////
+
+
+
+
+export async function createCurrent(uid, BId, startDate, startAmount) {
+  try {
+      const [rows] = await pool.query(
+        "INSERT INTO current_account (customer_id, branch_id, start_date, balance) VALUES (?, ?, ?, ?)",
+        [uid, BId, startDate, startAmount]
+
+      );
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
+}

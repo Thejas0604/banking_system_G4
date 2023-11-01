@@ -20,6 +20,22 @@
     font-size: 18px;
     margin: 5px 0;
   }
+  .button {
+    background-color: #4caf50; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+  }
+  .button:hover {
+    background-color: #3e8e41;
+  }
 </style>
 <div class="customer-details">
   <h1>Customer Details</h1>
@@ -41,4 +57,32 @@
   <% } %>
 </div>
 
-<%- include('partials/footer.ejs') %>
+<% if (!savingsAccountNo){ %>
+<div>
+  <form method="POST" action="/add-savings">
+    <input type="hidden" name="cusId" value="<%= cusId %>" />
+    <button type="submit" class="button">Add Savings Account</button>
+  </form>
+</div>
+<% } %> <% if (!currentAccountNo){ %>
+<div>
+  <form method="POST" action="/add-current">
+    <input type="hidden" name="cusId" value="<%= cusId %>" />
+    <button type="submit" class="button">Add Current Account</button>
+  </form>
+</div>
+<% } %> <% if (!fd_exist){ %>
+<div>
+  <form method="POST" action="/add-fd">
+    <input type="hidden" name="cusId" value="<%= cusId %>" />
+    <button type="submit" class="button">Add FD</button>
+  </form>
+</div>
+<% } %> <% if (!loan_exist){ %>
+<div>
+  <form method="POST" action="/add-loan">
+    <input type="hidden" name="cusId" value="<%= cusId %>" />
+    <button type="submit" class="button">Add LOAN</button>
+  </form>
+</div>
+<% } %> <%- include('partials/footer.ejs') %>
