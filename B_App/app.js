@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { checkCredentials, getCDetails, getCusId, getEDetails } from "./database/database.js";
+import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { validateSavingsAccount } from "./database/database.js";
@@ -290,7 +290,7 @@ app.listen(3000, function () {
 //////////////////////////////////////////////////////////////////////
 //employee dashboard
 
-app.post("/search-customer", async (req, res) => {
+app.post("/searched-customer", async (req, res) => {
   console.log(req.body.customerSearch)
   const cusId = await getCusId(req.body.customerSearch) ;
 
@@ -300,7 +300,13 @@ app.post("/search-customer", async (req, res) => {
   else{
     let cDet = await getCDetails(cusId);
     let sDet =  await getSavingsDetails(cusId);
-    let cuDet=  await getCurrentDetails(cusId);
+    let cuDet=  await getCurrentDetails(cusId); 
+
+    if (cDet == undefined) {
+      res.redirect("/dashboard");
+    }else{
+
+    
   
     let savingsAccountNo;
     let savingsAccountBalance;
@@ -310,25 +316,35 @@ app.post("/search-customer", async (req, res) => {
     let accountType;
     let savingsBId;
     let currentBId;
+    let name;
+    let address;
+    let phone;
   
+    if(cDet != undefined){
+      name = cDet.name;
+      address = cDet.address;
+      phone = cDet.telephone;
+    }
   
+
     if (sDet != undefined) {
       savingsAccountNo = sDet.account_no;
       savingsAccountBalance = sDet.balance;
       withdrawalsLeft = sDet.remaining_withdrawals;
       accountType = sDet.account_type;
+      savingsBId = sDet.branch_id;
   
     }
     if (cuDet != undefined) {
       currentAccountNo = cuDet.account_no;
       currentAccountBalance = cuDet.balance;
+      currentBId = cuDet.branch_id;
     }
-  
     res.render("customer",{
-      "name": cDet.name,
+      "name": name,
       "account_type": accountType,
-      "address": cDet.address,
-      "phone": cDet.telephone,
+      "address": address,
+      "phone": phone,
       "savingsAccountNo": savingsAccountNo,
       "savingsAccountBalance": savingsAccountBalance,
       "withdrawalsLeft": withdrawalsLeft,
@@ -336,8 +352,53 @@ app.post("/search-customer", async (req, res) => {
       "currentAccountNo": currentAccountNo,
       "currentAccountBalance": currentAccountBalance,
       "currentBId": currentBId,
+      "fd_exist": false,
+      "loan_exist": false,
+      "cusId": cusId
     });
+
+  }
   }
 
 });
+
+app.get("/create-customer", (req, res) => {
+  res.render("create-customer");
+
+});
+
+app.post("add-savings", (req, res) => {
+  const cusId = req.body.cusId;
+
+
+  res.render("add-savings");
+} );
+
+app.post("/add-current", (req, res) => {
+  console.log(req.body.cusId);
+  console.log("hi")
+  res.render("add-current", {"cusId": req.body.cusId});
+} );
+
+app.post("/added-current", (req, res) => {
+  const cusId = req.body.cus_id;
+  console.log(cusId);
+  console.log(req.body.cus_id);
+  const BId = req.body.branch_id;
+  const startDate = req.body.start_date;
+  const startAmount = req.body.start_amount;
+
+  createCurrent(cusId, BId, startDate, startAmount);
+  
+  res.redirect("");
+} );
+
+app.post("/add-fd", (req, res) => {
+  const cusId = req.body.cusId;
+  res.render("add-fd");
+} );
+app.post("/add-loan", (req, res) => {
+  const cusId = req.body.cusId;
+  res.render("add-fd");
+} );
 
