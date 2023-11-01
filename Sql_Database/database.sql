@@ -29,10 +29,6 @@ CREATE TABLE `account` (
   `branch_id` varchar(20) DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `starting_amount` decimal(10,2) DEFAULT NULL,
-  `savings_exist` tinyint DEFAULT NULL,
-  `current_exist` tinyint DEFAULT NULL,
-  `FD_exist` tinyint DEFAULT NULL,
-  `loan_exist` tinyint DEFAULT NULL,
   PRIMARY KEY (`account_no`),
   KEY `account_ibfk_1_idx` (`customer_id`),
   CONSTRAINT `account_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
@@ -45,7 +41,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00,NULL,NULL,NULL,NULL),('C2','CUS6','current','BR1','2023-10-10',350000.00,NULL,NULL,NULL,NULL),('C3','CUS8','current','BR1','2023-10-15',560000.00,NULL,NULL,NULL,NULL),('S1','CUS1','savings','BR1','2023-05-10',100000.00,1,0,1,1),('S2','CUS2','savings','BR1','2023-05-10',50000.00,1,0,1,0),('S3','CUS4','savings','BR1','2023-05-17',20000.00,1,0,1,0),('S4','CUS5','savings','BR2','2023-06-01',1250000.00,1,0,0,0),('S5','CUS6','savings','BR1','2023-06-16',250000.00,1,1,1,1),('S6','CUS7','savings','BR2','2023-06-28',10000.00,1,0,1,1),('S7','CUS8','savings','BR1','2023-08-17',6000000.00,1,1,1,1),('S8','CUS9','savings','BR2','2023-09-17',5000.00,1,0,1,0),('S9','CUS10','savings','BR3','2023-10-17',350000.00,1,0,0,1);
+INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -946,4 +942,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-10-31 12:02:55
+-- Dump completed on 2023-11-01 15:20:07
