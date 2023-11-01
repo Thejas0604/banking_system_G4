@@ -41,7 +41,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
+INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('C4','CUS10','current','BR1','2023-11-01',10000.00),('C5','CUS10','current','BR1','2023-11-01',10000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -91,7 +91,7 @@ CREATE TABLE `current_account` (
 
 LOCK TABLES `current_account` WRITE;
 /*!40000 ALTER TABLE `current_account` DISABLE KEYS */;
-INSERT INTO `current_account` VALUES ('C1',500000.00),('C2',350000.00),('C3',560000.00);
+INSERT INTO `current_account` VALUES ('C1',500000.00),('C2',350000.00),('C3',560000.00),('C4',10000.00);
 /*!40000 ALTER TABLE `current_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -505,4 +505,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-01 17:02:55
+-- Dump completed on 2023-11-01 19:30:40
