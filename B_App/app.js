@@ -7,9 +7,8 @@ import jwt from "jsonwebtoken";
 import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
-import { validateSavingsAccount } from "./database/database.js";
-import { validateTransferAmount } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
+import {makeMoneyTransfer} from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 
 // Set up the express app
@@ -184,24 +183,21 @@ app.get("/transfers-savings", async (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//savings-transfers-confirmation
+//savings-transfers-do
 app.post("/transfer-savings-do", async (req, res) => {
-  const validateSender = await validateSavingsAccount(req.body.fromAccount);
-  const validateReceiver = await validateSavingsAccount(req.body.toAccount);
+  const sender = req.body.fromAccount;
+  const receiver = req.body.toAccount;
+  const amount = req.body.amount;
+  try {
+    await makeMoneyTransfer(sender, receiver, amount);
+    res.render("savings-transfers-do", { "status": "Successful" });
+  }catch (err) {
+    console.log(err);
+    res.render("savings-transfers-do", { "status": "Failed" });
 
-  const amount = parseFloat(req.body.amount);
-  const validateAmount = await validateTransferAmount(amount, req.body.fromAccount);
-
-  if ((validateSender == 1) && (validateReceiver == 1) && (validateAmount ) ) {
-    res.render("savings-transfers-do", {
-      status: "Successful",
-    });
-  } else {
-    res.render("savings-transfers-do", {
-      status: "Failed",
-    });
   }
 });
+
 
 ////////////////////////////////////////////////////////////////////////////
 //current

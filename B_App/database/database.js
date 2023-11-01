@@ -102,41 +102,21 @@ export async function getSavTypeDetails(type) {
   }
 }
 
-// Validate savings account
-export async function validateSavingsAccount(account_no) {
-  {
-    // Execute the stored procedure and retrieve the result
-    const [rows] = await pool.execute(
-      "CALL ValidateSavingsAccount(?, @p_is_valid)",
-      [account_no]
-    );
-    const result = await pool.query("SELECT @p_is_valid as is_valid");
-    const is_valid = result[0][0].is_valid;
-
-    // Release the connection pool
-
-    return is_valid;
-  }
-}
-
-// validate transfer amount
-export async function validateTransferAmount(amount, account_no) {
-  try {
-    const [results] = await pool.query(
-      "SELECT balance FROM savings_account WHERE account_no = ?",
-      [account_no]
-    );
-    if (results.length > 0 && results[0].balance >= amount) {
-      // Balance is sufficient; proceed with the transfer
-      return true;
-    } else {
-      // Insufficient balance; show an error message
-      return false;
+//Transfers
+export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount, callback) {
+  pool.query(
+    'CALL MakeMoneyTransfer(?, ?, ?)',
+    [sender_id, receiver_id, transfer_amount],
+    (err, results) => {
+      if (err) {
+        console.error('Error calling the stored procedure: ' + err.message);
+        callback(err);
+      } else {
+        console.log('Money transfer successful');
+        callback(null, results);
+      }
     }
-  } catch (error) {
-    console.error("Error:", error);
-    throw error; // You can handle the error further up the call stack
-  }
+  );
 }
 
 //Get Current Account Number - Not finished
