@@ -6,10 +6,10 @@
     <input type="hidden" id="cus_id" name="cus_id" value="<%= cusId %>" />
     <label for="branch_id">Branch ID:</label>
     <input type="text" id="branch_id" name="branch_id" /><br /><br />
-    <label for="start_date">Start Date:</label>
-    <input type="date" id="start_date" name="start_date" /><br /><br />
+    <!-- <label for="start_date">Start Date:</label>
+    <input type="date" id="start_date" name="start_date" /><br /><br /> -->
     <label for="start_amount">Start Amount:</label>
-    <input type="number" id="start_amount" name="start_amount" /><br /><br />
+    <input type="number" min="0" id="start_amount" name="start_amount" /><br /><br />
 
     <% if (acc_t == "s"){ %>
     <label for="account_type">Savings Account Type:</label>

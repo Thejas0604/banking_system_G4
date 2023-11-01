@@ -11,6 +11,7 @@ import { validateSavingsAccount } from "./database/database.js";
 import { validateTransferAmount } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
+import e from "express";
 
 // Set up the express app
 const app = express();
@@ -221,7 +222,7 @@ app.get("/fd",authenticateUserToken, (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
-app.post("/request-loan",authenticateUserToken, (req, res) => {
+app.post("/request-loanc",authenticateUserToken, (req, res) => {
   const amount = req.body.amount;
   const duration = req.body.duration;
   res.render("loanRequests", { amount: amount, duration: duration });
@@ -330,12 +331,21 @@ app.post("/created-customer",authenticateUserToken, (req, res) => {
   const name = req.body.name;
   const address = req.body.address;
   const phone = req.body.phone;
-  res.render("create-customer", {
-    "name": name,
-    "address": address,
-    "phone": phone
+  const age = req.body.age;
+  const username = req.body.username;
+  const password = req.body.password;
+  const cusType = req.body.customer_type;
+  const nic = req.body.nic;
+  const organizationType = req.body.organization_type;
+
+  // if(cusType == "organization"){
+  //   createOrganizationCustomer(name, address, phone, username, password, organizationType);
+  // }else{
+  //   createIndividualCustomer(name, address, phone, username, password, age, nic, cusType);
+  // }
+
+  res.redirect("/dashboard");
 });
-} );
 
 app.post("/add-account",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
@@ -353,7 +363,7 @@ app.post("/added-current",authenticateUserToken, (req, res) => {
   console.log(cusId);
   console.log(req.body.cus_id);
   const BId = req.body.branch_id;
-  const startDate = req.body.start_date;
+  // const startDate = req.body.start_date;
   const startAmount = req.body.start_amount;
 
   createCurrent(cusId, BId, startDate, startAmount);
@@ -371,22 +381,32 @@ app.get("/add-fd",authenticateUserToken, (req, res) => {
 } );
 
 
-app.post("/add-loan",authenticateUserToken, (req, res) => {
+app.post("/request-loan",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
-  res.render("add-loan");
+  res.render("request-loan",{
+    "cusId": cusId
+  });
+  res.redirect("/dashboard");
 } );
 
 
-app.get("/add-loan",authenticateUserToken, (req, res) => {
-  res.render("/add-loan");
+app.get("/request-loan",authenticateUserToken, (req, res) => {
+  res.render("/request-loan");
 } );
 
-// app.post("/add-savings", (req, res) => {
-//   res.render("add-savings", {
-//     "cusId": req.body.cusId,
-//     "acc_t": "s"
-// });
-// } );
+app.post("/requested-loan",authenticateUserToken, (req, res) => {
+  const cusId = req.body.cusId;
+  const amount = req.body.loan_amount;
+  const rate = req.body.interest_rate;
+  const no_installments = req.body.installment_nos;
+
+  // createLoanRequest(cusId, amount, rate, no_installments);
+
+
+  res.redirect("/dashboard");
+
+} );
+
 
 app.post("/added-savings",authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
@@ -399,7 +419,6 @@ app.post("/added-savings",authenticateUserToken, (req, res) => {
   
   res.redirect("/dashboard");
 } );
-
 
 
 

@@ -82,9 +82,9 @@
 </div>
 <% } %> <% if (!loan_exist){ %>
 <div>
-  <form method="POST" action="/add-loan">
+  <form method="POST" action="/request-loan">
     <input type="hidden" name="cusId" value="<%= cusId %>" />
-    <button type="submit" class="button">Add LOAN</button>
+    <button type="submit" class="button">Request LOAN</button>
   </form>
 </div>
 <% } %> <%- include('partials/footer.ejs') %>
