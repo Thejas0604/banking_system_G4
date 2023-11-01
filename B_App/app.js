@@ -4,14 +4,13 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings } from "./database/database.js";
+import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings, createCustomer } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
 import {makeMoneyTransfer} from "./database/database.js";
 import { getFDInfo } from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
-import e from "express";
 
 // Set up the express app
 const app = express();
@@ -46,7 +45,7 @@ app.post("/dashboard", async (req, res) => {
       const token = jwt.sign(
         { un: userName, role: "user" },
         "jwt_User_privateKey",  ///this is a password ///////////
-        { expiresIn: "5m" }
+        { expiresIn: "10m" }
       );
       console.log(token);
 
@@ -358,11 +357,7 @@ app.post("/created-customer",authenticateUserToken, (req, res) => {
   const nic = req.body.nic;
   const organizationType = req.body.organization_type;
 
-  // if(cusType == "organization"){
-  //   createOrganizationCustomer(name, address, phone, username, password, organizationType);
-  // }else{
-  //   createIndividualCustomer(name, address, phone, username, password, age, nic, cusType);
-  // }
+  createCustomer(name, address, phone, age, username, password, cusType, nic, organizationType); 
 
   res.redirect("/dashboard");
 });
@@ -393,13 +388,28 @@ app.post("/added-current",authenticateUserToken, (req, res) => {
 
 app.post("/add-fd",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
-  res.render("add-fd");
+  res.render("add-fd",{
+    "cusId": cusId
+    
+  });
 } );
 
-app.get("/add-fd",authenticateUserToken, (req, res) => {
-  res.render("/add-fd");
-} );
 
+
+app.post("/added-fd",authenticateUserToken, async (req, res) => {
+  const cusId = req.body.cusId;
+  const amount = req.body.fd_amount;
+  const rate = req.body.interest_rate;
+  const duration = req.body.duration;
+
+  const savingsAccountNo = await getSavingsDetails(cusId).account_no;
+
+  // createFD(savingsAccountNo, amount, rate, no_installments);
+
+
+  res.redirect("/dashboard");
+
+} );
 
 app.post("/request-loan",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;

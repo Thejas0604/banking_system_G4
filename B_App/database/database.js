@@ -214,3 +214,17 @@ export async function createSavings(uid, BId, accountType, startDate, startAmoun
     return false;
   }
 }
+
+
+export async function createCustomer(name, address, phone, age, username, password, cusType, nic, organizationType) {
+  try {
+    const [rows] = await pool.query(
+      "CALL createCustomer(?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      [name, address, phone, age, username, password, cusType, nic, organizationType]
+    );
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}

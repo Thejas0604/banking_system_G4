@@ -73,7 +73,7 @@
     <button type="submit" class="button">Add Current Account</button>
   </form>
 </div>
-<% } %> <% if (!fd_exist){ %>
+<% } %> <% if (!fd_exist && savingsAccountNo){ %>
 <div>
   <form method="POST" action="/add-fd">
     <input type="hidden" name="cusId" value="<%= cusId %>" />
