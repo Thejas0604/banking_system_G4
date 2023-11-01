@@ -7,9 +7,9 @@ import jwt from "jsonwebtoken";
 import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
-import { validateSavingsAccount } from "./database/database.js";
-import { validateTransferAmount } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
+import {makeMoneyTransfer} from "./database/database.js";
+import { getFDInfo } from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 import e from "express";
 
@@ -136,7 +136,6 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
 
       res.render("employeeDash.ejs", {
         "name": eDet.name,  
-
       });
     }
 
@@ -167,24 +166,22 @@ app.get("/transfers-savings",authenticateUserToken, async (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//savings-transfers-confirmation
-app.post("/transfer-savings-do",authenticateUserToken, async (req, res) => {
-  const validateSender = await validateSavingsAccount(req.body.fromAccount);
-  const validateReceiver = await validateSavingsAccount(req.body.toAccount);
 
-  const amount = parseFloat(req.body.amount);
-  const validateAmount = await validateTransferAmount(amount, req.body.fromAccount);
+//savings-transfers-do
+app.post("/transfer-savings-do", async (req, res) => {
+  const sender = req.body.fromAccount;
+  const receiver = req.body.toAccount;
+  const amount = req.body.amount;
+  try {
+    await makeMoneyTransfer(sender, receiver, amount);
+    res.render("savings-transfers-do", { "status": "Successful" });
+  }catch (err) {
+    console.log(err);
+    res.render("savings-transfers-do", { "status": "Failed" });
 
-  if ((validateSender == 1) && (validateReceiver == 1) && (validateAmount ) ) {
-    res.render("savings-transfers-do", {
-      status: "Successful",
-    });
-  } else {
-    res.render("savings-transfers-do", {
-      status: "Failed",
-    });
   }
 });
+
 
 ////////////////////////////////////////////////////////////////////////////
 //current
@@ -208,24 +205,47 @@ app.get("/transfers-current",authenticateUserToken, (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //Fixed-Deposits
-app.get("/fd",authenticateUserToken, (req, res) => {
+
+app.get("/fd", async(req, res) => {
+
+  let savingsData = await getSavingsDetails(userId);
+  let fdData = await getFDInfo(savingsData.account_no);
+
+
+  let fd_id;
+  let amount;
+  let start_date;
+  let end_date;
+  let duration;
+  let rate;
+
+
+  if (fdData != undefined) {
+
+    fd_id = fdData.fd_id;
+    amount = fdData.amount;
+    start_date = fdData.start_date;
+    end_date = fdData.end_date;
+    duration = fdData.duration;
+    rate = fdData.rate;
+  }
   res.render("fd", {
-    fd_id: "210383L",
-    amount: "LKR.5,000,000",
-    period: "1 year",
-    matuarity: "12/12/2021",
-    startDate: "12/12/2020",
-    endDate: "12/12/2021",
-    rate: "17.5%",
+    "fd_id": fd_id,
+    "amount": amount,
+    "startDate": start_date,
+    "endDate": end_date,
+    "rate": rate,
+    "duration": duration
   });
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
-app.post("/request-loanc",authenticateUserToken, (req, res) => {
+
+app.post("/request-loan-online", (req, res) => {
   const amount = req.body.amount;
   const duration = req.body.duration;
-  res.render("loanRequests", { amount: amount, duration: duration });
+  res.render("loanRequests-online", { amount: amount, duration: duration });
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -419,19 +439,6 @@ app.post("/added-savings",authenticateUserToken, (req, res) => {
   
   res.redirect("/dashboard");
 } );
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

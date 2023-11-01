@@ -29,7 +29,6 @@ export async function checkCredentials(username, password) {
   }
 }
 ///////////////////////////////////////////////
-
 //Get user name 
 export async function getCDetails(cus_id) {
   try {
@@ -71,10 +70,6 @@ export async function getEDetails(emp_id) {
 }
 
 /////----------Dashboard----------////////////////
-
-
-
-
 //Get Savings Account Withdrawals Left
 export async function getSavingsDetails(uid) {
   try {
@@ -102,44 +97,24 @@ export async function getSavTypeDetails(type) {
   }
 }
 
-// Validate savings account
-export async function validateSavingsAccount(account_no) {
-  {
-    // Execute the stored procedure and retrieve the result
-    const [rows] = await pool.execute(
-      "CALL ValidateSavingsAccount(?, @p_is_valid)",
-      [account_no]
-    );
-    const result = await pool.query("SELECT @p_is_valid as is_valid");
-    const is_valid = result[0][0].is_valid;
-
-    // Release the connection pool
-
-    return is_valid;
-  }
-}
-
-// validate transfer amount
-export async function validateTransferAmount(amount, account_no) {
-  try {
-    const [results] = await pool.query(
-      "SELECT balance FROM savings_account WHERE account_no = ?",
-      [account_no]
-    );
-    if (results.length > 0 && results[0].balance >= amount) {
-      // Balance is sufficient; proceed with the transfer
-      return true;
-    } else {
-      // Insufficient balance; show an error message
-      return false;
+//Transfers (Savings + Current)
+export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount, callback) {
+  pool.query(
+    'CALL MakeMoneyTransfer(?, ?, ?)',
+    [sender_id, receiver_id, transfer_amount],
+    (err, results) => {
+      if (err) {
+        console.error('Error calling the stored procedure: ' + err.message);
+        callback(err);
+      } else {
+        console.log('Money transfer successful');
+        callback(null, results);
+      }
     }
-  } catch (error) {
-    console.error("Error:", error);
-    throw error; // You can handle the error further up the call stack
-  }
+  );
 }
 
-//Get Current Account Number - Not finished
+//Get Current Account details
 export async function getCurrentDetails(uid) {
     try {
         const [rows] = await pool.query(
@@ -154,13 +129,12 @@ export async function getCurrentDetails(uid) {
 }
 
 
-
 //Get fd info
-export async function getFDInfo(uid) {
+export async function getFDInfo(savingsAccountNo) {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM fixed_deposit WHERE customer_id = ?",
-      [uid]
+      "SELECT * FROM fixed_deposit WHERE account_no = ?",
+      [savingsAccountNo]
     );
     return rows[0];
   } catch (err) {
@@ -169,9 +143,6 @@ export async function getFDInfo(uid) {
   }
 }
 ///////////////////////////////////////////////
-
-
-
 
 // export async function createCurrent1(uid, BId, startDate, startAmount) {
 //   try {
@@ -218,7 +189,6 @@ export async function getFDInfo(uid) {
 //     return false;
 //   }
 // }
-
 
 export async function createCurrent(uid, BId, startDate, startAmount) {
   try {
