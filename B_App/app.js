@@ -149,7 +149,6 @@ app.get("/dashboard", async (req, res) => {
 
       res.render("employeeDash.ejs", {
         "name": eDet.name,  
-
       });
     }
   }else {
@@ -225,12 +224,9 @@ app.get("/transfers-current", (req, res) => {
 app.get("/fd", async(req, res) => {
 
   let savingsData = await getSavingsDetails(userId);
-  let fdData;
-  if (savingsData != undefined) {
-    let fdData = await getFDInfo(savingsData.account_no);
-  }else{
-    console.log("No savings account");
-  }
+  let fdData = await getFDInfo(savingsData.account_no);
+
+
   let fd_id;
   let amount;
   let start_date;
@@ -240,6 +236,7 @@ app.get("/fd", async(req, res) => {
 
 
   if (fdData != undefined) {
+
     fd_id = fdData.fd_id;
     amount = fdData.amount;
     start_date = fdData.start_date;
@@ -259,10 +256,10 @@ app.get("/fd", async(req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
-app.post("/request-loan", (req, res) => {
+app.post("/request-loan-online", (req, res) => {
   const amount = req.body.amount;
   const duration = req.body.duration;
-  res.render("loanRequests", { amount: amount, duration: duration });
+  res.render("loanRequests-online", { amount: amount, duration: duration });
 });
 
 ////////////////////////////////////////////////////////////////////////////
