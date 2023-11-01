@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent } from "./database/database.js";
+import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { validateSavingsAccount } from "./database/database.js";
@@ -22,7 +22,7 @@ app.use(cookieParser());
 ////////////////////////////////////////////////////////////////////////////
 //authentication + dashboard
 
-let isAuthenticated = false;
+// let isAuthenticated = false;
 app.get("/", (req, res) => {
   res.render("login");
 });
@@ -41,17 +41,17 @@ app.post("/dashboard", async (req, res) => {
       userId = result[0].user_id;
       user_type = result[0].user_type;
 
+      //authorization
+      const token = jwt.sign(
+        { un: userName, role: "user" },
+        "jwt_User_privateKey",  ///this is a password ///////////
+        { expiresIn: "5m" }
+      );
+      console.log(token);
+
+      res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
+
       if (user_type == "customer") {
-
-        const token = jwt.sign(
-          { un: userName, role: "customer" },
-          "jwt_User_privateKey",  ///this is a password ///////////
-          { expiresIn: "5s" }
-        );
-        console.log(token);
-
-        res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
-
 
         let cDet = await getCDetails(userId);
         let sDet =  await getSavingsDetails(userId);
@@ -83,27 +83,13 @@ app.post("/dashboard", async (req, res) => {
       });
      
 
-      }
-
-      else if (user_type == "employee") {
-
-        const token = jwt.sign(
-          { un: userName, role: "employee" },
-          "jwt_Admin_privateKey",  ///this is a password ///////////
-          { expiresIn: "5m" }
-        );
-        console.log(token);
-
-        res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
+      }else if (user_type == "employee") {
 
         let eDet = await getEDetails(userId);
 
         res.render("employeeDash", {
           "name": eDet.name
-
-
         });     
-        isAuthenticated = true;
       }
     } else {
       res.redirect("/");
@@ -111,8 +97,8 @@ app.post("/dashboard", async (req, res) => {
   });
 });
 
-app.get("/dashboard", async (req, res) => {
-  if (isAuthenticated) {
+app.get("/dashboard", authenticateUserToken, async (req, res) => {
+  // if (isAuthenticated) {
 
     if (user_type == "customer") {
 
@@ -152,15 +138,11 @@ app.get("/dashboard", async (req, res) => {
 
       });
     }
-  }else {
-    res.redirect("/");
-  }
-    
 
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//savings
+//savings for customer view
 app.get("/savings", authenticateUserToken , async (req, res) => {
 
   let cDet = await getCDetails(userId);
@@ -179,13 +161,13 @@ app.get("/savings", authenticateUserToken , async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //savings-transfers
-app.get("/transfers-savings", async (req, res) => {
+app.get("/transfers-savings",authenticateUserToken, async (req, res) => {
   res.render("savings-transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //savings-transfers-confirmation
-app.post("/transfer-savings-do", async (req, res) => {
+app.post("/transfer-savings-do",authenticateUserToken, async (req, res) => {
   const validateSender = await validateSavingsAccount(req.body.fromAccount);
   const validateReceiver = await validateSavingsAccount(req.body.toAccount);
 
@@ -205,7 +187,7 @@ app.post("/transfer-savings-do", async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //current
-app.get("/current",async (req, res) => {
+app.get("/current",authenticateUserToken,async (req, res) => {
   console.log(userId);
   let cDet = await getCDetails(userId);
   let cuDet=  await getCurrentDetails(userId);
@@ -219,13 +201,13 @@ app.get("/current",async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //current-transfers
-app.get("/transfers-current", (req, res) => {
+app.get("/transfers-current",authenticateUserToken, (req, res) => {
   res.render("current-transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //Fixed-Deposits
-app.get("/fd", (req, res) => {
+app.get("/fd",authenticateUserToken, (req, res) => {
   res.render("fd", {
     fd_id: "210383L",
     amount: "LKR.5,000,000",
@@ -239,7 +221,7 @@ app.get("/fd", (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
-app.post("/request-loan", (req, res) => {
+app.post("/request-loan",authenticateUserToken, (req, res) => {
   const amount = req.body.amount;
   const duration = req.body.duration;
   res.render("loanRequests", { amount: amount, duration: duration });
@@ -247,7 +229,7 @@ app.post("/request-loan", (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //Loans
-app.get("/loan", (req, res) => {
+app.get("/loan",authenticateUserToken, (req, res) => {
   res.render("loan", {
     interestRate: "7.5%",
     accountNo: "210383L",
@@ -261,36 +243,11 @@ app.get("/loan", (req, res) => {
   });
 });
 
-////////////////////////////////////////////////////////////////////////////
-//logout
-app.get("/logout", (req, res) => {
-  res.clearCookie("jwt");
-  res.redirect("/");
-});
-
-////////////////////////////////////////////////////////////////////////////
-//about page
-app.get("/about", (req, res) => {
-  res.render("about.ejs");
-});
-
-////////////////////////////////////////////////////////////////////////////
-//contact page
-app.get("/contact", (req, res) => {
-  res.render("contact.ejs");
-});
-
-////////////////////////////////////////////////////////////////////////////
-//starting server
-app.listen(3000, function () {
-  console.log("Server started on port 3000");
-});
-
 
 //////////////////////////////////////////////////////////////////////
 //employee dashboard
 
-app.post("/searched-customer", async (req, res) => {
+app.post("/searched-customer",authenticateUserToken, async (req, res) => {
   console.log(req.body.customerSearch)
   const cusId = await getCusId(req.body.customerSearch) ;
 
@@ -306,8 +263,6 @@ app.post("/searched-customer", async (req, res) => {
       res.redirect("/dashboard");
     }else{
 
-    
-  
     let savingsAccountNo;
     let savingsAccountBalance;
     let withdrawalsLeft;
@@ -362,25 +317,38 @@ app.post("/searched-customer", async (req, res) => {
 
 });
 
-app.get("/create-customer", (req, res) => {
+app.get("/searched-customer",authenticateUserToken, async (req, res) => {
+  res.redirect("/dashboard");
+});
+
+app.get("/create-customer",authenticateUserToken, (req, res) => {
   res.render("create-customer");
 
 });
 
-app.post("add-savings", (req, res) => {
+app.post("/created-customer",authenticateUserToken, (req, res) => {
+  const name = req.body.name;
+  const address = req.body.address;
+  const phone = req.body.phone;
+  res.render("create-customer", {
+    "name": name,
+    "address": address,
+    "phone": phone
+});
+} );
+
+app.post("/add-account",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
 
+  const acc_t = req.body.acc_t ;
 
-  res.render("add-savings");
+  res.render("add-account", {
+    "cusId": cusId,
+    "acc_t": acc_t
+});
 } );
 
-app.post("/add-current", (req, res) => {
-  console.log(req.body.cusId);
-  console.log("hi")
-  res.render("add-current", {"cusId": req.body.cusId});
-} );
-
-app.post("/added-current", (req, res) => {
+app.post("/added-current",authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
   console.log(cusId);
   console.log(req.body.cus_id);
@@ -390,15 +358,87 @@ app.post("/added-current", (req, res) => {
 
   createCurrent(cusId, BId, startDate, startAmount);
   
-  res.redirect("");
+  res.redirect("/dashboard");
 } );
 
-app.post("/add-fd", (req, res) => {
-  const cusId = req.body.cusId;
-  res.render("add-fd");
-} );
-app.post("/add-loan", (req, res) => {
+app.post("/add-fd",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
   res.render("add-fd");
 } );
 
+app.get("/add-fd",authenticateUserToken, (req, res) => {
+  res.render("/add-fd");
+} );
+
+
+app.post("/add-loan",authenticateUserToken, (req, res) => {
+  const cusId = req.body.cusId;
+  res.render("add-loan");
+} );
+
+
+app.get("/add-loan",authenticateUserToken, (req, res) => {
+  res.render("/add-loan");
+} );
+
+// app.post("/add-savings", (req, res) => {
+//   res.render("add-savings", {
+//     "cusId": req.body.cusId,
+//     "acc_t": "s"
+// });
+// } );
+
+app.post("/added-savings",authenticateUserToken, (req, res) => {
+  const cusId = req.body.cus_id;
+  const BId = req.body.branch_id;
+  const startDate = req.body.start_date;
+  const startAmount = req.body.start_amount;
+  const accountType = req.body.account_type;
+
+  createSavings(cusId, BId,accountType, startDate, startAmount);
+  
+  res.redirect("/dashboard");
+} );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////
+//logout
+app.get("/logout",authenticateUserToken, (req, res) => {
+  res.clearCookie("jwt");
+  res.redirect("/");
+});
+
+////////////////////////////////////////////////////////////////////////////
+//about page
+app.get("/about",authenticateUserToken, (req, res) => {
+  res.render("about.ejs");
+});
+
+////////////////////////////////////////////////////////////////////////////
+//contact page
+app.get("/contact",authenticateUserToken, (req, res) => {
+  res.render("contact.ejs");
+});
+
+////////////////////////////////////////////////////////////////////////////
+//starting server
+app.listen(3000, function () {
+  console.log("Server started on port 3000");
+});
