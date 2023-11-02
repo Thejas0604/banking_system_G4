@@ -392,10 +392,8 @@ app.post("/add-account",authenticateUserToken, (req, res) => {
 
 app.post("/added-current",authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
-  console.log(cusId);
-  console.log(req.body.cus_id);
   const BId = req.body.branch_id;
-  // const startDate = req.body.start_date;
+  const startDate = new Date();
   const startAmount = req.body.start_amount;
 
   createCurrent(cusId, BId, startDate, startAmount);
