@@ -408,7 +408,7 @@ app.post("/add-account",authenticateUserToken, (req, res) => {
 app.post("/added-savings",authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
   const BId = req.body.branch_id;
-  const startDate = req.body.start_date;
+  const startDate = new Date();
   const startAmount = req.body.start_amount;
   const accountType = req.body.account_type;
 
