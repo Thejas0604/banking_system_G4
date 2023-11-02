@@ -1,219 +1,95 @@
 <%- include('partials/header') %>
-<style>
-  .greeting-dashboard {
-    background-color: #1a1a1a;
-    padding: 1rem;
-    border-radius: 1rem;
-    margin: 1rem;
-    color: white;
-    text-align: center;
-  }
 
-  .tiles-container {
-    display: flex;
-    background-color: #1a1a1a;
-    padding: 2rem;
-    border-radius: 1rem;
-    margin: 1rem;
-  }
-
-  .tile {
-    background-color: white;
-    margin: 2rem;
-    border-radius: 1rem;
-    padding: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  }
-
-  .tile-items {
-    color: #333;
-  }
-
-  .transactions-container {
-    background-color: #1a1a1a;
-    padding: 2rem;
-    border-radius: 1rem;
-    margin: 1rem;
-    color: white;
-  }
-
-  button {
-    background-color: #1a1a1a;
-    color: white;
-    border: none;
-    border-radius: 1rem;
-    padding: 1rem 2rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-
-  button:hover {
-    background-color: #333333;
-  }
-
-  .table-box {
-    margin: 50px auto;
-  }
-
-  .table-row {
-    display: table;
-    width: 100%;
-    font-family: sans-serif;
-    background: transparent;
-    padding: 12px 50px;
-    color: #333;
-    font-size: 13px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 1rem;
-  }
-
-  .table-head {
-    background: white;
-    color: #333;
-    font-weight: 600;
-    border-radius: 1rem;
-  }
-
-  .table-head .table-cell {
-    border-right: none;
-  }
-
-  .table-cell {
-    display: table-cell;
-    text-align: left;
-    padding: 4px 0;
-    border-right: 1px solid #d6d4d4;
-    vertical-align: middle;
-    color: white;
-  }
-  .ct{
-
-  color: black;
-
-  }
-
-  .first-cell {
-    text-align: center;
-    padding: 10px;
-    width: 50px;
-  }
-  .second-cell {
-    text-align: center;
-    padding: 10px;
-  }
-  .third-cell {
-    text-align: center;
-    padding: 10px;
-  }
-  .fourth-cell {
-    text-align: center;
-    padding: 10px;
-  }
-  .fifth-cell {
-    text-align: center;
-    padding: 10px;
-  }
-
-  .last-cell {
-    border-right: none;
-  }
-</style>
-<div class="container">
-  <div class="greeting-dashboard">
-    <h3>Hello</h3>
-    <h2><%= name %>,</h2>
-  </div>
-
-  <% if (savingsAccountNo){ %>
+<div class="container mt-5">
   <div class="row">
-    <div class="col-md-6">
-      <div class="tile" id="savings">
-        <div class="tile-items">
-          <h3>Savings Details:</h3>
-          <h2>Account No: <%= savingsAccountNo %></h2>
-          <h2>Savings Balance: <%= savingsAccountBalance %></h2>
-          <h2>Withdrawals Left: <%= withdrawalsLeft %></h2>
-          <a href="/savings"><button class="btn btn-dark">Check your Savings Account</button></a>
-        </div>
+    <div class="col-12">
+      <div class="bg-dark text-white p-3 rounded">
+        <h3 class="text-center">Hello</h3>
+        <h2 class="text-center"><%= name %>,</h2>
       </div>
     </div>
   </div>
-  <% } %> <% if (currentAccountNo){ %>
-  <div class="row">
+
+  <% if (savingsAccountNo) { %>
+  <% if (currentAccountNo) { %>
+  <div class="row mt-4">
     <div class="col-md-6">
-      <div class="tile" id="current">
-        <div class="tile-items">
-          <h3>Current Details:</h3>
-          <h2>Account No: <%= currentAccountNo %></h2>
-          <h2>Current Balance: <%= currentAccountBalance %></h2>
-          <a href="/current"><button class="btn btn-dark">Check your Current Account</button></a>
-        </div>
+      <div class="bg-light p-3 rounded">
+        <h3>Savings Details:</h3>
+        <h2>Account No: <%= savingsAccountNo %></h2>
+        <h2>Savings Balance: <%= savingsAccountBalance %></h2>
+        <h2>Withdrawals Left: <%= withdrawalsLeft %></h2>
+        <a href="/savings"><button class="btn btn-dark">Check your Savings Account</button></a>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="bg-light p-3 rounded">
+        <h3>Current Details:</h3>
+        <h2>Account No: <%= currentAccountNo %></h2>
+        <h2>Current Balance: <%= currentAccountBalance %></h2>
+        <a href="/current"><button class="btn btn-dark">Check your Current Account</button></a>
+      </div>
+    </div>
+  </div>
+  <% } else { %>
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="bg-light p-3 rounded">
+        <h3>Savings Details:</h3>
+        <h2>Account No: <%= savingsAccountNo %></h2>
+        <h2>Savings Balance: <%= savingsAccountBalance %></h2>
+        <h2>Withdrawals Left: <%= withdrawalsLeft %></h2>
+        <a href="/savings"><button class="btn btn-dark">Check your Savings Account</button></a>
       </div>
     </div>
   </div>
   <% } %>
-  <div class="row">
-    <div class="col-md-12">
-      <div class="transactions-container">
+  <% } else if (currentAccountNo) { %>
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <div class="bg-light p-3 rounded">
+        <h3>Current Details:</h3>
+        <h2>Account No: <%= currentAccountNo %></h2>
+        <h2>Current Balance: <%= currentAccountBalance %></h2>
+        <a href="/current"><button class="btn btn-dark">Check your Current Account</button></a>
+      </div>
+    </div>
+  </div>
+  <% } %>
+
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="bg-dark text-white p-3 rounded">
         <h3>Recent Transactions:</h3>
-        <div class="table-box">
-          <div class="table-row table-head">
-            <div class="table-cell first-cell ct">
-              <p>Transaction ID</p>
-            </div>
-            <div class="table-cell ct second-cell">
-              <p>Date</p>
-            </div>
-            <div class="table-cell ct third-cell">
-              <p>Type</p>
-            </div>
-            <div class="table-cell ct fourth-cell">
-              <p>Amount</p>
-            </div>
-            <div class="table-cell ct fifth-cell">
-              <p>Initiated Account</p>
-            </div>
-            <div class="table-cell last-cell ct">
-              <p>Receiver Account</p>
-            </div>
-          </div>
-          <% transactions.forEach(transaction => { %>
-          <div class="table-row">
-            <div class="table-cell first-cell">
-              <p><%= transaction.transaction_id %></p>
-            </div>
-            <div class="table-cell second-cell">
-              <p><%= transaction.date %></p>
-            </div>
-            <div class="table-cell third-cell">
-              <p><%= transaction.type %></p>
-            </div>
-            <div class="table-cell fourth-cell">
-              <p><%= transaction.amount %></p>
-            </div>
-            <div class="table-cell fifth-cell">
-              <p><%= transaction.initiated_acc %></p>
-            </div>
-            <div class="table-cell last-cell">
-              <p><%= transaction.receiver_acc %></p>
-            </div>
-          </div>
-          <!-- <div class="table-row">
-            <div class="table-cell first-cell">
-              <p>Transaction Details</p>
-            </div>
-            <div class="table-cell" colspan="5">
-              <p><%= transaction.details %></p>
-            </div>
-          </div> -->
-          <% }); %>
+        <div class="table-responsive">
+          <table class="table table-dark table-striped table-bordered">
+            <thead>
+              <tr>
+                <th>Transaction ID</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Amount</th>
+                <th>Initiated Account</th>
+                <th>Receiver Account</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% transactions.forEach(transaction => { %>
+              <tr>
+                <td><%= transaction.transaction_id %></td>
+                <td><%= transaction.date %></td>
+                <td><%= transaction.type %></td>
+                <td><%= transaction.amount %></td>
+                <td><%= transaction.initiated_acc %></td>
+                <td><%= transaction.receiver_acc %></td>
+              </tr>
+              <% }); %>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
+</div>
 
-  <%- include('partials/footer') %>
-
+<%- include('partials/footer') %>

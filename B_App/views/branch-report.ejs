@@ -1,66 +1,34 @@
 <%- include('partials/header') %>
 
-<style>
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li {
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    padding: 10px;
-    border-radius: 5px;
-  }
-
-  .branch-activity-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .items {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-  }
-
-  .items-items {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-
-  #left {
-    margin-right: 20px;
-  }
-</style>
-
-<ul>
-  <% branchReport.forEach(branchActivity => { %>
-  <li>
-    <div class="branch-activity-container">
-      <div class="items">
-        <div class="items-items">
-          <p id="left">Transaction ID: <%= branchActivity.transaction_id %></p>
-          <p id="left">
-            Transaction Type: <%= branchActivity.type %>
-          </p>
-          <p id="left">Amount: <%= branchActivity.amount %></p>
-          <p id="left">Date: <%= branchActivity.date %></p>
-          <p id="left">sender_branch: <%= branchActivity.sender_branch %></p>
-          <p id="left">receiver_branch: <%= branchActivity.receiver_branch %></p>
-          <p id="left">initiated_account: <%= branchActivity.initiated_account %></p>
-          <p id="left">receiver_account: <%= branchActivity.receiver_account %></p>
-        </div>
-      </div>
-    </div>
-  </li>
-  <% }); %>
-</ul>
+<div class="container">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Transaction ID</th>
+        <th>Transaction Type</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Sender Branch</th>
+        <th>Receiver Branch</th>
+        <th>Initiated Account</th>
+        <th>Receiver Account</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% branchReport.forEach(branchActivity => { %>
+        <tr>
+          <td><%= branchActivity.transaction_id %></td>
+          <td><%= branchActivity.type %></td>
+          <td><%= branchActivity.amount %></td>
+          <td><%= branchActivity.date %></td>
+          <td><%= branchActivity.sender_branch %></td>
+          <td><%= branchActivity.receiver_branch %></td>
+          <td><%= branchActivity.initiated_account %></td>
+          <td><%= branchActivity.receiver_account %></td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+</div>
 
 <%- include('partials/footer') %>
