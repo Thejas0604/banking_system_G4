@@ -167,24 +167,24 @@ app.get("/savings", authenticateUserToken , async (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//savings-transfers
-app.get("/transfers-savings",authenticateUserToken, async (req, res) => {
-  res.render("savings-transfers");
+//transfers
+app.get("/transfers",authenticateUserToken, async (req, res) => {
+  res.render("transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
 
-//savings-transfers-do
-app.post("/transfer-savings-do", async (req, res) => {
+//transfers-do
+app.post("/transfer-do", async (req, res) => {
   const sender = req.body.fromAccount;
   const receiver = req.body.toAccount;
   const amount = req.body.amount;
   try {
     await makeMoneyTransfer(sender, receiver, amount);
-    res.render("savings-transfers-do", { "status": "Successful" });
+    res.render("transfers-do", { "status": "Successful" });
   }catch (err) {
     console.log(err);
-    res.render("savings-transfers-do", { "status": "Failed" });
+    res.render("transfers-do", { "status": "Failed" });
 
   }
 });
@@ -202,12 +202,6 @@ app.get("/current",authenticateUserToken,async (req, res) => {
     "currentAccountNo": cuDet.account_no ,
     "currentAccountBalance": cuDet.balance,
   });
-});
-
-////////////////////////////////////////////////////////////////////////////
-//current-transfers
-app.get("/transfers-current",authenticateUserToken, (req, res) => {
-  res.render("current-transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
