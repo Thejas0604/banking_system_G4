@@ -163,6 +163,21 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Temporary view structure for view `currentdetails`
+--
+
+DROP TABLE IF EXISTS `currentdetails`;
+/*!50001 DROP VIEW IF EXISTS `currentdetails`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `currentdetails` AS SELECT 
+ 1 AS `account_no`,
+ 1 AS `customer_id`,
+ 1 AS `branch_id`,
+ 1 AS `balance`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `customer`
 --
 
@@ -677,6 +692,23 @@ INSERT INTO `savings_account_type` VALUES ('Adult',18,10.00,1000.00),('Children'
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `savingsdetails`
+--
+
+DROP TABLE IF EXISTS `savingsdetails`;
+/*!50001 DROP VIEW IF EXISTS `savingsdetails`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `savingsdetails` AS SELECT 
+ 1 AS `account_no`,
+ 1 AS `customer_id`,
+ 1 AS `account_type`,
+ 1 AS `branch_id`,
+ 1 AS `balance`,
+ 1 AS `remaining_withdrawals`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `transactions`
 --
 
@@ -1101,6 +1133,42 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Final view structure for view `currentdetails`
+--
+
+/*!50001 DROP VIEW IF EXISTS `currentdetails`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `currentdetails` AS select `c`.`account_no` AS `account_no`,`a`.`customer_id` AS `customer_id`,`a`.`branch_id` AS `branch_id`,`c`.`balance` AS `balance` from (`current_account` `c` join `account` `a` on((`c`.`account_no` = `a`.`account_no`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `savingsdetails`
+--
+
+/*!50001 DROP VIEW IF EXISTS `savingsdetails`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `savingsdetails` AS select `s`.`account_no` AS `account_no`,`a`.`customer_id` AS `customer_id`,`s`.`account_type` AS `account_type`,`a`.`branch_id` AS `branch_id`,`s`.`balance` AS `balance`,`s`.`remaining_withdrawals` AS `remaining_withdrawals` from (`savings_account` `s` join `account` `a` on((`s`.`account_no` = `a`.`account_no`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1111,4 +1179,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-02  8:59:01
+-- Dump completed on 2023-11-02  9:42:11
