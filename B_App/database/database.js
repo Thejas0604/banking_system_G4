@@ -214,3 +214,16 @@ export async function createSavings(uid, BId, accountType, startDate, startAmoun
     return false;
   }
 }
+
+export async function renderTransactions(uid) {
+  try {
+    const [rows,fields] = await pool.query(
+      "CALL transactionreport(?)",
+      [uid]
+    );
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}

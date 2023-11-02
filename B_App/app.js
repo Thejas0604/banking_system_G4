@@ -9,6 +9,7 @@ import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
 import {makeMoneyTransfer} from "./database/database.js";
+import { renderTransactions } from "./database/database.js";
 import { getFDInfo } from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 import e from "express";
@@ -57,6 +58,7 @@ app.post("/dashboard", async (req, res) => {
         let cDet = await getCDetails(userId);
         let sDet =  await getSavingsDetails(userId);
         let cuDet=  await getCurrentDetails(userId);
+        let transactions = await renderTransactions(userId);
 
         let savingsAccountNo;
         let savingsAccountBalance;
@@ -73,14 +75,15 @@ app.post("/dashboard", async (req, res) => {
           currentAccountNo = cuDet.account_no;
           currentAccountBalance = cuDet.balance;
         }
-
+        console.log(transactions[0]);
         res.render("dashboard", {
           "name": cDet.name,
           "savingsAccountNo": savingsAccountNo,
           "savingsAccountBalance": savingsAccountBalance,
           "withdrawalsLeft": withdrawalsLeft,
           "currentAccountNo": currentAccountNo,
-          "currentAccountBalance": currentAccountBalance
+          "currentAccountBalance": currentAccountBalance,
+          "transactions": transactions[0]
       });
      
 
@@ -106,6 +109,7 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
       let cDet = await getCDetails(userId);
       let sDet =  await getSavingsDetails(userId);
       let cuDet=  await getCurrentDetails(userId);
+      let transactions = await renderTransactions(userId);
   
       let savingsAccountNo;
       let savingsAccountBalance;
@@ -121,15 +125,16 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
       if (cuDet != undefined) {
         currentAccountNo = cuDet.account_no;
         currentAccountBalance = cuDet.balance;
-      }
-
+      } 
+      
         res.render("dashboard", {
           "name": cDet.name,
           "savingsAccountNo": savingsAccountNo,
           "savingsAccountBalance": savingsAccountBalance,
           "withdrawalsLeft": withdrawalsLeft,
           "currentAccountNo": currentAccountNo,
-          "currentAccountBalance": currentAccountBalance
+          "currentAccountBalance": currentAccountBalance,
+          "transactions": transactions[0]
         }); 
     }else if (user_type == "employee") {
       let eDet = await getEDetails(userId);
@@ -140,6 +145,7 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
     }
 
 });
+
 
 ////////////////////////////////////////////////////////////////////////////
 //savings for customer view
