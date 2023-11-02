@@ -1,4 +1,5 @@
 // 1. Install necessary dependencies
+import bcrypt from "bcrypt";
 import express from "express";
 import bodyParser from "body-parser";
 import ejs from "ejs";
@@ -16,6 +17,8 @@ import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 
 // Set up the express app
 const app = express();
+const saltRounds = 10;
+
 app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
