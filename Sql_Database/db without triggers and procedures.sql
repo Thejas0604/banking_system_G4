@@ -41,7 +41,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('C4','CUS10','current','BR1','2023-11-01',10000.00),('C5','CUS10','current','BR1','2023-11-01',10000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
+INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('C4','CUS10','current','BR1','2023-11-01',10000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S10','CUS5','savings','BR1','2023-11-01',1500.00),('S11','CUS5','savings','BR1','2023-11-01',1500.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -94,6 +94,21 @@ LOCK TABLES `current_account` WRITE;
 INSERT INTO `current_account` VALUES ('C1',500000.00),('C2',350000.00),('C3',560000.00),('C4',10000.00);
 /*!40000 ALTER TABLE `current_account` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `currentdetails`
+--
+
+DROP TABLE IF EXISTS `currentdetails`;
+/*!50001 DROP VIEW IF EXISTS `currentdetails`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `currentdetails` AS SELECT 
+ 1 AS `account_no`,
+ 1 AS `customer_id`,
+ 1 AS `branch_id`,
+ 1 AS `balance`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `customer`
@@ -227,6 +242,7 @@ CREATE TABLE `loan` (
   `due_date` date DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `installment_due_date` date DEFAULT NULL,
+  `status` varchar(15) DEFAULT NULL,
   PRIMARY KEY (`loan_id`),
   KEY `loan_ibfk_1_idx` (`fd_id`),
   CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`fd_id`) REFERENCES `fixed_deposit` (`fd_id`)
@@ -239,7 +255,7 @@ CREATE TABLE `loan` (
 
 LOCK TABLES `loan` WRITE;
 /*!40000 ALTER TABLE `loan` DISABLE KEYS */;
-INSERT INTO `loan` VALUES ('LN1','FD1',50000.00,12.50,12,10,4687.50,'2024-07-22','2023-07-22','2023-09-22'),('LN2','FD4',100000.00,13.50,24,22,4729.17,'2025-08-05','2023-08-05','2023-10-05'),('LN3','FD5',100000.00,12.50,12,11,9375.00,'2024-08-22','2023-08-22','2023-09-22'),('LN4','FD6',50000.00,13.50,24,24,2364.58,'2025-09-23','2023-09-23','2023-09-23'),('LN5',NULL,100000.00,12.50,12,12,9375.00,'2024-10-22','2023-10-22','2023-10-22');
+INSERT INTO `loan` VALUES ('LN1','FD1',50000.00,12.50,12,10,4687.50,'2024-07-22','2023-07-22','2023-09-22','approved'),('LN2','FD4',100000.00,13.50,24,22,4729.17,'2025-08-05','2023-08-05','2023-10-05','approved'),('LN3','FD5',100000.00,12.50,12,11,9375.00,'2024-08-22','2023-08-22','2023-09-22','approved'),('LN4','FD6',50000.00,13.50,24,24,2364.58,'2025-09-23','2023-09-23','2023-09-23','approved'),('LN5',NULL,100000.00,12.50,12,12,9375.00,'2024-10-22','2023-10-22','2023-10-22','approved'),('LN6','FD1',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-11-02',NULL),('LN7','FD2',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-12-02',NULL);
 /*!40000 ALTER TABLE `loan` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -379,7 +395,7 @@ CREATE TABLE `savings_account` (
 
 LOCK TABLES `savings_account` WRITE;
 /*!40000 ALTER TABLE `savings_account` DISABLE KEYS */;
-INSERT INTO `savings_account` VALUES ('S1','Adult',70000.00,5),('S2','Adult',65000.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
+INSERT INTO `savings_account` VALUES ('S1','Adult',66500.00,5),('S2','Adult',72500.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
 /*!40000 ALTER TABLE `savings_account` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -410,6 +426,23 @@ INSERT INTO `savings_account_type` VALUES ('Adult',18,10.00,1000.00),('Children'
 UNLOCK TABLES;
 
 --
+-- Temporary view structure for view `savingsdetails`
+--
+
+DROP TABLE IF EXISTS `savingsdetails`;
+/*!50001 DROP VIEW IF EXISTS `savingsdetails`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `savingsdetails` AS SELECT 
+ 1 AS `account_no`,
+ 1 AS `customer_id`,
+ 1 AS `account_type`,
+ 1 AS `branch_id`,
+ 1 AS `balance`,
+ 1 AS `remaining_withdrawals`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `transactions`
 --
 
@@ -434,7 +467,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4');
+INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA10','2023-11-02 14:33:37','transfer',5500.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4'),('TRA8','2023-11-02 08:28:12','FD_open',250000.00,'S1'),('TRA9','2023-11-02 08:44:30','FD_open',2000.00,'S2');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -464,7 +497,7 @@ CREATE TABLE `transfer` (
 
 LOCK TABLES `transfer` WRITE;
 /*!40000 ALTER TABLE `transfer` DISABLE KEYS */;
-INSERT INTO `transfer` VALUES ('TRA4','S4','S5'),('TRA5','S1','S2'),('TRA6','S1','S2'),('TRA7','S4','S5');
+INSERT INTO `transfer` VALUES ('TRA10','S1','S2'),('TRA4','S4','S5'),('TRA5','S1','S2'),('TRA6','S1','S2'),('TRA7','S4','S5');
 /*!40000 ALTER TABLE `transfer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -495,6 +528,42 @@ LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES ('John Doe','$2a$10$abcdef','CUS1','customer'),('Mark Rober','$2a$10$123def','CUS10','customer'),('Jane Smith','$2a$10$123456','CUS2','customer'),('ABC Corp','$2a$10$789xyz','CUS3','customer'),('Tim Cook','$2a$10$pqr123','CUS4','employee'),('Bruce Wayne','$2a$10$xyz456','CUS5','customer'),('XYZ Company','$2a$10$mnopqr','CUS6','customer'),('Jane Doe','$2a$10$789abc','CUS7','customer'),('Acme Corporation','$2a$10$xyz789','CUS8','customer'),('Peter Parker','$2a$10$def456','CUS9','customer'),('Mark Hall','$2a$10$abcdef','EMP1','employee'),('Clark Jhons','$2a$10$abcdef','EMP2','employee'),('Smith Cover','$2a$10$abcdef','EMP3','employee'),('Jason Bank','$2a$10$abcdef','EMP4','employee'),('Walter White','$2a$10$abcdef','EMP5','employee'),('Jesse Pink','$2a$10$abcdef','EMP6','employee');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `currentdetails`
+--
+
+/*!50001 DROP VIEW IF EXISTS `currentdetails`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `currentdetails` AS select `c`.`account_no` AS `account_no`,`a`.`customer_id` AS `customer_id`,`a`.`branch_id` AS `branch_id`,`c`.`balance` AS `balance` from (`current_account` `c` join `account` `a` on((`c`.`account_no` = `a`.`account_no`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `savingsdetails`
+--
+
+/*!50001 DROP VIEW IF EXISTS `savingsdetails`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `savingsdetails` AS select `s`.`account_no` AS `account_no`,`a`.`customer_id` AS `customer_id`,`s`.`account_type` AS `account_type`,`a`.`branch_id` AS `branch_id`,`s`.`balance` AS `balance`,`s`.`remaining_withdrawals` AS `remaining_withdrawals` from (`savings_account` `s` join `account` `a` on((`s`.`account_no` = `a`.`account_no`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -505,4 +574,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-01 19:30:40
+-- Dump completed on 2023-11-02 23:28:59
