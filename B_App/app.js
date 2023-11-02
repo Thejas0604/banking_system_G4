@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings } from "./database/database.js";
+import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings, createCustomer } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
@@ -13,7 +13,6 @@ import { renderTransactions } from "./database/database.js";
 import { getFDInfo } from "./database/database.js";
 import {onlineLoanRequest} from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
-import e from "express";
 
 // Set up the express app
 const app = express();
@@ -48,7 +47,7 @@ app.post("/dashboard", async (req, res) => {
       const token = jwt.sign(
         { un: userName, role: "user" },
         "jwt_User_privateKey",  ///this is a password ///////////
-        { expiresIn: "5m" }
+        { expiresIn: "10m" }
       );
       console.log(token);
 
@@ -93,7 +92,8 @@ app.post("/dashboard", async (req, res) => {
         let eDet = await getEDetails(userId);
 
         res.render("employeeDash", {
-          "name": eDet.name
+          "name": eDet.name,
+          "role": eDet.role
         });     
       }
     } else {
@@ -142,6 +142,8 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
 
       res.render("employeeDash.ejs", {
         "name": eDet.name,  
+        "role": eDet.role
+
       });
     }
 
@@ -207,7 +209,7 @@ app.get("/current",authenticateUserToken,async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //Fixed-Deposits
 
-app.get("/fd", async(req, res) => {
+app.get("/fd",authenticateUserToken, async(req, res) => {
 
   let savingsData = await getSavingsDetails(userId);
   let fdData = await getFDInfo(savingsData.account_no);
@@ -242,6 +244,7 @@ app.get("/fd", async(req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
+
 
 app.post("/request-loan-online",async (req, res) => {
   const amount = req.body.amount;
@@ -334,7 +337,7 @@ app.post("/searched-customer",authenticateUserToken, async (req, res) => {
       "currentAccountNo": currentAccountNo,
       "currentAccountBalance": currentAccountBalance,
       "currentBId": currentBId,
-      "fd_exist": false,
+      "fd_exist": false, /////////////////////////change
       "loan_exist": false,
       "cusId": cusId
     });
@@ -364,11 +367,7 @@ app.post("/created-customer",authenticateUserToken, (req, res) => {
   const nic = req.body.nic;
   const organizationType = req.body.organization_type;
 
-  // if(cusType == "organization"){
-  //   createOrganizationCustomer(name, address, phone, username, password, organizationType);
-  // }else{
-  //   createIndividualCustomer(name, address, phone, username, password, age, nic, cusType);
-  // }
+  createCustomer(name, address, phone, age, username, password, cusType, nic, organizationType); 
 
   res.redirect("/dashboard");
 });
@@ -384,6 +383,18 @@ app.post("/add-account",authenticateUserToken, (req, res) => {
 });
 } );
 
+app.post("/added-savings",authenticateUserToken, (req, res) => {
+  const cusId = req.body.cus_id;
+  const BId = req.body.branch_id;
+  const startDate = req.body.start_date;
+  const startAmount = req.body.start_amount;
+  const accountType = req.body.account_type;
+
+  createSavings(cusId, BId,accountType, startDate, startAmount);
+  
+  res.redirect("/dashboard");
+} );
+
 app.post("/added-current",authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
   const BId = req.body.branch_id;
@@ -397,20 +408,32 @@ app.post("/added-current",authenticateUserToken, (req, res) => {
 
 app.post("/add-fd",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
-  res.render("add-fd");
+  res.render("add-fd",{
+    "cusId": cusId
+    
+  });
 } );
 
-app.get("/add-fd",authenticateUserToken, (req, res) => {
-  res.render("/add-fd");
-} );
 
+app.post("/added-fd",authenticateUserToken, async (req, res) => {
+  const cusId = req.body.cusId;
+  const amount = req.body.fd_amount;
+  const rate = req.body.interest_rate;
+  const duration = req.body.duration;
+
+  const savingsAccountNo = await getSavingsDetails(cusId).account_no;
+
+  // createFD(cusId, amount, rate, duration, savingsAccountNo );
+
+  res.redirect("/dashboard");
+
+} );
 
 app.post("/request-loan",authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
   res.render("request-loan",{
     "cusId": cusId
   });
-  res.redirect("/dashboard");
 } );
 
 
@@ -432,17 +455,50 @@ app.post("/requested-loan",authenticateUserToken, (req, res) => {
 } );
 
 
-app.post("/added-savings",authenticateUserToken, (req, res) => {
-  const cusId = req.body.cus_id;
-  const BId = req.body.branch_id;
-  const startDate = req.body.start_date;
-  const startAmount = req.body.start_amount;
-  const accountType = req.body.account_type;
 
-  createSavings(cusId, BId,accountType, startDate, startAmount);
+////////////////////////////////////////////////////
+///Managers priviledges
+
+app.get("/late-loan-payments",authenticateUserToken,async (req, res) => {
   
-  res.redirect("/dashboard");
+  // const lateLoanPayments = await getLateLoanPayments(); /// only unapproved loans --  array of json objects
+
+  res.render("late-loan-payments",{
+    "lateLoanPayments": lateLoanPayments
+  
+  });
 } );
+
+app.get("/loans-to-approve",authenticateUserToken, async (req, res) => {
+
+  // const loansToApprove = await getLoansToApprove(); /// only unapproved loans --  array of json objects
+
+  res.render("loans-to-approve",{
+    "loansToApprove": loansToApprove
+  });
+} );
+
+app.get("/approve-loan/:id", authenticateUserToken, async (req, res) => {
+  const loanRequestId = req.params.id;
+
+  // approveLoanRequest(loanRequestId);
+  res.redirect("/loans-to-approve");
+});
+
+
+app.post("/generate-branch-report",authenticateUserToken, (req, res) => {
+  const BId = req.body.branch_id;
+
+  // const branchReport = await getBranchReport(BId); /// only unapproved loans --  array of json objects
+
+  res.render("branch-report",{
+    "BId": BId,
+    "branchReport": branchReport
+  });
+} );
+
+
+
 
 
 

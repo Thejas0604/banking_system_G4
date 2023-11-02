@@ -1,10 +1,73 @@
 <%- include('partials/header.ejs') %>
 
 <style>
+  /* General styles */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: "Roboto", sans-serif;
+    background-color: #f5f5f5;
+  }
+
+  /* Header styles */
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1a1a1a;
+    padding: 1rem;
+    color: white;
+  }
+
+  header h1 {
+    font-size: 2rem;
+  }
+
+  header nav {
+    display: flex;
+    align-items: center;
+  }
+
+  header nav ul {
+    display: flex;
+    list-style: none;
+  }
+
+  header nav ul li {
+    margin-left: 1rem;
+  }
+
+  header nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 1.2rem;
+  }
+
+  header nav ul li a:hover {
+    text-decoration: underline;
+  }
+
+  /* Footer styles */
+  footer {
+    background-color: #1a1a1a;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    margin-top: 2rem;
+  }
+
+  /* Dashboard styles */
   .dashboard-container {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 2rem;
   }
+
   .greeting-dashboard {
     color: white;
     background-color: #1a1a1a;
@@ -13,6 +76,17 @@
     border-radius: 1rem;
     margin: 1rem;
   }
+
+  .greeting-dashboard h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .greeting-dashboard h2 {
+    font-size: 2rem;
+    font-weight: bold;
+  }
+
   .tiles-container {
     display: flex;
     color: white;
@@ -22,22 +96,38 @@
     border-radius: 1rem;
     margin: 1rem;
   }
+
   .tile {
     background-color: white;
     margin: 2rem;
     width: 100%;
-    height: 250px;
+    height: 100px; /* Updated height value */
     border-radius: 1rem;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
   }
+
+  .tile:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+
   .tile-items {
     padding: 1rem;
     color: black;
     margin: 1rem;
+    text-align: center;
   }
+
+  .tile-items h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
   .transactions-container {
     display: block;
     color: white;
@@ -47,56 +137,35 @@
     border-radius: 1rem;
     margin: 1rem;
   }
-  button {
-    background-color: #1a1a1a;
-    color: white;
-    border: none;
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-  }
-  button:hover {
-    background-color: #333333;
-  }
-  * {
-    margin: 0;
-    padding: 0;
-  }
-  .table-box {
-    margin: 50px auto;
-    width: 100%;
-    overflow-x: auto;
-    white-space: nowrap;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    font-family: "Roboto", sans-serif;
-    font-size: 16px;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: table;
-  }
+
+  /* Search styles */
   .search-container {
     margin: 1rem auto;
     width: 100%;
     display: flex;
     justify-content: center;
   }
+
   .search-container form {
     display: flex;
     align-items: center;
   }
+
   .search-container input[type="text"] {
     padding: 0.5rem;
     border-radius: 1rem 0 0 1rem;
     border: none;
     width: 70%;
+    font-size: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
   }
+
+  .search-container input[type="text"]:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+
   .search-container button[type="submit"] {
     background-color: #1a1a1a;
     color: white;
@@ -106,11 +175,95 @@
     font-size: 1rem;
     cursor: pointer;
     width: 30%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
   }
+
   .search-container button[type="submit"]:hover {
     background-color: #333333;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Manager dropdown styles */
+  .dropdown-container {
+    margin: 1rem auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .dropdown-container select {
+    padding: 0.5rem;
+    border-radius: 1rem;
+    border: none;
+    width: 30%;
+    font-size: 1rem;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  .dropdown-container select:focus {
+    outline: none;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+
+  .dropdown-container button[type="submit"] {
+    background-color: #1a1a1a;
+    color: white;
+    border: none;
+    border-radius: 1rem;
+    padding: 0.5rem;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-left: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    transition: box-shadow 0.3s ease-in-out;
+  }
+
+  .dropdown-container button[type="submit"]:hover {
+    background-color: #333333;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+  }
+
+  /* Table styles */
+  .table-box {
+    margin: 50px auto;
+    width: 100%;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 16px;
+    color: #333;
+    display: table;
+  }
+
+  table th,
+  table td {
+    padding: 0.5rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+
+  table th {
+    font-weight: bold;
   }
 </style>
+
+<header>
+  <h1>Banking App</h1>
+  <nav>
+    <ul>
+      <li><a href="#">Home</a></li>
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+    </ul>
+  </nav>
+</header>
 
 <div class="greeting-dashboard">
   <h3>Hello</h3>
@@ -135,7 +288,30 @@
         <h3>Create New Customer</h3>
       </div>
     </div>
+
+    <% if (role == "Manager"){ %>
+    <div class="tile" onclick="location.href='/late-loan-payments'">
+      <div class="tile-items">
+        <h3>Late Loan Payments</h3>
+      </div>
+    </div>
+    <div class="tile" onclick="location.href='/loans-to-approve'">
+      <div class="tile-items">
+        <h3>Loan to Approve</h3>
+      </div>
+    </div>
+
+    <div class="dropdown-container">
+      <form action="/genrate-branch-report" method="POST">
+        <select name="branch_id">
+          <option value="BR1">BR1</option>
+          <option value="BR2">BR2</option>
+          <option value="BR3">BR3</option>
+        </select>
+        <button type="submit">Generate Branch Report</button>
+      </form>
+    </div>
+    <% } %>
   </div>
 </div>
-
- <%- include('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

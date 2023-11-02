@@ -1,0 +1,68 @@
+<%- include('partials/header') %>
+
+<style>
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  li {
+    margin: 10px 0;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+
+  .loan-request-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  #left {
+    margin: 5px 0;
+  }
+</style>
+
+<ul>
+  <% lateLoanPayments.forEach(latepayment => { %>
+  <li>
+    <div class="loan-request-container">
+      <div class="items">
+        <div class="items-items">
+          <p id="left">Loan Request ID: <%= latepayment.loan_request_id %></p>
+          <p id="left">Loan Type: <%= latepayment.loan_type %></p>
+          <p id="left">Loan Amount: <%= latepayment.loan_amount %></p>
+          <p id="left">Loan Tenure: <%= latepayment.loan_tenure %></p>
+          <p id="left">
+            Loan Interest Rate: <%= latepayment.loan_interest_rate %>
+          </p>
+          <p id="left">Loan Status: <%= latepayment.loan_status %></p>
+          <p id="left">
+            Loan Payment Due Date: <%= latepayment.loan_payment_due_date %>
+          </p>
+          <p id="left">
+            Loan Payment Date: <%= latepayment.loan_payment_date %>
+          </p>
+          <p id="left">
+            Loan Payment Amount: <%= latepayment.loan_payment_amount %>
+          </p>
+          <p id="left">
+            Loan Payment Status: <%= latepayment.loan_payment_status %>
+          </p>
+        </div>
+      </div>
+    </div>
+  </li>
+  <% }); %>
+</ul>
+
+<%- include('partials/footer') %>
