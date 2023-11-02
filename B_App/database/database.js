@@ -227,3 +227,16 @@ export async function renderTransactions(uid) {
     return false;
   }
 }
+
+export async function onlineLoanRequest(uid, amount, duration) {
+  try {
+    const [rows] = await pool.query(
+      "CALL applyFDLoan(?, ?, ?)",
+      [uid, amount, duration]
+    );
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}

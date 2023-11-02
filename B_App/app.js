@@ -11,6 +11,7 @@ import { getCurrentDetails } from "./database/database.js";
 import {makeMoneyTransfer} from "./database/database.js";
 import { renderTransactions } from "./database/database.js";
 import { getFDInfo } from "./database/database.js";
+import {onlineLoanRequest} from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 import e from "express";
 
@@ -248,10 +249,15 @@ app.get("/fd", async(req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
 
-app.post("/request-loan-online", (req, res) => {
+app.post("/request-loan-online",async (req, res) => {
   const amount = req.body.amount;
   const duration = req.body.duration;
-  res.render("loanRequests-online", { amount: amount, duration: duration });
+  let result = await onlineLoanRequest(userId, amount, duration);
+  if (result == true) {
+    result = "Loan successfully applied.";} else {
+    result = "Loan application failed.";
+    }
+  res.render("loanRequests-online", { "status": result });
 });
 
 ////////////////////////////////////////////////////////////////////////////
