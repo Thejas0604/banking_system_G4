@@ -127,7 +127,6 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
         currentAccountNo = cuDet.account_no;
         currentAccountBalance = cuDet.balance;
       } 
-      
         res.render("dashboard", {
           "name": cDet.name,
           "savingsAccountNo": savingsAccountNo,
@@ -304,6 +303,13 @@ app.post("/searched-customer",authenticateUserToken, async (req, res) => {
     let name;
     let address;
     let phone;
+    let fdAmount;
+    let fdStart;
+    let fdDuration;
+    let fdRate;
+    let fdDet;  
+
+
   
     if(cDet != undefined){
       name = cDet.name;
@@ -318,6 +324,14 @@ app.post("/searched-customer",authenticateUserToken, async (req, res) => {
       withdrawalsLeft = sDet.remaining_withdrawals;
       accountType = sDet.account_type;
       savingsBId = sDet.branch_id;
+      fdDet=  await getFDInfo(savingsAccountNo); 
+
+      if (fdDet != undefined) {
+        fdAmount = fdDet.amount;
+        fdStart = fdDet.start_date;
+        fdDuration = fdDet.duration;
+        fdRate = fdDet.rate;
+      }
   
     }
     if (cuDet != undefined) {
@@ -325,6 +339,7 @@ app.post("/searched-customer",authenticateUserToken, async (req, res) => {
       currentAccountBalance = cuDet.balance;
       currentBId = cuDet.branch_id;
     }
+
     res.render("customer",{
       "name": name,
       "account_type": accountType,
@@ -337,9 +352,16 @@ app.post("/searched-customer",authenticateUserToken, async (req, res) => {
       "currentAccountNo": currentAccountNo,
       "currentAccountBalance": currentAccountBalance,
       "currentBId": currentBId,
-      "fd_exist": false, /////////////////////////change
+      "fd_exist": fdStart, /////////////////////////change
       "loan_exist": false,
-      "cusId": cusId
+      "cusId": cusId,
+      "fdAmount": fdAmount,
+      "fdStart": fdStart,
+      "fdDuration": fdDuration,
+      "fdRate": fdRate,
+      "fdStart": fdStart
+
+
     });
 
   }
@@ -401,7 +423,9 @@ app.post("/added-current",authenticateUserToken, (req, res) => {
   const startDate = new Date();
   const startAmount = req.body.start_amount;
 
-  createCurrent(cusId, BId, startDate, startAmount);
+  console.log(cusId, BId, startDate, startAmount);
+  const hi = createCurrent(cusId, BId, startDate, startAmount);
+  console.log(hi);
   
   res.redirect("/dashboard");
 } );

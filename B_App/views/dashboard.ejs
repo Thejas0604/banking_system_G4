@@ -83,15 +83,38 @@
 
   .table-cell {
     display: table-cell;
-    text-align: center;
+    text-align: left;
     padding: 4px 0;
     border-right: 1px solid #d6d4d4;
     vertical-align: middle;
+    color: white;
+  }
+  .ct{
+
+  color: black;
+
   }
 
   .first-cell {
     text-align: center;
-    padding-left: 10px;
+    padding: 10px;
+    width: 50px;
+  }
+  .second-cell {
+    text-align: center;
+    padding: 10px;
+  }
+  .third-cell {
+    text-align: center;
+    padding: 10px;
+  }
+  .fourth-cell {
+    text-align: center;
+    padding: 10px;
+  }
+  .fifth-cell {
+    text-align: center;
+    padding: 10px;
   }
 
   .last-cell {
@@ -138,22 +161,22 @@
         <h3>Recent Transactions:</h3>
         <div class="table-box">
           <div class="table-row table-head">
-            <div class="table-cell first-cell">
+            <div class="table-cell first-cell ct">
               <p>Transaction ID</p>
             </div>
-            <div class="table-cell">
+            <div class="table-cell ct second-cell">
               <p>Date</p>
             </div>
-            <div class="table-cell">
+            <div class="table-cell ct third-cell">
               <p>Type</p>
             </div>
-            <div class="table-cell">
+            <div class="table-cell ct fourth-cell">
               <p>Amount</p>
             </div>
-            <div class="table-cell">
+            <div class="table-cell ct fifth-cell">
               <p>Initiated Account</p>
             </div>
-            <div class="table-cell last-cell">
+            <div class="table-cell last-cell ct">
               <p>Receiver Account</p>
             </div>
           </div>
@@ -162,26 +185,35 @@
             <div class="table-cell first-cell">
               <p><%= transaction.transaction_id %></p>
             </div>
-            <div class="table-cell">
+            <div class="table-cell second-cell">
               <p><%= transaction.date %></p>
             </div>
-            <div class="table-cell">
+            <div class="table-cell third-cell">
               <p><%= transaction.type %></p>
             </div>
-            <div class="table-cell">
+            <div class="table-cell fourth-cell">
               <p><%= transaction.amount %></p>
             </div>
-            <div class="table-cell">
-              <p><%= transaction.initiated_id %></p>
+            <div class="table-cell fifth-cell">
+              <p><%= transaction.initiated_acc %></p>
             </div>
             <div class="table-cell last-cell">
-              <p><%= transaction.receiver_id %></p>
+              <p><%= transaction.receiver_acc %></p>
             </div>
           </div>
+          <!-- <div class="table-row">
+            <div class="table-cell first-cell">
+              <p>Transaction Details</p>
+            </div>
+            <div class="table-cell" colspan="5">
+              <p><%= transaction.details %></p>
+            </div>
+          </div> -->
           <% }); %>
         </div>
       </div>
     </div>
   </div>
-</div>
+
+  <%- include('partials/footer') %>
 <%- include('partials/footer') %>

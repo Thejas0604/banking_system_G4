@@ -48,13 +48,21 @@
   <p>Savings Balance: <%= savingsAccountBalance %></p>
   <p>Remaining Withdrawals: <%= withdrawalsLeft %></p>
   <p>Branch ID: <%= savingsBId %></p>
-  <% } %> <% if (currentAccountNo){ %>
+  <% } %> 
+  <% if (currentAccountNo){ %>
   <h3>Current A/C Details</h3>
   <p>Current Account: <%= currentAccountNo %></p>
   <p>Current Balance: <%= currentAccountBalance %></p>
   <p>Branch ID: <%= currentBId %></p>
-
   <% } %>
+  <% if (fd_exist){ %>
+  <h3>FD Details</h3>
+  <p>Amount in FD: <%= fdAmount %></p>
+  <p>Start Date: <%= fdStart %></p>
+  <p>Duration: <%= fdDuration %></p>
+  <p>Rate: <%= fdRate %></p>
+  <% } %>
+
 </div>
 
 <% if (!savingsAccountNo){ %>
