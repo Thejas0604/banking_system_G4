@@ -340,7 +340,7 @@ CREATE TABLE `loan` (
 
 LOCK TABLES `loan` WRITE;
 /*!40000 ALTER TABLE `loan` DISABLE KEYS */;
-INSERT INTO `loan` VALUES ('LN1','FD1',50000.00,12.50,12,10,4687.50,'2024-07-22','2023-07-22','2023-09-22'),('LN2','FD4',100000.00,13.50,24,22,4729.17,'2025-08-05','2023-08-05','2023-10-05'),('LN3','FD5',100000.00,12.50,12,11,9375.00,'2024-08-22','2023-08-22','2023-09-22'),('LN4','FD6',50000.00,13.50,24,24,2364.58,'2025-09-23','2023-09-23','2023-09-23'),('LN5',NULL,100000.00,12.50,12,12,9375.00,'2024-10-22','2023-10-22','2023-10-22');
+INSERT INTO `loan` VALUES ('LN1','FD1',50000.00,12.50,12,10,4687.50,'2024-07-22','2023-07-22','2023-09-22'),('LN2','FD4',100000.00,13.50,24,22,4729.17,'2025-08-05','2023-08-05','2023-10-05'),('LN3','FD5',100000.00,12.50,12,11,9375.00,'2024-08-22','2023-08-22','2023-09-22'),('LN4','FD6',50000.00,13.50,24,24,2364.58,'2025-09-23','2023-09-23','2023-09-23'),('LN5',NULL,100000.00,12.50,12,12,9375.00,'2024-10-22','2023-10-22','2023-10-22'),('LN6','FD1',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-11-02'),('LN7','FD2',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-12-02');
 /*!40000 ALTER TABLE `loan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -387,6 +387,21 @@ DELIMITER ;;
     SET max_loan_id = IFNULL((SELECT MAX(CAST(SUBSTRING(loan_id, 3) AS SIGNED)) FROM loan), 0);
     SET NEW.loan_id = CONCAT('LN', max_loan_id + 1);
 END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_installment_due_date_insert` BEFORE INSERT ON `loan` FOR EACH ROW SET NEW.installment_due_date = DATE_ADD(NEW.start_date, INTERVAL 1 MONTH) */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -612,7 +627,7 @@ CREATE TABLE `savings_account` (
 
 LOCK TABLES `savings_account` WRITE;
 /*!40000 ALTER TABLE `savings_account` DISABLE KEYS */;
-INSERT INTO `savings_account` VALUES ('S1','Adult',70000.00,5),('S2','Adult',65000.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
+INSERT INTO `savings_account` VALUES ('S1','Adult',72000.00,5),('S2','Adult',67000.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
 /*!40000 ALTER TABLE `savings_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -686,7 +701,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4');
+INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4'),('TRA8','2023-11-02 08:28:12','FD_open',250000.00,'S1'),('TRA9','2023-11-02 08:44:30','FD_open',2000.00,'S2');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -805,6 +820,74 @@ DELIMITER ;
 --
 -- Dumping routines for database 'banking_system'
 --
+/*!50003 DROP PROCEDURE IF EXISTS `applyFDLoan` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `applyFDLoan`(
+  IN userId VARCHAR(20),
+  IN loanAmount DECIMAL(10,2),
+  IN loanDuration INT
+)
+BEGIN
+  DECLARE originalFdAmount DECIMAL(10,2);
+  DECLARE maxLoanAmount DECIMAL(10,2);
+  DECLARE fdAccountId VARCHAR(20);
+  DECLARE savingsAccountId VARCHAR(20);
+  
+  -- Get the savings Account_no into savingsAccountId
+  SELECT account_no INTO savingsAccountId
+  FROM account
+  WHERE customer_id = userId AND account_type = "savings";
+
+-- Get the FD_id into fdAccountId
+  SELECT fd_id INTO fdAccountId
+  FROM fixed_deposit
+  WHERE account_no = savingsAccountId;
+  
+  -- Get the original FD amount for the user
+  SELECT amount INTO originalFdAmount
+  FROM fixed_deposit
+  WHERE account_no IN (SELECT account_no FROM account WHERE customer_id = userId);
+
+  -- Calculate the maximum loan amount based on FD amount
+  SET maxLoanAmount = LEAST(originalFdAmount * 0.60, 500000.00);
+
+  -- Check if the user meets the conditions
+  IF originalFdAmount IS NOT NULL
+    AND loanAmount <= maxLoanAmount
+    AND loanDuration > 0 THEN
+
+    -- Insert the loan record
+    INSERT INTO loan (fd_id, loan_amount, interest_rate, total_installments, remaining_installments, start_date)
+    VALUES (fdAccountId, loanAmount, 12.50, loanDuration, loanDuration, NOW());
+
+	-- Deposit the FD amount into the savings account with a transaction record
+    UPDATE savings_account
+    SET balance = balance + loanAmount
+    WHERE account_no = savingsAccountId;
+
+    -- Insert a transaction record for the FD transfer
+    INSERT INTO transactions (date, type, amount, account_no)
+    VALUES (NOW(), 'FD_open', loanAmount, savingsAccountId);
+
+    SELECT 'Loan successfully applied.' AS Result;
+
+  ELSE
+    SELECT 'Loan amount exceeded' AS Result;
+  END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `makeCurrentAccount` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1028,4 +1111,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-01 19:58:49
+-- Dump completed on 2023-11-02  8:59:01
