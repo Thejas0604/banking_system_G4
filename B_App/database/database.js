@@ -269,3 +269,16 @@ export async function getBranchReport(branchID) {
     return false;
   }
 }
+
+
+export async function getLoanDetails(cusID) {
+  try {
+    const [rows] = await pool.query(
+      "CALL getLoanDetails(?)", [cusID] //wrong
+    );
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}

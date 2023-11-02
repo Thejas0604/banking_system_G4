@@ -1,98 +1,99 @@
 <%- include('partials/header.ejs') %>
 
-<style>
-  .customer-details {
-    border: 1px solid #ccc;
-    padding: 10px;
-    margin: 10px;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px #ccc;
-  }
-  .customer-details h1 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-  .customer-details h3 {
-    font-size: 20px;
-    margin-bottom: 5px;
-  }
-  .customer-details p {
-    font-size: 18px;
-    margin: 5px 0;
-  }
-  .button {
-    background-color: #4caf50; /* Green */
-    border: none;
-    color: white;
-    padding: 15px 32px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  .button:hover {
-    background-color: #3e8e41;
-  }
-</style>
-<div class="customer-details">
-  <h1>Customer Details</h1>
-  <p>Name: <%= name %></p>
-  <p>Address: <%= address %></p>
-  <p>Phone: <%= phone %></p>
-  <% if (savingsAccountNo){ %>
-  <h3>Savings Details</h3>
-  <p>Savings Account: <%= savingsAccountNo %></p>
-  <p>Savings Balance: <%= savingsAccountBalance %></p>
-  <p>Remaining Withdrawals: <%= withdrawalsLeft %></p>
-  <p>Branch ID: <%= savingsBId %></p>
-  <% } %> 
-  <% if (currentAccountNo){ %>
-  <h3>Current A/C Details</h3>
-  <p>Current Account: <%= currentAccountNo %></p>
-  <p>Current Balance: <%= currentAccountBalance %></p>
-  <p>Branch ID: <%= currentBId %></p>
-  <% } %>
-  <% if (fd_exist){ %>
-  <h3>FD Details</h3>
-  <p>Amount in FD: <%= fdAmount %></p>
-  <p>Start Date: <%= fdStart %></p>
-  <p>Duration: <%= fdDuration %></p>
-  <p>Rate: <%= fdRate %></p>
-  <% } %>
+<div class="container">
+  <div class="customer-details mt-4 p-4 border rounded shadow">
+    <h1>Customer Details</h1>
 
+    <div class="card my-4">
+      <div class="card-header">
+        <h3>Personal Details</h3>
+      </div>
+      <div class="card-body">
+        <p class="mb-0"><strong>Name:</strong> <%= name %></p>
+        <p class="mb-0"><strong>Address:</strong> <%= address %></p>
+        <p class="mb-0"><strong>Phone:</strong> <%= phone %></p>
+      </div>
+    </div>
+
+    <% if (savingsAccountNo) { %>
+    <div class="card my-4">
+      <div class="card-header">
+        <h3>Savings Account Details</h3>
+      </div>
+      <div class="card-body">
+        <p class="mb-0"><strong>Savings Account:</strong> <%= savingsAccountNo %></p>
+        <p class="mb-0"><strong>Savings Balance:</strong> <%= savingsAccountBalance %></p>
+        <p class="mb-0"><strong>Remaining Withdrawals:</strong> <%= withdrawalsLeft %></p>
+        <p class="mb-0"><strong>Branch ID:</strong> <%= savingsBId %></p>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (currentAccountNo) { %>
+    <div class="card my-4">
+      <div class="card-header">
+        <h3>Current Account Details</h3>
+      </div>
+      <div class="card-body">
+        <p class="mb-0"><strong>Current Account:</strong> <%= currentAccountNo %></p>
+        <p class="mb-0"><strong>Current Balance:</strong> <%= currentAccountBalance %></p>
+        <p class="mb-0"><strong>Branch ID:</strong> <%= currentBId %></p>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (fd_exist) { %>
+    <div class="card my-4">
+      <div class="card-header">
+        <h3>FD Details</h3>
+      </div>
+      <div class="card-body">
+        <p class="mb-0"><strong>Amount in FD:</strong> <%= fdAmount %></p>
+        <p class="mb-0"><strong>Start Date:</strong> <%= fdStart %></p>
+        <p class="mb-0"><strong>Duration:</strong> <%= fdDuration %></p>
+        <p class="mb-0"><strong>Rate:</strong> <%= fdRate %></p>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (!savingsAccountNo) { %>
+    <div class="my-4">
+      <form method="POST" action="/add-account">
+        <input type="hidden" name="cusId" value="<%= cusId %>" />
+        <input type="hidden" name="acc_t" value="s" />
+        <button type="submit" class="btn btn-secondary">Add Savings Account</button>
+      </form>
+    </div>
+    <% } %>
+
+    <% if (!currentAccountNo) { %>
+    <div class="my-4">
+      <form method="POST" action="/add-account">
+        <input type="hidden" name="cusId" value="<%= cusId %>" />
+        <input type="hidden" name="acc_t" value="c" />
+        <button type="submit" class="btn btn-secondary">Add Current Account</button>
+      </form>
+    </div>
+    <% } %>
+
+    <% if (!fd_exist && savingsAccountNo) { %>
+    <div class="my-4">
+      <form method="POST" action="/add-fd">
+        <input type="hidden" name="cusId" value="<%= cusId %>" />
+        <button type="submit" class="btn btn-secondary">Add FD</button>
+      </form>
+    </div>
+    <% } %>
+
+    <% if (!loan_exist) { %>
+    <div class="my-4">
+      <form method="POST" action="/request-loan">
+        <input type="hidden" name="cusId" value="<%= cusId %>" />
+        <button type="submit" class="btn btn-secondary">Request LOAN</button>
+      </form>
+    </div>
+    <% } %>
+  </div>
 </div>
 
-<% if (!savingsAccountNo){ %>
-<div>
-  <form method="POST" action="/add-account">
-    <input type="hidden" name="cusId" value="<%= cusId %>" />
-    <input type="hidden" name="acc_t" value="s" />
-    <button type="submit" class="button">Add Savings Account</button>
-  </form>
-</div>
-<% } %> <% if (!currentAccountNo){ %>
-<div>
-  <form method="POST" action="/add-account">
-    <input type="hidden" name="cusId" value="<%= cusId %>" />
-    <input type="hidden" name="acc_t" value="c" />
-    <button type="submit" class="button">Add Current Account</button>
-  </form>
-</div>
-<% } %> <% if (!fd_exist && savingsAccountNo){ %>
-<div>
-  <form method="POST" action="/add-fd">
-    <input type="hidden" name="cusId" value="<%= cusId %>" />
-    <button type="submit" class="button">Add FD</button>
-  </form>
-</div>
-<% } %> <% if (!loan_exist){ %>
-<div>
-  <form method="POST" action="/request-loan">
-    <input type="hidden" name="cusId" value="<%= cusId %>" />
-    <button type="submit" class="button">Request LOAN</button>
-  </form>
-</div>
-<% } %> <%- include('partials/footer.ejs') %>
+<%- include('partials/footer.ejs') %>

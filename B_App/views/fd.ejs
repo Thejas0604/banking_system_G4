@@ -1,119 +1,48 @@
 <%- include('partials/header') %>
-<style>
-  .fd {
-    color: white;
-    text-align: left;
-    margin: 3rem;
-  }
-  .fd-details-container {
-    display: flex;
-    flex-direction: column;
-    color: white;
-    background-color: #1a1a1a;
-    padding: 2rem;
-    padding-left: 2rem;
-    border-radius: 1rem;
-    margin: 3rem 8rem;
-  }
-  .items {
-    display: flex;
-  }
-  .items-items {
-    width: 100%;
-  }
-  #right {
-    font-weight: bold;
-    background-color: white;
-    color: black;
-    border-radius: 1rem;
-    padding: 2rem;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0rem 2rem 0 2rem;
-  }
-  .interest-rate {
-    color: #1a1a1a;
-    font-size: 5rem;
-    margin: 2rem;
-  }
-  #left {
-    font-size: 1.5rem;
-    margin: 1rem;
-  }
-  #p-left {
-    margin: 1rem;
-  }
-  .loan-request-container {
-    display: flex;
-    flex-direction: column;
-    color: white;
-    background-color: #1a1a1a;
-    padding: 2rem;
-    padding-left: 2rem;
-    border-radius: 1rem;
-    margin: 3rem 8rem;
-  }
-  .loan-input {
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-top: 1rem;
-    width: 100%;
-  }
-  .loan-submit-button {
-    background-color: white;
-    color: black;
-    border: none;
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-left: 1rem;
-  }
-  .loan-submit-button:hover {
-    background-color: #333333;
-    color: white;
-  }
-</style>
-<h2 class="fd">Fixed Deposits</h2>
-<div class="fd-details-container">
-  <div class="items">
-      <p id="p-left">Fixed Deposit ID <%= fd_id %></p>
-      <p id="p-left">Amount: <%= amount %></p>
-      <p id="p-left">Start Date: <%= startDate %></p>
-      <p id="p-left">End Date: <%= endDate %></p>
-      <p id="p-left">Duration: <%= duration %></p>
+
+<h2 class="text-center mt-5">Fixed Deposits</h2>
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-5">
+      <div class="card mb-3">
+        <div class="card-body">
+          <p class="card-text">Fixed Deposit ID: <%= fd_id %></p>
+          <p class="card-text">Amount: <%= amount %></p>
+          <p class="card-text">Start Date: <%= startDate %></p>
+        </div>
+      </div>
     </div>
-    <div class="items-items" id="right">
-      <h2>Interest Rate:</h2>
-      <p class="interest-rate"><%= rate %></p>
+    <div class="col-md-5">
+      <div class="card text-center">
+        <div class="card-body">
+          <h2 class="card-title">Interest Rate:</h2>
+          <p class="interest-rate"><%= rate %></p>
+        </div>
+      </div>
     </div>
   </div>
 </div>
-<div class="loan-request-container">
-  <h2 style="margin-bottom: 1rem">Request a online Loan</h2>
-  <form action="/request-loan-online" method="POST">
-    <label for="amount">Loan Amount:</label>
-    <input
-      class="loan-input"
-      type="number"
-      id="amount"
-      name="amount"
-      required
-    />
 
-    <label for="duration">Loan Duration (in months):</label>
-    <input
-      class="loan-input"
-      type="number"
-      id="duration"
-      name="duration"
-      required
-    />
-
-    <button class="loan-submit-button" type="submit">Submit</button>
-  </form>
+<% if (loanID) { %>
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-body">
+      <h2 class="card-title">Request an Online Loan</h2>
+      <form action="/request-loan-online" method="POST">
+        <div class="mb-3">
+          <label for="amount" class="form-label">Loan Amount:</label>
+          <input type="number" class="form-control loan-input" id="amount" name="amount" required>
+        </div>
+        <div class="mb-3">
+          <label for="duration" class="form-label">Loan Duration (in months):</label>
+          <input type="number" class="form-control loan-input" id="duration" name="duration" required>
+        </div>
+        <button type="submit" class="btn btn-primary loan-submit-button">Submit</button>
+      </form>
+    </div>
+  </div>
 </div>
+<% } %>
+
 <%- include('partials/footer') %>

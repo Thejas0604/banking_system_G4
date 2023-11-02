@@ -5,7 +5,7 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings, createCustomer, getBranchReport } from "./database/database.js";
+import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings, createCustomer, getBranchReport,getLoanDetails } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
@@ -223,7 +223,7 @@ app.get("/fd",authenticateUserToken, async(req, res) => {
   let end_date;
   let duration;
   let rate;
-
+  let loanID = await getLoanDetails(userId);
 
   if (fdData != undefined) {
 
@@ -235,6 +235,7 @@ app.get("/fd",authenticateUserToken, async(req, res) => {
     rate = fdData.rate;
   }
   res.render("fd", {
+    "loanID": loanID,
     "fd_id": fd_id,
     "amount": amount,
     "startDate": start_date,
