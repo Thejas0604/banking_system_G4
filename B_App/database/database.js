@@ -29,7 +29,6 @@ export async function checkCredentials(username, password) {
   }
 }
 ///////////////////////////////////////////////
-
 //Get user name 
 export async function getCDetails(cus_id) {
   try {
@@ -71,10 +70,6 @@ export async function getEDetails(emp_id) {
 }
 
 /////----------Dashboard----------////////////////
-
-
-
-
 //Get Savings Account Withdrawals Left
 export async function getSavingsDetails(uid) {
   try {
@@ -102,7 +97,7 @@ export async function getSavTypeDetails(type) {
   }
 }
 
-//Transfers
+//Transfers (Savings + Current)
 export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount, callback) {
   pool.query(
     'CALL MakeMoneyTransfer(?, ?, ?)',
@@ -119,7 +114,7 @@ export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount,
   );
 }
 
-//Get Current Account Number - Not finished
+//Get Current Account details
 export async function getCurrentDetails(uid) {
     try {
         const [rows] = await pool.query(
@@ -134,13 +129,12 @@ export async function getCurrentDetails(uid) {
 }
 
 
-
 //Get fd info
-export async function getFDInfo(uid) {
+export async function getFDInfo(savingsAccountNo) {
   try {
     const [rows] = await pool.query(
-      "SELECT * FROM fixed_deposit WHERE customer_id = ?",
-      [uid]
+      "SELECT * FROM fixed_deposit WHERE account_no = ?",
+      [savingsAccountNo]
     );
     return rows[0];
   } catch (err) {
@@ -150,19 +144,73 @@ export async function getFDInfo(uid) {
 }
 ///////////////////////////////////////////////
 
+// export async function createCurrent1(uid, BId, startDate, startAmount) {
+//   try {
+//     const [rows] = await pool.query(
+//       "INSERT INTO account (customer_id, account_type, branch_id, start_date, starting_amount) VALUES (?, ?, ?, ?, ?)",
+//       [uid, "current", BId, startDate, startAmount]
+//     );
+//     const [accountRows] = await pool.query(
+//       "SELECT account_no FROM account WHERE customer_id = ? AND account_type = ?",
+//       [uid, "current"]
+//     );
+//     const accountNo = accountRows[0].account_no;
+//     console.log(accountNo);
+//     await pool.query(
+//       "INSERT INTO current_account ( balance) VALUES (?)", ////////////////////////////////////not good code
+//       [startAmount]
+//     );
+//     return true;
+//   } catch (err) {
+//     console.log(err);
+//     return false;
+//   }
+// }
 
-
+// export async function createSavings1(uid, BId, startDate, startAmount, account_type) {
+//   try {
+//     const [rows] = await pool.query(
+//       "INSERT INTO account (customer_id, account_type, branch_id, start_date, starting_amount) VALUES (?, ?, ?, ?, ?)",
+//       [uid, "current", BId, startDate, startAmount]
+//     );
+//     const [accountRows] = await pool.query(
+//       "SELECT account_no FROM account WHERE customer_id = ? AND account_type = ?",
+//       [uid, "savings"]
+//     );
+//     console.log(accountRows[0]);
+//     const accountNo = accountRows[0].account_no;
+//     await pool.query(
+//       "INSERT INTO savings_account (account_type, balance, remaining_withdrawals) VALUES (?, ?, ?)",
+//       [account_type, startAmount, 5]
+//     );
+//     return true;
+//   } catch (err) {
+//     console.log(err);
+//     return false;
+//   }
+// }
 
 export async function createCurrent(uid, BId, startDate, startAmount) {
   try {
-      const [rows] = await pool.query(
-        "INSERT INTO current_account (customer_id, branch_id, start_date, balance) VALUES (?, ?, ?, ?)",
-        [uid, BId, startDate, startAmount]
-
-      );
-      return true;
-    } catch (err) {
-      console.log(err);
-      return false;
-    }
+    const [rows] = await pool.query(
+      "CALL makeCurrentAccount(?, ?, ?, ?, ?)",
+      [uid, BId, startDate, startAmount, "current" ]
+    );
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+export async function createSavings(uid, BId, accountType, startDate, startAmount) {
+  try {
+    const [rows] = await pool.query(
+      "CALL MakeSavingsAccount(?, ?, ?, ?, ?)",
+      [uid, BId,accountType, startDate, startAmount ]
+    );
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 }
