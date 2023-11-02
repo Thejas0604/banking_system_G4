@@ -18,6 +18,7 @@
     border-radius: 1rem;
     margin: 1rem;
   }
+
   button {
     background-color: white;
     color: rgb(0, 0, 0);
@@ -32,10 +33,12 @@
     cursor: pointer;
     width: 100%;
   }
+
   button:hover {
     background-color: #333333;
     color: white;
   }
+
   .savings-container {
     display: flex;
     flex-direction: column;
@@ -46,14 +49,17 @@
     border-radius: 1rem;
     margin: 1rem;
   }
+
   .savings-items {
     width: 100%;
     border-radius: 1rem;
     padding: 2rem;
+    margin: 2rem;
     background-color: white;
     color: black;
     margin: 1rem;
   }
+
   .bank-transfer-button {
     width: 100%;
     border-radius: 1rem;
@@ -62,26 +68,30 @@
     margin: 1rem;
   }
 </style>
-<div class="greeting-dashboard">
-  <h3>Hello</h3>
-  <h2><%= name %>,</h2>
-</div>
-<div class="loan-fd-container">
-  <Button onclick="window.location.href='/fd';">Fixed Deposits</Button>
-  <Button onclick="window.location.href='/loan';">Loans</Button>
-</div>
-<div class="savings-container">
-  <div class="savings-items">
-    <h3 style="margin-bottom: 1.5rem">Savings Details:</h3>
-    <h2>Account No: <%= savingsAccountNo %></h2>
-    <h2>Savings Balance: <%= savingsAccountBalance %></h2>
-    <h2>Withdrawals left: <%= withdrawalsLeft %></h2>
-    <h2>Interest Rate: <%= interestRate %></h2>
+<div class="container">
+  <div class="greeting-dashboard">
+    <h3>Hello</h3>
+    <h2><%= name %>,</h2>
   </div>
-  <div class="bank-transfer-button">
-    <button onclick="window.location.href='/transfers';">
-      Bank Transfers
-    </button>
+  <div class="loan-fd-container">
+    <div class="col-md-6">
+      <button class="btn btn-dark" onclick="window.location.href='/fd';">Fixed Deposits</button>
+    </div>
+    <div class="col-md-6">
+      <button class="btn btn-dark" onclick="window.location.href='/loan';">Loans</button>
+    </div>
+  </div>
+  <div class="savings-container">
+    <div class="savings-items">
+      <h3 style="margin-bottom: 1.5rem">Savings Details:</h3>
+      <h2>Account No: <%= savingsAccountNo %></h2>
+      <h2>Savings Balance: <%= savingsAccountBalance %></h2>
+      <h2>Withdrawals left: <%= withdrawalsLeft %></h2>
+      <h2>Interest Rate: <%= interestRate %></h2>
+    </div>
+    <div class="bank-transfer-button">
+      <button class="btn btn-primary" onclick="window.location.href='/transfers';">Bank Transfers</button>
+    </div>
   </div>
 </div>
 <%- include('partials/footer') %>

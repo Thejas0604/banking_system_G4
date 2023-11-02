@@ -1,167 +1,163 @@
 <%- include('partials/header') %>
 <style>
   .greeting-dashboard {
-    color: white;
     background-color: #1a1a1a;
     padding: 1rem;
-    padding-left: 4rem;
     border-radius: 1rem;
     margin: 1rem;
+    color: white;
+    text-align: center;
   }
+
   .tiles-container {
     display: flex;
-    color: white;
     background-color: #1a1a1a;
     padding: 2rem;
-    padding-left: 2rem;
     border-radius: 1rem;
     margin: 1rem;
   }
+
   .tile {
     background-color: white;
     margin: 2rem;
-    width: 100%;
-    height: 250px;
     border-radius: 1rem;
-  }
-  .tile-items {
     padding: 1rem;
-    color: black;
-    margin: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   }
+
+  .tile-items {
+    color: #333;
+  }
+
   .transactions-container {
-    display: block;
-    color: white;
     background-color: #1a1a1a;
     padding: 2rem;
-    padding-left: 2rem;
     border-radius: 1rem;
     margin: 1rem;
+    color: white;
   }
+
   button {
     background-color: #1a1a1a;
     color: white;
     border: none;
     border-radius: 1rem;
-    padding: 1rem;
+    padding: 1rem 2rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
     font-size: 1rem;
     cursor: pointer;
+    transition: background-color 0.3s;
   }
+
   button:hover {
     background-color: #333333;
   }
-  * {
-    margin: 0;
-    padding: 0;
-  }
+
   .table-box {
     margin: 50px auto;
   }
 
   .table-row {
     display: table;
-    width: 80%;
-    margin: 10px auto;
+    width: 100%;
     font-family: sans-serif;
     background: transparent;
     padding: 12px 50px;
-    color: #ffffff;
+    color: #333;
     font-size: 13px;
-    box-shadow: 0 1px 4px 0px rgba(0, 0, 50, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 1rem;
   }
+
   .table-head {
     background: white;
-    box-shadow: none;
-    color: black;
+    color: #333;
     font-weight: 600;
-    border-radius: 2rem;
+    border-radius: 1rem;
   }
+
   .table-head .table-cell {
     border-right: none;
   }
+
   .table-cell {
     display: table-cell;
-    width: 20%;
     text-align: center;
     padding: 4px 0;
     border-right: 1px solid #d6d4d4;
     vertical-align: middle;
   }
+
   .first-cell {
     text-align: center;
     padding-left: 10px;
   }
+
   .last-cell {
     border-right: none;
   }
-
-  @media only screen and (max-width: 600px) {
-    .table-row {
-      font-size: 11px;
-    }
-  }
 </style>
-<div class="greeting-dashboard">
-  <h3>Hello</h3>
-  <h2><%= name %>,</h2>
-</div>
+<div class="container">
+  <div class="greeting-dashboard">
+    <h3>Hello</h3>
+    <h2><%= name %>,</h2>
+  </div>
 
-<% if (savingsAccountNo){ %>
-<div class="tiles-container d-block">
-  <div class="tile" id="savings">
-    <div class="tile-items">
-      <h3 style="margin-bottom: 1.5rem">Savings Details:</h3>
-      <h2>Account No: <%= savingsAccountNo %></h2>
-      <h2>Savings Balance: <%= savingsAccountBalance %></h2>
-      <h2 style="margin-bottom: 1rem">
-        withdrawalsLeft: <%= withdrawalsLeft %>
-      </h2>
-      <a href="/savings"><button>Check your Savings Account</button></a>
+  <% if (savingsAccountNo){ %>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="tile" id="savings">
+        <div class="tile-items">
+          <h3>Savings Details:</h3>
+          <h2>Account No: <%= savingsAccountNo %></h2>
+          <h2>Savings Balance: <%= savingsAccountBalance %></h2>
+          <h2>Withdrawals Left: <%= withdrawalsLeft %></h2>
+          <a href="/savings"><button class="btn btn-dark">Check your Savings Account</button></a>
+        </div>
+      </div>
     </div>
   </div>
   <% } %> <% if (currentAccountNo){ %>
-  <div class="tiles-container d-block">
-    <div class="tile" id="current">
-      <div class="tile-items">
-        <h3 style="margin-bottom: 2rem">Current Details:</h3>
-        <h2>Account No: <%= currentAccountNo %></h2>
-        <h2 style="margin-bottom: 2rem">
-          Current Balance: <%= currentAccountBalance %>
-        </h2>
-        <a href="/current"><button>Check your Current Account</button></a>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="tile" id="current">
+        <div class="tile-items">
+          <h3>Current Details:</h3>
+          <h2>Account No: <%= currentAccountNo %></h2>
+          <h2>Current Balance: <%= currentAccountBalance %></h2>
+          <a href="/current"><button class="btn btn-dark">Check your Current Account</button></a>
+        </div>
       </div>
     </div>
   </div>
   <% } %>
-
-  <div class="transactions-container">
-    <div style="width: 100%" class="transactions">
-      <h3 style="margin-left: 2rem">Recent Transactions:</h3>
-      <div class="table-box">
-        <div class="table-row table-head">
-          <div class="table-cell first-cell">
-            <p>Transaction ID</p>
+  <div class="row">
+    <div class="col-md-12">
+      <div class="transactions-container">
+        <h3>Recent Transactions:</h3>
+        <div class="table-box">
+          <div class="table-row table-head">
+            <div class="table-cell first-cell">
+              <p>Transaction ID</p>
+            </div>
+            <div class="table-cell">
+              <p>Date</p>
+            </div>
+            <div class="table-cell">
+              <p>Type</p>
+            </div>
+            <div class="table-cell">
+              <p>Amount</p>
+            </div>
+            <div class="table-cell">
+              <p>Initiated Account</p>
+            </div>
+            <div class="table-cell last-cell">
+              <p>Receiver Account</p>
+            </div>
           </div>
-          <div class="table-cell">
-            <p>Date</p>
-          </div>
-          <div class="table-cell">
-            <p>Type</p>
-          </div>
-          <div class="table-cell">
-            <p>Amount</p>
-          </div>
-          <div class="table-cell">
-            <p>Initiated Account</p>
-          </div>
-          <div class="table-cell last-cell">
-            <p>Receiver Account</p>
-          </div>
-        </div>
-
-        <% transactions.forEach(transaction => { %>
+          <% transactions.forEach(transaction => { %>
           <div class="table-row">
             <div class="table-cell first-cell">
               <p><%= transaction.transaction_id %></p>
@@ -182,9 +178,10 @@
               <p><%= transaction.receiver_id %></p>
             </div>
           </div>
-        <% }); %>
+          <% }); %>
+        </div>
       </div>
     </div>
   </div>
-  <%- include('partials/footer') %>
 </div>
+<%- include('partials/footer') %>
