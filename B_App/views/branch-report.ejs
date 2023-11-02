@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<style>
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 5px;
+  }
+
+  .branch-activity-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .items-items {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  #left {
+    margin-right: 20px;
+  }
+</style>
+
+<ul>
+  <% branchReport.forEach(branchActivity => { %>
+  <li>
+    <div class="branch-activity-container">
+      <div class="items">
+        <div class="items-items">
+          <p id="left">Transaction ID: <%= branchActivity.transaction_id %></p>
+          <p id="left">
+            Transaction Type: <%= branchActivity.transaction_type %>
+          </p>
+          <p id="left">Amount: <%= branchActivity.amount %></p>
+          <p id="left">Date: <%= branchActivity.date %></p>
+        </div>
+      </div>
+    </div>
+  </li>
+  <% }); %>
+</ul>
+
+<%- include('partials/footer') %>
