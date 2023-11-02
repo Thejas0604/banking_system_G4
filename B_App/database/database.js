@@ -216,6 +216,33 @@ export async function createSavings(uid, BId, accountType, startDate, startAmoun
 }
 
 
+export async function renderTransactions(uid) {
+  try {
+    const [rows,fields] = await pool.query(
+      "CALL transactionreport(?)",
+      [uid]
+    );
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function onlineLoanRequest(uid, amount, duration) {
+  try {
+    const [rows] = await pool.query(
+      "CALL applyFDLoan(?, ?, ?)",
+      [uid, amount, duration]
+
+    );
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
 export async function createCustomer(name, address, phone, age, username, password, cusType, nic, organizationType) {
   try {
     const [rows] = await pool.query(

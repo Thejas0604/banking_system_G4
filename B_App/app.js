@@ -9,7 +9,9 @@ import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
 import {makeMoneyTransfer} from "./database/database.js";
+import { renderTransactions } from "./database/database.js";
 import { getFDInfo } from "./database/database.js";
+import {onlineLoanRequest} from "./database/database.js";
 import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
 
 // Set up the express app
@@ -56,6 +58,7 @@ app.post("/dashboard", async (req, res) => {
         let cDet = await getCDetails(userId);
         let sDet =  await getSavingsDetails(userId);
         let cuDet=  await getCurrentDetails(userId);
+        let transactions = await renderTransactions(userId);
 
         let savingsAccountNo;
         let savingsAccountBalance;
@@ -72,14 +75,15 @@ app.post("/dashboard", async (req, res) => {
           currentAccountNo = cuDet.account_no;
           currentAccountBalance = cuDet.balance;
         }
-
+        console.log(transactions[0]);
         res.render("dashboard", {
           "name": cDet.name,
           "savingsAccountNo": savingsAccountNo,
           "savingsAccountBalance": savingsAccountBalance,
           "withdrawalsLeft": withdrawalsLeft,
           "currentAccountNo": currentAccountNo,
-          "currentAccountBalance": currentAccountBalance
+          "currentAccountBalance": currentAccountBalance,
+          "transactions": transactions[0]
       });
      
 
@@ -106,6 +110,7 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
       let cDet = await getCDetails(userId);
       let sDet =  await getSavingsDetails(userId);
       let cuDet=  await getCurrentDetails(userId);
+      let transactions = await renderTransactions(userId);
   
       let savingsAccountNo;
       let savingsAccountBalance;
@@ -121,15 +126,16 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
       if (cuDet != undefined) {
         currentAccountNo = cuDet.account_no;
         currentAccountBalance = cuDet.balance;
-      }
-
+      } 
+      
         res.render("dashboard", {
           "name": cDet.name,
           "savingsAccountNo": savingsAccountNo,
           "savingsAccountBalance": savingsAccountBalance,
           "withdrawalsLeft": withdrawalsLeft,
           "currentAccountNo": currentAccountNo,
-          "currentAccountBalance": currentAccountBalance
+          "currentAccountBalance": currentAccountBalance,
+          "transactions": transactions[0]
         }); 
     }else if (user_type == "employee") {
       let eDet = await getEDetails(userId);
@@ -142,6 +148,7 @@ app.get("/dashboard", authenticateUserToken, async (req, res) => {
     }
 
 });
+
 
 ////////////////////////////////////////////////////////////////////////////
 //savings for customer view
@@ -162,24 +169,24 @@ app.get("/savings", authenticateUserToken , async (req, res) => {
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//savings-transfers
-app.get("/transfers-savings",authenticateUserToken, async (req, res) => {
-  res.render("savings-transfers");
+//transfers
+app.get("/transfers",authenticateUserToken, async (req, res) => {
+  res.render("transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
 
-//savings-transfers-do
-app.post("/transfer-savings-do",authenticateUserToken, async (req, res) => {
+//transfers-do
+app.post("/transfer-do", async (req, res) => {
   const sender = req.body.fromAccount;
   const receiver = req.body.toAccount;
   const amount = req.body.amount;
   try {
     await makeMoneyTransfer(sender, receiver, amount);
-    res.render("savings-transfers-do", { "status": "Successful" });
+    res.render("transfers-do", { "status": "Successful" });
   }catch (err) {
     console.log(err);
-    res.render("savings-transfers-do", { "status": "Failed" });
+    res.render("transfers-do", { "status": "Failed" });
 
   }
 });
@@ -197,12 +204,6 @@ app.get("/current",authenticateUserToken,async (req, res) => {
     "currentAccountNo": cuDet.account_no ,
     "currentAccountBalance": cuDet.balance,
   });
-});
-
-////////////////////////////////////////////////////////////////////////////
-//current-transfers
-app.get("/transfers-current",authenticateUserToken, (req, res) => {
-  res.render("current-transfers");
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -244,10 +245,16 @@ app.get("/fd",authenticateUserToken, async(req, res) => {
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
 
-app.post("/request-loan-online",authenticateUserToken, (req, res) => {
+
+app.post("/request-loan-online",async (req, res) => {
   const amount = req.body.amount;
   const duration = req.body.duration;
-  res.render("loanRequests-online", { amount: amount, duration: duration });
+  let result = await onlineLoanRequest(userId, amount, duration);
+  if (result == true) {
+    result = "Loan successfully applied.";} else {
+    result = "Loan application failed.";
+    }
+  res.render("loanRequests-online", { "status": result });
 });
 
 ////////////////////////////////////////////////////////////////////////////
@@ -390,10 +397,8 @@ app.post("/added-savings",authenticateUserToken, (req, res) => {
 
 app.post("/added-current",authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
-  console.log(cusId);
-  console.log(req.body.cus_id);
   const BId = req.body.branch_id;
-  // const startDate = req.body.start_date;
+  const startDate = new Date();
   const startAmount = req.body.start_amount;
 
   createCurrent(cusId, BId, startDate, startAmount);

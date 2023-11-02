@@ -1,13 +1,36 @@
 <%- include('partials/header') %>
 <style>
-    .dunno {
-        color: white;
-        text-align: left;
-        margin: 3rem;
+    .transfer-status {
+        display: flex;
+        flex-direction: column ;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+        padding: 2rem;
+        margin: 5rem;
+        border-radius: 2rem;
+    }
+    .transfer-status p {
+        margin: 0;
+    }
+    .transfer-status button {
+        background-color: #000000;
+        color: #ffffff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    .transfer-status button:hover {
+        background-color: #bebebe;
     }
 </style>
-<div class="dunno">
-    <p>Amount: <%= amount %></p>
-    <p>Duration: <%= duration %></p>
+
+<div class="transfer-status">
+    <h2>Loan Status</h2>
+    <p><%= status %></p>
+    <button style="margin-top: 1rem" onclick="window.location.href='/savings'">Return to Savings</button>
 </div>
+
 <%- include('partials/footer') %>
+
