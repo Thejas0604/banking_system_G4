@@ -257,3 +257,15 @@ export async function createCustomer(name, address, phone, age, username, passwo
     return false;
   }
 }
+
+export async function getBranchReport(branchID) {
+  try {
+    const [rows] = await pool.query(
+      "CALL branchbankreport(?)", [branchID]
+    );
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}

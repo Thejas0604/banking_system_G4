@@ -48,10 +48,14 @@
         <div class="items-items">
           <p id="left">Transaction ID: <%= branchActivity.transaction_id %></p>
           <p id="left">
-            Transaction Type: <%= branchActivity.transaction_type %>
+            Transaction Type: <%= branchActivity.type %>
           </p>
           <p id="left">Amount: <%= branchActivity.amount %></p>
           <p id="left">Date: <%= branchActivity.date %></p>
+          <p id="left">sender_branch: <%= branchActivity.sender_branch %></p>
+          <p id="left">receiver_branch: <%= branchActivity.receiver_branch %></p>
+          <p id="left">initiated_account: <%= branchActivity.initiated_account %></p>
+          <p id="left">receiver_account: <%= branchActivity.receiver_account %></p>
         </div>
       </div>
     </div>

@@ -4,7 +4,7 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings, createCustomer } from "./database/database.js";
+import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings, createCustomer, getBranchReport } from "./database/database.js";
 import { getSavTypeDetails } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
@@ -510,14 +510,14 @@ app.get("/approve-loan/:id", authenticateUserToken, async (req, res) => {
 });
 
 
-app.post("/generate-branch-report",authenticateUserToken, (req, res) => {
+app.post("/generate-branch-report",authenticateUserToken, async (req, res) => {
   const BId = req.body.branch_id;
 
-  // const branchReport = await getBranchReport(BId); /// only unapproved loans --  array of json objects
+  const branchReport = await getBranchReport(BId); /// only unapproved loans --  array of json objects
 
   res.render("branch-report",{
     "BId": BId,
-    "branchReport": branchReport
+    "branchReport": branchReport[0]
   });
 } );
 
