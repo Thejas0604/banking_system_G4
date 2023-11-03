@@ -2,12 +2,14 @@ import mysql from "mysql2";
 import dotenv from "dotenv";
 dotenv.config();
 
-const pool = mysql.createPool({
+const pool = mysql
+  .createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     database: process.env.DB_NAME,
-  }).promise();
+  })
+  .promise();
 
 /////----------Login----------////////////////
 //Credentials check
@@ -29,14 +31,14 @@ export async function checkCredentials(username, password) {
   }
 }
 ///////////////////////////////////////////////
-//Get user name 
+//Get user name
 export async function getCDetails(cus_id) {
   try {
     const [rows] = await pool.query(
       "SELECT * FROM customer WHERE customer_id = ?",
       [cus_id]
     );
-    return rows[0]
+    return rows[0];
   } catch (err) {
     console.log(err);
     return false;
@@ -45,7 +47,7 @@ export async function getCDetails(cus_id) {
 export async function getCusId(un) {
   try {
     const [rows] = await pool.query(
-      // "CALL getCusID(?, @p_customer_id)",  
+      // "CALL getCusID(?, @p_customer_id)",
       // [un]
       "select user_id from user where user_name = ?",
       [un]
@@ -98,17 +100,27 @@ export async function getSavTypeDetails(type) {
 }
 
 //Transfers (Savings + Current)
-export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount, callback) {
+export async function makeMoneyTransfer(
+  sender_id,
+  receiver_id,
+  transfer_amount,
+  callback
+) {
   pool.query(
-    'CALL MakeMoneyTransfer(?, ?, ?)',
+    "CALL MakeMoneyTransfer(?, ?, ?)",
     [sender_id, receiver_id, transfer_amount],
     (err, results) => {
       if (err) {
-        console.error('Error calling the stored procedure: ' + err.message);
-        callback(err);
+        console.error("Error calling the stored procedure: " + err.message);
+        callback(false);
       } else {
-        console.log('Money transfer successful');
-        callback(null, results);
+        if (results[0][0].status === "22003") {
+          console.log("Money transfer failed");
+          callback(false);
+        } else {
+          console.log("Money transfer successful");
+          callback(results);
+        }
       }
     }
   );
@@ -116,18 +128,17 @@ export async function makeMoneyTransfer(sender_id, receiver_id, transfer_amount,
 
 //Get Current Account details
 export async function getCurrentDetails(uid) {
-    try {
-        const [rows] = await pool.query(
-          "SELECT * FROM currentdetails WHERE customer_id = ?",
-          [uid]
-        );
-        return rows[0];
-      } catch (err) {
-        console.log(err);
-        return false;
-      }
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM currentdetails WHERE customer_id = ?",
+      [uid]
+    );
+    return rows[0];
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
 }
-
 
 //Get fd info
 export async function getFDInfo(savingsAccountNo) {
@@ -194,36 +205,44 @@ export async function getFDInfo(savingsAccountNo) {
 
 export async function createCurrent(uid, BId, startDate, startAmount) {
   try {
-    const [rows] = await pool.query(
-      "CALL makeCurrentAccount(?, ?, ?, ?, ?)",
-      [uid, BId, startDate, startAmount, "current" ]
-    );
+    const [rows] = await pool.query("CALL makeCurrentAccount(?, ?, ?, ?, ?)", [
+      uid,
+      BId,
+      startDate,
+      startAmount,
+      "current",
+    ]);
     return true;
   } catch (err) {
     console.log(err);
     return false;
   }
 }
-export async function createSavings(uid, BId, accountType, startDate, startAmount) {
+export async function createSavings(
+  uid,
+  BId,
+  accountType,
+  startDate,
+  startAmount
+) {
   try {
-    const [rows] = await pool.query(
-      "CALL MakeSavingsAccount(?, ?, ?, ?, ?)",
-      [uid, BId,accountType, startDate, startAmount ]
-    );
+    const [rows] = await pool.query("CALL MakeSavingsAccount(?, ?, ?, ?, ?)", [
+      uid,
+      BId,
+      accountType,
+      startDate,
+      startAmount,
+    ]);
     return true;
   } catch (err) {
     console.log(err);
     return false;
   }
 }
-
 
 export async function renderTransactions(uid) {
   try {
-    const [rows,fields] = await pool.query(
-      "CALL transactionreport(?)",
-      [uid]
-    );
+    const [rows, fields] = await pool.query("CALL transactionreport(?)", [uid]);
     return rows;
   } catch (err) {
     console.log(err);
@@ -233,11 +252,11 @@ export async function renderTransactions(uid) {
 
 export async function onlineLoanRequest(uid, amount, duration) {
   try {
-    const [rows] = await pool.query(
-      "CALL applyFDLoan(?, ?, ?)",
-      [uid, amount, duration]
-
-    );
+    const [rows] = await pool.query("CALL applyFDLoan(?, ?, ?)", [
+      uid,
+      amount,
+      duration,
+    ]);
     return true;
   } catch (err) {
     console.log(err);
@@ -245,11 +264,31 @@ export async function onlineLoanRequest(uid, amount, duration) {
   }
 }
 
-export async function createCustomer(name, address, phone, age, username, password, cusType, nic, organizationType) {
+export async function createCustomer(
+  name,
+  address,
+  phone,
+  age,
+  username,
+  password,
+  cusType,
+  nic,
+  organizationType
+) {
   try {
     const [rows] = await pool.query(
       "CALL createCustomer(?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [name, address, phone, age, username, password, cusType, nic, organizationType]
+      [
+        name,
+        address,
+        phone,
+        age,
+        username,
+        password,
+        cusType,
+        nic,
+        organizationType,
+      ]
     );
     return true;
   } catch (err) {
@@ -260,8 +299,19 @@ export async function createCustomer(name, address, phone, age, username, passwo
 
 export async function getBranchReport(branchID) {
   try {
+    const [rows] = await pool.query("CALL branchbankreport(?)", [branchID]);
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function getLoanDetails(cusID) {
+  try {
     const [rows] = await pool.query(
-      "CALL branchbankreport(?)", [branchID]
+      "CALL getLoanDetails(?)",
+      [cusID] //wrong
     );
     return rows;
   } catch (err) {
@@ -270,13 +320,47 @@ export async function getBranchReport(branchID) {
   }
 }
 
+export async function createFD(cusID, amount, duration) {
+  try {
+    const [rows] = await pool.query("CALL createFD(?, ?, ?)", [
+      cusID,
+      amount,
+      duration,
+    ]);
+    return true;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
 
-export async function getLoanDetails(cusID) {
+export async function callLateLoanPayments() {
+  try {
+    const [rows] = await pool.query("CALL lateLoanPayments()");
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function checkLoansToBeApproved() {
+  try {
+    const [rows] = await pool.query("call getLoansToApprove()");
+    return rows;
+  } catch (err) {
+    console.log(err);
+    return false;
+  }
+}
+
+export async function requestLoan(cusID, amount, rate, noOfInstallements, employeeID) {
   try {
     const [rows] = await pool.query(
-      "CALL getLoanDetails(?)", [cusID] //wrong
+      "call bank_test_2.requestLoan(?, ?, ?, ?, ?)",
+      [cusID, amount, rate, noOfInstallements, employeeID]
     );
-    return rows;
+    return true;
   } catch (err) {
     console.log(err);
     return false;

@@ -55,6 +55,19 @@
       </div>
     </div>
     <% } %>
+    <% if (loan_exist) { %>
+    <div class="card my-4">
+      <div class="card-header">
+        <h3>Loan Details</h3>
+      </div>
+      <div class="card-body">
+        <p class="mb-0"><strong>Loan Amount:</strong> <%= loan_exist.loan_amount %></p>
+        <p class="mb-0"><strong>Start Date:</strong> <%= loan_exist.start_date %></p>
+        <p class="mb-0"><strong>No. of Installemnts:</strong> <%= loan_exist.remaining_installments %></p>
+        <p class="mb-0"><strong>Loan Id: </strong> <%= loan_exist.loan_id %></p>
+      </div>
+    </div>
+    <% } %>
 
     <% if (!savingsAccountNo) { %>
     <div class="my-4">

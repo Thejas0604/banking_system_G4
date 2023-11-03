@@ -7,13 +7,14 @@
         <div class="card-body" style="margin: 1rem;">
           <form action="/transfer-do" method="POST" class="transfer-form">
             <div class="form-group">
-              <label for="fromAccount" class="form-label">From Account:</label>
+              <label for="fromAccount"  class="form-label">From Account:</label>
               <input
-                type="text"
+                type="text" 
                 id="fromAccount"
                 name="fromAccount"
-                required
                 class="form-control form-input"
+                value="<%= fromAccount %>"
+                readonly
               />
             </div>
             <div class="form-group">

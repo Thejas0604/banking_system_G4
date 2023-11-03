@@ -5,15 +5,28 @@ import bodyParser from "body-parser";
 import ejs from "ejs";
 import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { checkCredentials, getCDetails, getCusId, getEDetails, createCurrent, createSavings, createCustomer, getBranchReport,getLoanDetails } from "./database/database.js";
-import { getSavTypeDetails } from "./database/database.js";
+import {
+  checkCredentials,
+  getCDetails,
+  getCusId,
+  getEDetails,
+  createCurrent,
+  createSavings,
+  createCustomer,
+  getBranchReport,
+  getLoanDetails,
+  callLateLoanPayments,
+  checkLoansToBeApproved,
+  requestLoan,
+} from "./database/database.js";
+import { getSavTypeDetails, createFD } from "./database/database.js";
 import { getSavingsDetails } from "./database/database.js";
 import { getCurrentDetails } from "./database/database.js";
-import {makeMoneyTransfer} from "./database/database.js";
+import { makeMoneyTransfer } from "./database/database.js";
 import { renderTransactions } from "./database/database.js";
 import { getFDInfo } from "./database/database.js";
-import {onlineLoanRequest} from "./database/database.js";
-import { authenticateAdminToken, authenticateUserToken } from "./auth.js"
+import { onlineLoanRequest } from "./database/database.js";
+import { authenticateAdminToken, authenticateUserToken } from "./auth.js";
 
 // Set up the express app
 const app = express();
@@ -49,7 +62,7 @@ app.post("/dashboard", async (req, res) => {
       //authorization
       const token = jwt.sign(
         { un: userName, role: "user" },
-        "jwt_User_privateKey",  ///this is a password ///////////
+        "jwt_User_privateKey", ///this is a password ///////////
         { expiresIn: "10m" }
       );
       console.log(token);
@@ -57,16 +70,15 @@ app.post("/dashboard", async (req, res) => {
       res.cookie("jwt", token, { httpOnly: true }); // Token will expire in 20 min (1200000 ms)
 
       if (user_type == "customer") {
-
         let cDet = await getCDetails(userId);
-        let sDet =  await getSavingsDetails(userId);
-        let cuDet=  await getCurrentDetails(userId);
+        let sDet = await getSavingsDetails(userId);
+        let cuDet = await getCurrentDetails(userId);
         let transactions = await renderTransactions(userId);
 
         let savingsAccountNo;
         let savingsAccountBalance;
         let withdrawalsLeft;
-        let currentAccountNo; 
+        let currentAccountNo;
         let currentAccountBalance;
 
         if (sDet != undefined) {
@@ -80,24 +92,21 @@ app.post("/dashboard", async (req, res) => {
         }
         console.log(transactions[0]);
         res.render("dashboard", {
-          "name": cDet.name,
-          "savingsAccountNo": savingsAccountNo,
-          "savingsAccountBalance": savingsAccountBalance,
-          "withdrawalsLeft": withdrawalsLeft,
-          "currentAccountNo": currentAccountNo,
-          "currentAccountBalance": currentAccountBalance,
-          "transactions": transactions[0]
-      });
-     
-
-      }else if (user_type == "employee") {
-
+          name: cDet.name,
+          savingsAccountNo: savingsAccountNo,
+          savingsAccountBalance: savingsAccountBalance,
+          withdrawalsLeft: withdrawalsLeft,
+          currentAccountNo: currentAccountNo,
+          currentAccountBalance: currentAccountBalance,
+          transactions: transactions[0],
+        });
+      } else if (user_type == "employee") {
         let eDet = await getEDetails(userId);
 
         res.render("employeeDash", {
-          "name": eDet.name,
-          "role": eDet.role
-        });     
+          name: eDet.name,
+          role: eDet.role,
+        });
       }
     } else {
       res.redirect("/");
@@ -108,74 +117,89 @@ app.post("/dashboard", async (req, res) => {
 app.get("/dashboard", authenticateUserToken, async (req, res) => {
   // if (isAuthenticated) {
 
-    if (user_type == "customer") {
+  if (user_type == "customer") {
+    let cDet = await getCDetails(userId);
+    let sDet = await getSavingsDetails(userId);
+    let cuDet = await getCurrentDetails(userId);
+    let transactions = await renderTransactions(userId);
 
-      let cDet = await getCDetails(userId);
-      let sDet =  await getSavingsDetails(userId);
-      let cuDet=  await getCurrentDetails(userId);
-      let transactions = await renderTransactions(userId);
-  
-      let savingsAccountNo;
-      let savingsAccountBalance;
-      let withdrawalsLeft;
-      let currentAccountNo; 
-      let currentAccountBalance;
-  
-      if (sDet != undefined) {
-        savingsAccountNo = sDet.account_no;
-        savingsAccountBalance = sDet.balance;
-        withdrawalsLeft = sDet.remaining_withdrawals;
-      }
-      if (cuDet != undefined) {
-        currentAccountNo = cuDet.account_no;
-        currentAccountBalance = cuDet.balance;
-      } 
-        res.render("dashboard", {
-          "name": cDet.name,
-          "savingsAccountNo": savingsAccountNo,
-          "savingsAccountBalance": savingsAccountBalance,
-          "withdrawalsLeft": withdrawalsLeft,
-          "currentAccountNo": currentAccountNo,
-          "currentAccountBalance": currentAccountBalance,
-          "transactions": transactions[0]
-        }); 
-    }else if (user_type == "employee") {
-      let eDet = await getEDetails(userId);
+    let savingsAccountNo;
+    let savingsAccountBalance;
+    let withdrawalsLeft;
+    let currentAccountNo;
+    let currentAccountBalance;
 
-      res.render("employeeDash.ejs", {
-        "name": eDet.name,  
-        "role": eDet.role
-
-      });
+    if (sDet != undefined) {
+      savingsAccountNo = sDet.account_no;
+      savingsAccountBalance = sDet.balance;
+      withdrawalsLeft = sDet.remaining_withdrawals;
     }
+    if (cuDet != undefined) {
+      currentAccountNo = cuDet.account_no;
+      currentAccountBalance = cuDet.balance;
+    }
+    res.render("dashboard", {
+      name: cDet.name,
+      savingsAccountNo: savingsAccountNo,
+      savingsAccountBalance: savingsAccountBalance,
+      withdrawalsLeft: withdrawalsLeft,
+      currentAccountNo: currentAccountNo,
+      currentAccountBalance: currentAccountBalance,
+      transactions: transactions[0],
+    });
+  } else if (user_type == "employee") {
+    let eDet = await getEDetails(userId);
 
+    res.render("employeeDash.ejs", {
+      name: eDet.name,
+      role: eDet.role,
+    });
+  }
 });
-
 
 ////////////////////////////////////////////////////////////////////////////
 //savings for customer view
-app.get("/savings", authenticateUserToken , async (req, res) => {
-
+app.get("/savings", authenticateUserToken, async (req, res) => {
   let cDet = await getCDetails(userId);
-  let sDet =  await getSavingsDetails(userId);
+  let sDet = await getSavingsDetails(userId);
   let sType = await getSavTypeDetails(sDet.account_type);
 
   res.render("savings", {
-    "name": cDet.name,
-    "savingsAccountNo": sDet.account_no,
-    "savingsAccountBalance": sDet.balance,
-    "withdrawalsLeft": sDet.remaining_withdrawals,
-    "accountType": sDet.account_type,
-    "interestRate": sType.interest_rate  ///////////////////////////////////////////////////////////// check
+    name: cDet.name,
+    savingsAccountNo: sDet.account_no,
+    savingsAccountBalance: sDet.balance,
+    withdrawalsLeft: sDet.remaining_withdrawals,
+    accountType: sDet.account_type,
+    interestRate: sType.interest_rate, ///////////////////////////////////////////////////////////// check
   });
 });
 
 ////////////////////////////////////////////////////////////////////////////
-//transfers
-app.get("/transfers",authenticateUserToken, async (req, res) => {
-  res.render("transfers");
+//transfers-savings
+app.get("/transfers-savings", authenticateUserToken, async (req, res) => {
+  let savingsdet = await getSavingsDetails(userId);
+  let savingsAccountNo;
+  if (savingsdet != undefined) {
+    savingsAccountNo = savingsdet.account_no;
+  }
+  res.render("transfers-savings", {
+    "fromAccount": savingsAccountNo,
+  });
 });
 
+//transfers-current
+app.get("/transfers-current", authenticateUserToken, async (req, res) => {
+  let currentDet = await getCurrentDetails(userId);
+  let currentAccountNo;
+  if (currentDet != undefined) {
+    currentAccountNo = currentDet.account_no;
+  }
+  console.log(currentAccountNo);
+  console.log(currentDet);
+  res.render("transfers-current", {
+    "fromAccount": currentAccountNo,
+  });
+});
 ////////////////////////////////////////////////////////////////////////////
 
 //transfers-do
@@ -184,38 +208,38 @@ app.post("/transfer-do", async (req, res) => {
   const receiver = req.body.toAccount;
   const amount = req.body.amount;
   try {
-    await makeMoneyTransfer(sender, receiver, amount);
-    res.render("transfers-do", { "status": "Successful" });
-  }catch (err) {
+    let results = await makeMoneyTransfer(sender, receiver, amount);
+    if (results === false) {
+      res.render("transfers-do", { status: "Failed" });
+    }else{
+      res.render("transfers-do", { status: "Successful" });
+    }
+  } catch (err) {
     console.log(err);
-    res.render("transfers-do", { "status": "Failed" });
-
+    
   }
 });
 
-
 ////////////////////////////////////////////////////////////////////////////
 //current
-app.get("/current",authenticateUserToken,async (req, res) => {
+app.get("/current", authenticateUserToken, async (req, res) => {
   console.log(userId);
   let cDet = await getCDetails(userId);
-  let cuDet=  await getCurrentDetails(userId);
-  
+  let cuDet = await getCurrentDetails(userId);
+
   res.render("current", {
-    "name": cDet.name,
-    "currentAccountNo": cuDet.account_no ,
-    "currentAccountBalance": cuDet.balance,
+    name: cDet.name,
+    currentAccountNo: cuDet.account_no,
+    currentAccountBalance: cuDet.balance,
   });
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //Fixed-Deposits
 
-app.get("/fd",authenticateUserToken, async(req, res) => {
-
+app.get("/fd", authenticateUserToken, async (req, res) => {
   let savingsData = await getSavingsDetails(userId);
   let fdData = await getFDInfo(savingsData.account_no);
-
 
   let fd_id;
   let amount;
@@ -226,7 +250,6 @@ app.get("/fd",authenticateUserToken, async(req, res) => {
   let loanID = await getLoanDetails(userId);
 
   if (fdData != undefined) {
-
     fd_id = fdData.fd_id;
     amount = fdData.amount;
     start_date = fdData.start_date;
@@ -235,154 +258,155 @@ app.get("/fd",authenticateUserToken, async(req, res) => {
     rate = fdData.rate;
   }
   res.render("fd", {
-    "loanID": loanID,
-    "fd_id": fd_id,
-    "amount": amount,
-    "startDate": start_date,
-    "endDate": end_date,
-    "rate": rate,
-    "duration": duration
+    loanID: loanID,
+    fd_id: fd_id,
+    amount: amount,
+    startDate: start_date,
+    endDate: end_date,
+    rate: rate,
+    duration: duration,
   });
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //loan-request
 
-
-app.post("/request-loan-online",async (req, res) => {
+app.post("/request-loan-online", async (req, res) => {
   const amount = req.body.amount;
   const duration = req.body.duration;
   let result = await onlineLoanRequest(userId, amount, duration);
   if (result == true) {
-    result = "Loan successfully applied.";} else {
+    result = "Loan successfully applied.";
+  } else {
     result = "Loan application failed.";
-    }
-  res.render("loanRequests-online", { "status": result });
+  }
+  res.render("loanRequests-online", { status: result });
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //Loans
-app.get("/loan",authenticateUserToken, (req, res) => {
+app.get("/loan", authenticateUserToken,async (req, res) => {
+  const loanDet = await getLoanDetails(userId);
   res.render("loan", {
-    interestRate: "7.5%",
-    accountNo: "210383L",
-    loanAmount: "LKR.5,000,000",
-    duration: "1 year",
-    remainingPeriod: "11 months",
-    totalInterest: "LKR.375,000",
-    oneInstallment: "LKR.468,750",
-    noOfInstallmets: "12",
-    payPerIns: "LKR.39,062.50",
+    "loanID": loanDet[0][0].loan_id,
+    "amount": loanDet[0][0].loan_amount,
+    "Remins": loanDet[0][0].remaining_installments,
   });
 });
-
 
 //////////////////////////////////////////////////////////////////////
 //employee dashboard
 
-app.post("/searched-customer",authenticateUserToken, async (req, res) => {
-  console.log(req.body.customerSearch)
-  const cusId = await getCusId(req.body.customerSearch) ;
+app.post("/searched-customer", authenticateUserToken, async (req, res) => {
+  console.log(req.body.customerSearch);
+  const cusId = await getCusId(req.body.customerSearch);
 
   if (cusId == false) {
     res.redirect("/dashboard");
-  }
-  else{
+  } else {
     let cDet = await getCDetails(cusId);
-    let sDet =  await getSavingsDetails(cusId);
-    let cuDet=  await getCurrentDetails(cusId); 
+    let sDet = await getSavingsDetails(cusId);
+    let cuDet = await getCurrentDetails(cusId);
+    let loanDets = await getLoanDetails(cusId);
 
     if (cDet == undefined) {
       res.redirect("/dashboard");
-    }else{
+    } else {
+      let savingsAccountNo;
+      let savingsAccountBalance;
+      let withdrawalsLeft;
+      let currentAccountNo;
+      let currentAccountBalance;
+      let accountType;
+      let savingsBId;
+      let currentBId;
+      let name;
+      let address;
+      let phone;
+      let fdAmount;
+      let fdStart;
+      let fdDuration;
+      let fdRate;
+      let fdDet;
+      let loanDet;
 
-    let savingsAccountNo;
-    let savingsAccountBalance;
-    let withdrawalsLeft;
-    let currentAccountNo; 
-    let currentAccountBalance;
-    let accountType;
-    let savingsBId;
-    let currentBId;
-    let name;
-    let address;
-    let phone;
-    let fdAmount;
-    let fdStart;
-    let fdDuration;
-    let fdRate;
-    let fdDet;  
 
-
-  
-    if(cDet != undefined){
-      name = cDet.name;
-      address = cDet.address;
-      phone = cDet.telephone;
-    }
-  
-
-    if (sDet != undefined) {
-      savingsAccountNo = sDet.account_no;
-      savingsAccountBalance = sDet.balance;
-      withdrawalsLeft = sDet.remaining_withdrawals;
-      accountType = sDet.account_type;
-      savingsBId = sDet.branch_id;
-      fdDet=  await getFDInfo(savingsAccountNo); 
-
-      if (fdDet != undefined) {
-        fdAmount = fdDet.amount;
-        fdStart = fdDet.start_date;
-        fdDuration = fdDet.duration;
-        fdRate = fdDet.rate;
+      if (loanDets != undefined) {
+        try {
+          loanDet = loanDets[0][0];
+        } catch (error) {
+          console.log(error);
+          loanDet = false;
+        }
       }
-  
+      if (cDet != undefined) {
+        name = cDet.name;
+        address = cDet.address;
+        phone = cDet.telephone;
+      }
+
+      if (sDet != undefined) {
+        savingsAccountNo = sDet.account_no;
+        savingsAccountBalance = sDet.balance;
+        withdrawalsLeft = sDet.remaining_withdrawals;
+        accountType = sDet.account_type;
+        savingsBId = sDet.branch_id;
+        fdDet = await getFDInfo(savingsAccountNo);
+
+        if (fdDet != undefined) {
+          fdAmount = fdDet.amount;
+          fdStart = fdDet.start_date;
+          fdDuration = fdDet.duration;
+          fdRate = fdDet.rate;
+        }
+      }
+      if (cuDet != undefined) {
+        currentAccountNo = cuDet.account_no;
+        currentAccountBalance = cuDet.balance;
+        currentBId = cuDet.branch_id;
+      }
+      console.log(loanDet);
+      res.render("customer", {
+        name: name,
+        account_type: accountType,
+        address: address,
+        phone: phone,
+        savingsAccountNo: savingsAccountNo,
+        savingsAccountBalance: savingsAccountBalance,
+        withdrawalsLeft: withdrawalsLeft,
+        savingsBId: savingsBId,
+        currentAccountNo: currentAccountNo,
+        currentAccountBalance: currentAccountBalance,
+        currentBId: currentBId,
+        fd_exist: fdStart, /////////////////////////change
+        loan_exist: false,
+        cusId: cusId,
+        fdAmount: fdAmount,
+        fdStart: fdStart,
+        fdDuration: fdDuration,
+        fdRate: fdRate,
+        fdStart: fdStart,
+        loan_exist: loanDet,
+        
+      });
     }
-    if (cuDet != undefined) {
-      currentAccountNo = cuDet.account_no;
-      currentAccountBalance = cuDet.balance;
-      currentBId = cuDet.branch_id;
-    }
-
-    res.render("customer",{
-      "name": name,
-      "account_type": accountType,
-      "address": address,
-      "phone": phone,
-      "savingsAccountNo": savingsAccountNo,
-      "savingsAccountBalance": savingsAccountBalance,
-      "withdrawalsLeft": withdrawalsLeft,
-      "savingsBId": savingsBId,
-      "currentAccountNo": currentAccountNo,
-      "currentAccountBalance": currentAccountBalance,
-      "currentBId": currentBId,
-      "fd_exist": fdStart, /////////////////////////change
-      "loan_exist": false,
-      "cusId": cusId,
-      "fdAmount": fdAmount,
-      "fdStart": fdStart,
-      "fdDuration": fdDuration,
-      "fdRate": fdRate,
-      "fdStart": fdStart
-
-
-    });
-
   }
-  }
-
 });
 
-app.get("/searched-customer",authenticateUserToken, async (req, res) => {
+app.get("/approve-loan", authenticateUserToken, (req, res) => {
+  res.render("loan-approve.ejs");
+});
+
+
+app.get("/searched-customer", authenticateUserToken, async (req, res) => {
   res.redirect("/dashboard");
 });
 
-app.get("/create-customer",authenticateUserToken, (req, res) => {
+app.get("/create-customer", authenticateUserToken, (req, res) => {
   res.render("create-customer");
-
 });
 
-app.post("/created-customer",authenticateUserToken, (req, res) => {
+app.post("/created-customer", authenticateUserToken, (req, res) => {
   const name = req.body.name;
   const address = req.body.address;
   const phone = req.body.phone;
@@ -393,35 +417,45 @@ app.post("/created-customer",authenticateUserToken, (req, res) => {
   const nic = req.body.nic;
   const organizationType = req.body.organization_type;
 
-  createCustomer(name, address, phone, age, username, password, cusType, nic, organizationType); 
+  createCustomer(
+    name,
+    address,
+    phone,
+    age,
+    username,
+    password,
+    cusType,
+    nic,
+    organizationType
+  );
 
   res.redirect("/dashboard");
 });
 
-app.post("/add-account",authenticateUserToken, (req, res) => {
+app.post("/add-account", authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
 
-  const acc_t = req.body.acc_t ;
+  const acc_t = req.body.acc_t;
 
   res.render("add-account", {
-    "cusId": cusId,
-    "acc_t": acc_t
+    cusId: cusId,
+    acc_t: acc_t,
+  });
 });
-} );
 
-app.post("/added-savings",authenticateUserToken, (req, res) => {
+app.post("/added-savings", authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
   const BId = req.body.branch_id;
   const startDate = new Date();
   const startAmount = req.body.start_amount;
   const accountType = req.body.account_type;
 
-  createSavings(cusId, BId,accountType, startDate, startAmount);
-  
-  res.redirect("/dashboard");
-} );
+  createSavings(cusId, BId, accountType, startDate, startAmount);
 
-app.post("/added-current",authenticateUserToken, (req, res) => {
+  res.redirect("/dashboard");
+});
+
+app.post("/added-current", authenticateUserToken, (req, res) => {
   const cusId = req.body.cus_id;
   const BId = req.body.branch_id;
   const startDate = new Date();
@@ -430,81 +464,65 @@ app.post("/added-current",authenticateUserToken, (req, res) => {
   console.log(cusId, BId, startDate, startAmount);
   const hi = createCurrent(cusId, BId, startDate, startAmount);
   console.log(hi);
-  
+
   res.redirect("/dashboard");
-} );
+});
 
-app.post("/add-fd",authenticateUserToken, (req, res) => {
+app.post("/add-fd", authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
-  res.render("add-fd",{
-    "cusId": cusId
-    
+  res.render("add-fd", {
+    cusId: cusId,
   });
-} );
+});
 
-
-app.post("/added-fd",authenticateUserToken, async (req, res) => {
-  const cusId = req.body.cusId;
+app.post("/added-fd", authenticateUserToken, async (req, res) => {
+  const cusId = req.body.cus_id;
   const amount = req.body.fd_amount;
-  const rate = req.body.interest_rate;
   const duration = req.body.duration;
-
-  const savingsAccountNo = await getSavingsDetails(cusId).account_no;
-
-  // createFD(cusId, amount, rate, duration, savingsAccountNo );
-
+  const fd = await createFD(cusId, amount, duration);
   res.redirect("/dashboard");
+});
 
-} );
-
-app.post("/request-loan",authenticateUserToken, (req, res) => {
+app.post("/request-loan", authenticateUserToken, (req, res) => {
   const cusId = req.body.cusId;
-  res.render("request-loan",{
-    "cusId": cusId
+  res.render("request-loan", {
+    cusId: cusId,
   });
-} );
+});
 
-
-app.get("/request-loan",authenticateUserToken, (req, res) => {
+app.get("/request-loan", authenticateUserToken, (req, res) => {
   res.render("/request-loan");
-} );
+});
 
-app.post("/requested-loan",authenticateUserToken, (req, res) => {
-  const cusId = req.body.cusId;
+app.post("/requested-loan", authenticateUserToken,async (req, res) => {
+  const cusId = req.body.cus_id;
   const amount = req.body.loan_amount;
   const rate = req.body.interest_rate;
   const no_installments = req.body.installment_nos;
 
-  // createLoanRequest(cusId, amount, rate, no_installments);
-
+  await requestLoan(cusId, amount, rate, no_installments, userId);
 
   res.redirect("/dashboard");
-
-} );
-
-
+});
 
 ////////////////////////////////////////////////////
 ///Managers priviledges
 
-app.get("/late-loan-payments",authenticateUserToken,async (req, res) => {
-  
-  // const lateLoanPayments = await getLateLoanPayments(); /// only unapproved loans --  array of json objects
+app.get("/late-loan-payments", authenticateUserToken, async (req, res) => {
+  const lateLoanPayments1 = await callLateLoanPayments(); /// only unapproved loans --  array of json objects
 
-  res.render("late-loan-payments",{
-    "lateLoanPayments": lateLoanPayments
-  
+  res.render("late-loan-payments", {
+    lateLoanPayments: lateLoanPayments1[0],
   });
-} );
+});
 
-app.get("/loans-to-approve",authenticateUserToken, async (req, res) => {
+app.get("/loans-to-approve", authenticateUserToken, async (req, res) => {
+  const loansToApprove1 = await checkLoansToBeApproved(); /// only unapproved loans --  array of json objects
 
-  // const loansToApprove = await getLoansToApprove(); /// only unapproved loans --  array of json objects
-
-  res.render("loans-to-approve",{
-    "loansToApprove": loansToApprove
+  res.render("loans-to-approve", {
+    loansToApprove: loansToApprove1[0],
   });
-} );
+});
 
 app.get("/approve-loan/:id", authenticateUserToken, async (req, res) => {
   const loanRequestId = req.params.id;
@@ -513,41 +531,33 @@ app.get("/approve-loan/:id", authenticateUserToken, async (req, res) => {
   res.redirect("/loans-to-approve");
 });
 
-
-app.post("/generate-branch-report",authenticateUserToken, async (req, res) => {
+app.post("/generate-branch-report", authenticateUserToken, async (req, res) => {
   const BId = req.body.branch_id;
 
   const branchReport = await getBranchReport(BId); /// only unapproved loans --  array of json objects
 
-  res.render("branch-report",{
-    "BId": BId,
-    "branchReport": branchReport[0]
+  res.render("branch-report", {
+    BId: BId,
+    branchReport: branchReport[0],
   });
-} );
-
-
-
-
-
-
-
+});
 
 ////////////////////////////////////////////////////////////////////////////
 //logout
-app.get("/logout",authenticateUserToken, (req, res) => {
+app.get("/logout", authenticateUserToken, (req, res) => {
   res.clearCookie("jwt");
   res.redirect("/");
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //about page
-app.get("/about",authenticateUserToken, (req, res) => {
+app.get("/about", authenticateUserToken, (req, res) => {
   res.render("about.ejs");
 });
 
 ////////////////////////////////////////////////////////////////////////////
 //contact page
-app.get("/contact",authenticateUserToken, (req, res) => {
+app.get("/contact", authenticateUserToken, (req, res) => {
   res.render("contact.ejs");
 });
 

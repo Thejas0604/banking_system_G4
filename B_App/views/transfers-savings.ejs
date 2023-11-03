@@ -1,0 +1,51 @@
+<%- include('partials/header') %>
+
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card form-container" style="margin: 1rem;">
+        <div class="card-body" style="margin: 1rem;">
+          <form action="/transfer-do" method="POST" class="transfer-form">
+            <div class="form-group">
+              <label for="fromAccount"  class="form-label">From Account:</label>
+              <input
+                type="text" 
+                id="fromAccount"
+                name="fromAccount"
+                class="form-control form-input"
+                value="<%= fromAccount %>"
+                readonly
+              />
+            </div>
+            <div class="form-group">
+              <label for="toAccount" class="form-label">To Account:</label>
+              <input
+                type="text"
+                id="toAccount"
+                name="toAccount"
+                required
+                class="form-control form-input"
+              />
+            </div>
+            <div class="form-group">
+              <label for="amount" class="form-label">Amount:</label>
+              <input
+                type="number"
+                id="amount"
+                name="amount"
+                required
+                class="form-control form-input"
+                style="margin-bottom: 1rem;"
+              />
+            </div>
+            <div class="text-center">
+              <button type="submit" class="btn btn-secondary form-button">Transfer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>
