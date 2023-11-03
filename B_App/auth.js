@@ -22,7 +22,7 @@ const authenticateAdminToken = (req, res, next) => {
     let storedTKN = req.cookies.jwt;
   
     if (!storedTKN) {
-      return res.status(401).render("SuccessMsg", {
+      return res.status(401).render("login", {
         showSuccessCard: false,
         message: "No Token Provided !",
       });
