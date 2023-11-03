@@ -301,31 +301,6 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Table structure for table `installement`
---
-
-DROP TABLE IF EXISTS `installement`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `installement` (
-  `installement_id` varchar(50) NOT NULL,
-  `ins_amount` int DEFAULT NULL,
-  `date_settled` date DEFAULT NULL,
-  `loan_id` varchar(50) DEFAULT NULL,
-  PRIMARY KEY (`installement_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `installement`
---
-
-LOCK TABLES `installement` WRITE;
-/*!40000 ALTER TABLE `installement` DISABLE KEYS */;
-/*!40000 ALTER TABLE `installement` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
 -- Table structure for table `loan`
 --
 
@@ -343,9 +318,13 @@ CREATE TABLE `loan` (
   `due_date` date DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `installment_due_date` date DEFAULT NULL,
+  `approval` varchar(15) DEFAULT NULL,
+  `request_id` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`loan_id`),
   KEY `loan_ibfk_1_idx` (`fd_id`),
-  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`fd_id`) REFERENCES `fixed_deposit` (`fd_id`)
+  KEY `loan_ibfk_2_idx` (`request_id`),
+  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`fd_id`) REFERENCES `fixed_deposit` (`fd_id`),
+  CONSTRAINT `loan_ibfk_2` FOREIGN KEY (`request_id`) REFERENCES `loan_request` (`request_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -355,7 +334,7 @@ CREATE TABLE `loan` (
 
 LOCK TABLES `loan` WRITE;
 /*!40000 ALTER TABLE `loan` DISABLE KEYS */;
-INSERT INTO `loan` VALUES ('LN1','FD1',50000.00,12.50,12,10,4687.50,'2024-07-22','2023-07-22','2023-09-22'),('LN2','FD4',100000.00,13.50,24,22,4729.17,'2025-08-05','2023-08-05','2023-10-05'),('LN3','FD5',100000.00,12.50,12,11,9375.00,'2024-08-22','2023-08-22','2023-09-22'),('LN4','FD6',50000.00,13.50,24,24,2364.58,'2025-09-23','2023-09-23','2023-09-23'),('LN5',NULL,100000.00,12.50,12,12,9375.00,'2024-10-22','2023-10-22','2023-10-22'),('LN6','FD1',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-11-02'),('LN7','FD2',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-12-02');
+INSERT INTO `loan` VALUES ('LN1','FD1',50000.00,12.50,12,10,4687.50,'2024-07-22','2023-07-22','2023-09-22','approved',NULL),('LN2','FD4',100000.00,13.50,24,22,4729.17,'2025-08-05','2023-08-05','2023-10-05','approved',NULL),('LN3','FD5',100000.00,12.50,12,11,9375.00,'2024-08-22','2023-08-22','2023-09-22','approved',NULL),('LN4','FD6',50000.00,13.50,24,24,2364.58,'2025-09-23','2023-09-23','2023-09-23','approved',NULL),('LN5',NULL,100000.00,12.50,12,12,9375.00,'2024-10-22','2023-10-22','2023-10-22','approved','LREQ1'),('LN6','FD1',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-11-02',NULL,NULL),('LN7','FD2',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-12-02',NULL,NULL);
 /*!40000 ALTER TABLE `loan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -523,17 +502,13 @@ DROP TABLE IF EXISTS `loan_request`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loan_request` (
   `request_id` varchar(20) NOT NULL,
-  `loan_id` varchar(20) DEFAULT NULL,
   `customer_id` varchar(20) DEFAULT NULL,
   `loan_amount` decimal(10,2) DEFAULT NULL,
   `interest_rate` decimal(4,2) DEFAULT NULL,
-  `approval_status` tinyint DEFAULT NULL,
   `employee_id` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`request_id`),
   KEY `loan_request_ibfk_1_idx` (`customer_id`),
-  KEY `loan_request_ibfk_2_idx` (`loan_id`),
-  CONSTRAINT `loan_request_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
-  CONSTRAINT `loan_request_ibfk_2` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`loan_id`)
+  CONSTRAINT `loan_request_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -543,7 +518,7 @@ CREATE TABLE `loan_request` (
 
 LOCK TABLES `loan_request` WRITE;
 /*!40000 ALTER TABLE `loan_request` DISABLE KEYS */;
-INSERT INTO `loan_request` VALUES ('LREQ1','LN5','CUS10',100000.00,12.50,1,'EMP5');
+INSERT INTO `loan_request` VALUES ('LREQ1','CUS10',100000.00,12.50,'EMP5');
 /*!40000 ALTER TABLE `loan_request` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -642,7 +617,7 @@ CREATE TABLE `savings_account` (
 
 LOCK TABLES `savings_account` WRITE;
 /*!40000 ALTER TABLE `savings_account` DISABLE KEYS */;
-INSERT INTO `savings_account` VALUES ('S1','Adult',72000.00,5),('S2','Adult',67000.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
+INSERT INTO `savings_account` VALUES ('S1','Adult',66500.00,5),('S2','Adult',72500.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
 /*!40000 ALTER TABLE `savings_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -733,7 +708,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4'),('TRA8','2023-11-02 08:28:12','FD_open',250000.00,'S1'),('TRA9','2023-11-02 08:44:30','FD_open',2000.00,'S2');
+INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA10','2023-11-02 14:33:37','transfer',5500.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4'),('TRA8','2023-11-02 08:28:12','FD_open',250000.00,'S1'),('TRA9','2023-11-02 08:44:30','FD_open',2000.00,'S2');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -782,7 +757,7 @@ CREATE TABLE `transfer` (
 
 LOCK TABLES `transfer` WRITE;
 /*!40000 ALTER TABLE `transfer` DISABLE KEYS */;
-INSERT INTO `transfer` VALUES ('TRA4','S4','S5'),('TRA5','S1','S2'),('TRA6','S1','S2'),('TRA7','S4','S5');
+INSERT INTO `transfer` VALUES ('TRA10','S1','S2'),('TRA4','S4','S5'),('TRA5','S1','S2'),('TRA6','S1','S2'),('TRA7','S4','S5');
 /*!40000 ALTER TABLE `transfer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -897,8 +872,8 @@ BEGIN
     AND loanDuration > 0 THEN
 
     -- Insert the loan record
-    INSERT INTO loan (fd_id, loan_amount, interest_rate, total_installments, remaining_installments, start_date)
-    VALUES (fdAccountId, loanAmount, 12.50, loanDuration, loanDuration, NOW());
+    INSERT INTO loan (fd_id, loan_amount, interest_rate, total_installments, remaining_installments, start_date, approval)
+    VALUES (fdAccountId, loanAmount, 12.50, loanDuration, loanDuration, NOW(), "approved");
 
 	-- Deposit the FD amount into the savings account with a transaction record
     UPDATE savings_account
@@ -1102,6 +1077,44 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `requestLoan` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `requestLoan`(
+    IN customer_id VARCHAR(20),
+    IN loan_amount DECIMAL(10, 2),
+    IN interest_rate DECIMAL(5, 2),
+    IN no_of_installments INT,
+    IN employee_id VARCHAR(20)
+)
+BEGIN
+
+	DECLARE loan_request_id VARCHAR(20);
+    -- Insert a new loan request
+    INSERT INTO loan_request (customer_id, loan_amount, interest_rate, employee_id)
+    VALUES (customer_id, loan_amount, interest_rate, employee_id);
+
+    SELECT request_id INTO loan_request_id
+	FROM loan_request
+	WHERE customer_id = customer_id AND loan_amount = loan_amount AND interest_rate = interest_rate AND employee_id = employee_id
+	LIMIT 1;
+
+    -- Insert a new loan with approval = "pending" and fd_id = null
+    INSERT INTO loan (loan_amount,request_id,interest_rate, total_installments, start_date, approval, fd_id)
+    VALUES (loan_amount, loan_request_id, interest_rate, no_of_installments, NOW(), 'pending', NULL);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `ValidateSavingsAccount` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -1179,4 +1192,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-02  9:42:11
+-- Dump completed on 2023-11-03  8:57:41
