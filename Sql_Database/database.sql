@@ -1,8 +1,8 @@
 -- MySQL dump 10.13  Distrib 8.0.34, for Win64 (x86_64)
 --
--- Host: localhost    Database: banking_system
+-- Host: localhost    Database: bank_test_2
 -- ------------------------------------------------------
--- Server version	8.1.0
+-- Server version	8.0.34
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -41,7 +41,7 @@ CREATE TABLE `account` (
 
 LOCK TABLES `account` WRITE;
 /*!40000 ALTER TABLE `account` DISABLE KEYS */;
-INSERT INTO `account` VALUES ('C1','CUS3','current','BR1','2023-09-11',500000.00),('C2','CUS6','current','BR1','2023-10-10',350000.00),('C3','CUS8','current','BR1','2023-10-15',560000.00),('C4','CUS10','current','BR1','2023-11-01',10000.00),('S1','CUS1','savings','BR1','2023-05-10',100000.00),('S10','CUS5','savings','BR1','2023-11-01',1500.00),('S11','CUS5','savings','BR1','2023-11-01',1500.00),('S2','CUS2','savings','BR1','2023-05-10',50000.00),('S3','CUS4','savings','BR1','2023-05-17',20000.00),('S4','CUS5','savings','BR2','2023-06-01',1250000.00),('S5','CUS6','savings','BR1','2023-06-16',250000.00),('S6','CUS7','savings','BR2','2023-06-28',10000.00),('S7','CUS8','savings','BR1','2023-08-17',6000000.00),('S8','CUS9','savings','BR2','2023-09-17',5000.00),('S9','CUS10','savings','BR3','2023-10-17',350000.00);
+INSERT INTO `account` VALUES ('C1','CUS1','current','BR2','2023-11-03',50005.00),('C2','CUS11','current','BR2','2023-11-03',250000.00),('C3','CUS12','current','BR2','2023-11-03',23000.00),('S1','CUS1','savings','BR1','2023-11-03',150000.00),('S2','CUS11','savings','BR2','2023-11-03',8000000.00),('S3','CUS12','savings','BR1','2023-11-03',100000.00);
 /*!40000 ALTER TABLE `account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -119,6 +119,25 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Temporary view structure for view `branchreport`
+--
+
+DROP TABLE IF EXISTS `branchreport`;
+/*!50001 DROP VIEW IF EXISTS `branchreport`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `branchreport` AS SELECT 
+ 1 AS `transaction_id`,
+ 1 AS `date`,
+ 1 AS `type`,
+ 1 AS `amount`,
+ 1 AS `sender_branch`,
+ 1 AS `receiver_branch`,
+ 1 AS `initiated_account`,
+ 1 AS `receiver_account`*/;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `current_account`
 --
 
@@ -139,7 +158,7 @@ CREATE TABLE `current_account` (
 
 LOCK TABLES `current_account` WRITE;
 /*!40000 ALTER TABLE `current_account` DISABLE KEYS */;
-INSERT INTO `current_account` VALUES ('C1',500000.00),('C2',350000.00),('C3',560000.00),('C4',10000.00);
+INSERT INTO `current_account` VALUES ('C1',50005.00),('C2',250000.00),('C3',23000.00);
 /*!40000 ALTER TABLE `current_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -201,9 +220,26 @@ CREATE TABLE `customer` (
 
 LOCK TABLES `customer` WRITE;
 /*!40000 ALTER TABLE `customer` DISABLE KEYS */;
-INSERT INTO `customer` VALUES ('CUS1','person','John Doe','123 Main St','1234567890'),('CUS10','person','Mark Rober','655 Wood Road','7489512548'),('CUS2','person','Jane Smith','456 Elm St','9876543210'),('CUS3','organization','ABC Corp','789 Oak St','5555555555'),('CUS4','person','Tim Cook','565 Beverly Hills','7845123698'),('CUS5','person','bruce Wayne','556 Hill Street','9876543210'),('CUS6','organization','XYZ Company','456 Elm Street','2222222222'),('CUS7','person','Jane Doe','789 Maple Street','3333333333'),('CUS8','organization','Acme Corporation','1011 Pine Street','4444444444'),('CUS9','person','Peter Parker','1234 Queens Boulevard','8945762159');
+INSERT INTO `customer` VALUES ('CUS1','person','John Doe','123 Main St','1234567890'),('CUS10','person','Mark Rober','655 Wood Road','7489512548'),('CUS11','person','Thejas Meddepola','754/A/5, 1st Lane, Vihara Mawatha','0779868205'),('CUS12','person','Cheems','754/A/5, 1st Lane, Vihara Mawatha','0779868205'),('CUS2','person','Jane Smith','456 Elm St','9876543210'),('CUS3','organization','ABC Corp','789 Oak St','5555555555'),('CUS4','person','Tim Cook','565 Beverly Hills','7845123698'),('CUS5','person','bruce Wayne','556 Hill Street','9876543210'),('CUS6','organization','XYZ Company','456 Elm Street','2222222222'),('CUS7','person','Jane Doe','789 Maple Street','3333333333'),('CUS8','organization','Acme Corporation','1011 Pine Street','4444444444'),('CUS9','person','Peter Parker','1234 Queens Boulevard','8945762159');
 /*!40000 ALTER TABLE `customer` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary view structure for view `customertransaction`
+--
+
+DROP TABLE IF EXISTS `customertransaction`;
+/*!50001 DROP VIEW IF EXISTS `customertransaction`*/;
+SET @saved_cs_client     = @@character_set_client;
+/*!50503 SET character_set_client = utf8mb4 */;
+/*!50001 CREATE VIEW `customertransaction` AS SELECT 
+ 1 AS `transaction_id`,
+ 1 AS `date`,
+ 1 AS `type`,
+ 1 AS `amount`,
+ 1 AS `initiated_acc`,
+ 1 AS `receiver_acc`*/;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `employee`
@@ -262,7 +298,7 @@ CREATE TABLE `fixed_deposit` (
 
 LOCK TABLES `fixed_deposit` WRITE;
 /*!40000 ALTER TABLE `fixed_deposit` DISABLE KEYS */;
-INSERT INTO `fixed_deposit` VALUES ('FD1','S1',250000.00,'2023-06-20',12,7.50,'2024-06-20 00:00:00'),('FD2','S2',400000.00,'2023-06-21',12,7.50,'2024-06-21 00:00:00'),('FD3','S4',50000.00,'2023-07-15',24,8.50,'2025-07-15 00:00:00'),('FD4','S6',1000000.00,'2023-08-02',12,7.50,'2024-08-02 00:00:00'),('FD5','S7',150000.00,'2023-08-20',36,9.50,'2026-08-20 00:00:00'),('FD6','S8',300000.00,'2023-09-20',6,9.50,'2024-03-20 00:00:00'),('FD7','S9',50000.00,'2023-10-20',12,7.50,'2024-10-20 00:00:00');
+INSERT INTO `fixed_deposit` VALUES ('FD1','S1',5000.00,'2023-11-03',6,13.00,'2024-05-03 00:00:00'),('FD2','S2',1000.00,'2023-11-03',6,13.00,'2024-05-03 00:00:00');
 /*!40000 ALTER TABLE `fixed_deposit` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -293,12 +329,62 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_fixed_deposit_insert` BEFORE INSERT ON `fixed_deposit` FOR EACH ROW BEGIN
+    DECLARE savingsBalance DECIMAL(10,2);
+    SELECT balance INTO savingsBalance
+    FROM savings_account
+    WHERE account_no = NEW.account_no;
+
+    IF savingsBalance < NEW.amount THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Insufficient balance in the linked savings account.';
+    END IF;
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
 /*!50003 CREATE*/ /*!50017 DEFINER=`root`@`localhost`*/ /*!50003 TRIGGER `before_fixed_deposit_update` BEFORE UPDATE ON `fixed_deposit` FOR EACH ROW SET NEW.end_date = DATE_ADD(NEW.start_date, INTERVAL NEW.duration MONTH) */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `installement`
+--
+
+DROP TABLE IF EXISTS `installement`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `installement` (
+  `installement_id` varchar(50) NOT NULL,
+  `ins_amount` int DEFAULT NULL,
+  `date_settled` date DEFAULT NULL,
+  `loan_id` varchar(50) DEFAULT NULL,
+  PRIMARY KEY (`installement_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `installement`
+--
+
+LOCK TABLES `installement` WRITE;
+/*!40000 ALTER TABLE `installement` DISABLE KEYS */;
+/*!40000 ALTER TABLE `installement` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `loan`
@@ -318,13 +404,9 @@ CREATE TABLE `loan` (
   `due_date` date DEFAULT NULL,
   `start_date` date DEFAULT NULL,
   `installment_due_date` date DEFAULT NULL,
-  `approval` varchar(15) DEFAULT NULL,
-  `request_id` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`loan_id`),
   KEY `loan_ibfk_1_idx` (`fd_id`),
-  KEY `loan_ibfk_2_idx` (`request_id`),
-  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`fd_id`) REFERENCES `fixed_deposit` (`fd_id`),
-  CONSTRAINT `loan_ibfk_2` FOREIGN KEY (`request_id`) REFERENCES `loan_request` (`request_id`)
+  CONSTRAINT `loan_ibfk_1` FOREIGN KEY (`fd_id`) REFERENCES `fixed_deposit` (`fd_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -334,7 +416,7 @@ CREATE TABLE `loan` (
 
 LOCK TABLES `loan` WRITE;
 /*!40000 ALTER TABLE `loan` DISABLE KEYS */;
-INSERT INTO `loan` VALUES ('LN1','FD1',50000.00,12.50,12,10,4687.50,'2024-07-22','2023-07-22','2023-09-22','approved',NULL),('LN2','FD4',100000.00,13.50,24,22,4729.17,'2025-08-05','2023-08-05','2023-10-05','approved',NULL),('LN3','FD5',100000.00,12.50,12,11,9375.00,'2024-08-22','2023-08-22','2023-09-22','approved',NULL),('LN4','FD6',50000.00,13.50,24,24,2364.58,'2025-09-23','2023-09-23','2023-09-23','approved',NULL),('LN5',NULL,100000.00,12.50,12,12,9375.00,'2024-10-22','2023-10-22','2023-10-22','approved','LREQ1'),('LN6','FD1',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-11-02',NULL,NULL),('LN7','FD2',2000.00,12.00,12,12,186.67,'2024-11-02','2023-11-02','2023-12-02',NULL,NULL);
+INSERT INTO `loan` VALUES ('LN1','FD1',1000.00,12.50,12,12,93.75,'2024-11-03','2023-11-03','2023-12-03'),('LN2','FD1',100.00,12.50,6,6,18.75,'2024-05-03','2023-11-03','2023-12-03');
 /*!40000 ALTER TABLE `loan` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -458,6 +540,7 @@ CREATE TABLE `loan_payment` (
   `payment_id` varchar(20) NOT NULL,
   `loan_id` varchar(20) DEFAULT NULL,
   `settle_date` date DEFAULT NULL,
+  `due_date` date DEFAULT NULL,
   PRIMARY KEY (`payment_id`),
   KEY `loan_payment_ibfk_1_idx` (`loan_id`),
   CONSTRAINT `loan_payment_ibfk_1` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`loan_id`)
@@ -470,7 +553,7 @@ CREATE TABLE `loan_payment` (
 
 LOCK TABLES `loan_payment` WRITE;
 /*!40000 ALTER TABLE `loan_payment` DISABLE KEYS */;
-INSERT INTO `loan_payment` VALUES ('LPAY1','LN1','2023-08-21'),('LPAY2','LN2','2023-09-04'),('LPAY3','LN3','2023-09-21'),('LPAY4','LN1','2023-09-21'),('LPAY5','LN2','2023-10-04');
+INSERT INTO `loan_payment` VALUES ('LPAY1','LN1','2023-12-04','2023-12-03');
 /*!40000 ALTER TABLE `loan_payment` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -502,13 +585,17 @@ DROP TABLE IF EXISTS `loan_request`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `loan_request` (
   `request_id` varchar(20) NOT NULL,
+  `loan_id` varchar(20) DEFAULT NULL,
   `customer_id` varchar(20) DEFAULT NULL,
   `loan_amount` decimal(10,2) DEFAULT NULL,
   `interest_rate` decimal(4,2) DEFAULT NULL,
+  `approval_status` tinyint DEFAULT NULL,
   `employee_id` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`request_id`),
   KEY `loan_request_ibfk_1_idx` (`customer_id`),
-  CONSTRAINT `loan_request_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`)
+  KEY `loan_request_ibfk_2_idx` (`loan_id`),
+  CONSTRAINT `loan_request_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`customer_id`),
+  CONSTRAINT `loan_request_ibfk_2` FOREIGN KEY (`loan_id`) REFERENCES `loan` (`loan_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -518,7 +605,7 @@ CREATE TABLE `loan_request` (
 
 LOCK TABLES `loan_request` WRITE;
 /*!40000 ALTER TABLE `loan_request` DISABLE KEYS */;
-INSERT INTO `loan_request` VALUES ('LREQ1','CUS10',100000.00,12.50,'EMP5');
+INSERT INTO `loan_request` VALUES ('LREQ1',NULL,'CUS1',60000.00,12.50,0,'EMP3'),('LREQ2',NULL,'CUS11',12000.00,13.50,0,'EMP1');
 /*!40000 ALTER TABLE `loan_request` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -588,7 +675,7 @@ CREATE TABLE `person` (
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES ('CUS1',20,'1234569789'),('CUS10',36,'2352648712'),('CUS2',35,'9999999995'),('CUS4',50,'5959595965'),('CUS5',70,'8888888888'),('CUS7',13,'7878787854'),('CUS9',8,'1025647895');
+INSERT INTO `person` VALUES ('CUS1',20,'1234569789'),('CUS10',36,'2352648712'),('CUS11',23,'200115602030'),('CUS12',45,'200115602030'),('CUS2',35,'9999999995'),('CUS4',50,'5959595965'),('CUS5',70,'8888888888'),('CUS7',13,'7878787854'),('CUS9',8,'1025647895');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -617,7 +704,7 @@ CREATE TABLE `savings_account` (
 
 LOCK TABLES `savings_account` WRITE;
 /*!40000 ALTER TABLE `savings_account` DISABLE KEYS */;
-INSERT INTO `savings_account` VALUES ('S1','Adult',66500.00,5),('S2','Adult',72500.00,3),('S3','Adult',6500.00,2),('S4','Senior',1240000.00,5),('S5','organization',210000.00,4),('S6','Teen',9000.00,1),('S7','Organization',5500000.00,2),('S8','Children',5000.00,3),('S9','Adult',350000.00,5);
+INSERT INTO `savings_account` VALUES ('S1','Adult',196320.00,5),('S2','Adult',7948780.00,5),('S3','Adult',100000.00,5);
 /*!40000 ALTER TABLE `savings_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -708,7 +795,7 @@ CREATE TABLE `transactions` (
 
 LOCK TABLES `transactions` WRITE;
 /*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` VALUES ('TRA1','2023-06-15 00:00:00','withdraw',5000.00,'S1'),('TRA10','2023-11-02 14:33:37','transfer',5500.00,'S1'),('TRA2','2023-06-17 00:00:00','deposit',10000.00,'S2'),('TRA3','2023-06-17 00:00:00','deposit',1000.00,'S3'),('TRA4','2023-09-17 00:00:00','transfer',5000.00,'S4'),('TRA5','2023-10-31 11:43:49','transfer',10000.00,'S1'),('TRA6','2023-10-31 11:51:43','transfer',10000.00,'S1'),('TRA7','2023-10-31 12:00:03','transfer',10000.00,'S4'),('TRA8','2023-11-02 08:28:12','FD_open',250000.00,'S1'),('TRA9','2023-11-02 08:44:30','FD_open',2000.00,'S2');
+INSERT INTO `transactions` VALUES ('TRA1','2023-11-03 12:23:19','Online-loan',1000.00,'S1'),('TRA2','2023-11-03 12:39:46','transfer',50000.00,'S2'),('TRA3','2023-11-03 12:46:34','transfer',820.00,'S2'),('TRA4','2023-11-03 13:18:51','transfer',100.00,'S1'),('TRA5','2023-11-03 13:20:32','Online-loan',100.00,'S1'),('TRA6','2023-11-03 13:36:02','transfer',500.00,'S1');
 /*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -757,7 +844,7 @@ CREATE TABLE `transfer` (
 
 LOCK TABLES `transfer` WRITE;
 /*!40000 ALTER TABLE `transfer` DISABLE KEYS */;
-INSERT INTO `transfer` VALUES ('TRA10','S1','S2'),('TRA4','S4','S5'),('TRA5','S1','S2'),('TRA6','S1','S2'),('TRA7','S4','S5');
+INSERT INTO `transfer` VALUES ('TRA2','S2','S1'),('TRA3','S2','S1'),('TRA4','S1','S2'),('TRA6','S1','S2');
 /*!40000 ALTER TABLE `transfer` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -785,7 +872,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES ('John Doe','$2a$10$abcdef','CUS1','customer'),('Mark Rober','$2a$10$123def','CUS10','customer'),('Jane Smith','$2a$10$123456','CUS2','customer'),('ABC Corp','$2a$10$789xyz','CUS3','customer'),('Tim Cook','$2a$10$pqr123','CUS4','employee'),('Bruce Wayne','$2a$10$xyz456','CUS5','customer'),('XYZ Company','$2a$10$mnopqr','CUS6','customer'),('Jane Doe','$2a$10$789abc','CUS7','customer'),('Acme Corporation','$2a$10$xyz789','CUS8','customer'),('Peter Parker','$2a$10$def456','CUS9','customer'),('Mark Hall','$2a$10$abcdef','EMP1','employee'),('Clark Jhons','$2a$10$abcdef','EMP2','employee'),('Smith Cover','$2a$10$abcdef','EMP3','employee'),('Jason Bank','$2a$10$abcdef','EMP4','employee'),('Walter White','$2a$10$abcdef','EMP5','employee'),('Jesse Pink','$2a$10$abcdef','EMP6','employee');
+INSERT INTO `user` VALUES ('John Doe','$2a$10$abcdef','CUS1','customer'),('Mark Rober','$2a$10$123def','CUS10','customer'),('Thejas0604','1234','CUS11','customer'),('CheemsRIP','1234','CUS12','customer'),('Jane Smith','$2a$10$123456','CUS2','customer'),('ABC Corp','$2a$10$789xyz','CUS3','customer'),('Tim Cook','$2a$10$pqr123','CUS4','employee'),('Bruce Wayne','$2a$10$xyz456','CUS5','customer'),('XYZ Company','$2a$10$mnopqr','CUS6','customer'),('Jane Doe','$2a$10$789abc','CUS7','customer'),('Acme Corporation','$2a$10$xyz789','CUS8','customer'),('Peter Parker','$2a$10$def456','CUS9','customer'),('Mark Hall','$2a$10$abcdef','EMP1','employee'),('Clark Jhons','$2a$10$abcdef','EMP2','employee'),('Smith Cover','$2a$10$abcdef','EMP3','employee'),('Jason Bank','$2a$10$abcdef','EMP4','employee'),('Walter White','$2a$10$abcdef','EMP5','employee'),('Jesse Pink','$2a$10$abcdef','EMP6','employee');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -821,12 +908,64 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
--- Dumping events for database 'banking_system'
+-- Dumping events for database 'bank_test_2'
 --
 
 --
--- Dumping routines for database 'banking_system'
+-- Dumping routines for database 'bank_test_2'
 --
+/*!50003 DROP FUNCTION IF EXISTS `getloanid` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `getloanid`(
+    customerid varchar(20)
+) RETURNS varchar(20) CHARSET utf8mb4
+    DETERMINISTIC
+BEGIN
+    DECLARE outloanid varchar(20);
+    DECLARE savingno varchar(20);
+    DECLARE fdid varchar(20);
+    
+    SELECT loan_id INTO outloanid 
+    FROM loan_request 
+    WHERE customer_id = customerid AND approval_status = 1
+    LIMIT 1;
+    
+    IF outloanid IS NULL THEN
+        SELECT account_no INTO savingno
+        FROM account 
+        WHERE customer_id = customerid AND account_type = "savings"
+        LIMIT 1;
+        
+        IF savingno IS NOT NULL THEN
+            SELECT fd_id INTO fdid 
+            FROM fixed_deposit
+            WHERE account_no = savingno
+            LIMIT 1;
+        END IF;
+            
+        IF fdid IS NOT NULL THEN
+            SELECT loan_id INTO outloanid 
+            FROM loan
+            WHERE fd_id = fdid
+            LIMIT 1;
+        END IF;
+    END IF;
+    
+    RETURN outloanid;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `applyFDLoan` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -872,8 +1011,8 @@ BEGIN
     AND loanDuration > 0 THEN
 
     -- Insert the loan record
-    INSERT INTO loan (fd_id, loan_amount, interest_rate, total_installments, remaining_installments, start_date, approval)
-    VALUES (fdAccountId, loanAmount, 12.50, loanDuration, loanDuration, NOW(), "approved");
+    INSERT INTO loan (fd_id, loan_amount, interest_rate, total_installments, remaining_installments, start_date)
+    VALUES (fdAccountId, loanAmount, 12.50, loanDuration, loanDuration, NOW());
 
 	-- Deposit the FD amount into the savings account with a transaction record
     UPDATE savings_account
@@ -882,13 +1021,244 @@ BEGIN
 
     -- Insert a transaction record for the FD transfer
     INSERT INTO transactions (date, type, amount, account_no)
-    VALUES (NOW(), 'FD_open', loanAmount, savingsAccountId);
+    VALUES (NOW(), 'Online-loan', loanAmount, savingsAccountId);
 
     SELECT 'Loan successfully applied.' AS Result;
 
   ELSE
-    SELECT 'Loan amount exceeded' AS Result;
+    SELECT 'Loan Attempt Failed.' AS Result;
   END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `branchbankreport` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `branchbankreport`(
+IN branch_id varchar (20)
+)
+BEGIN
+	select * from branchreport b
+    where b.sender_branch = branch_id or receiver_branch = branch_id;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `createCustomer` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `createCustomer`(
+    IN cname varchar(50),
+    IN caddress varchar(100),
+    IN cphone char(10),
+    IN cage int,
+    IN username varchar(20),
+    IN passwordhash char(200),
+    IN custype varchar(15),
+    IN cnic char(12),
+    IN orgtype varchar(15)
+)
+BEGIN
+    DECLARE cusid varchar(20);
+
+    -- Insert user record
+    INSERT INTO user (user_name, password_hash, user_type)
+    VALUES (username, passwordhash, "customer");
+
+	-- SET cusid = LAST_INSERT_ID();
+    
+    -- Get the last inserted user_id
+     SELECT CONCAT('CUS', MAX(CAST(SUBSTRING(user_id, 4) AS SIGNED))) 
+		INTO cusid
+		FROM user
+		WHERE user_id NOT LIKE 'EMP%';
+
+
+
+    -- Insert customer record
+    INSERT INTO customer (customer_id, customer_type, name, address, telephone)
+    VALUES (cusid, custype, cname, caddress, cphone);
+
+    -- Handle person or organization
+    IF custype = "person" THEN
+        -- Insert person record
+        INSERT INTO person (customer_id, age, nic)
+        VALUES (cusid, cage, cnic);
+        
+    END IF;
+    
+    IF custype = "organization" THEN
+        -- Insert organization record
+        INSERT INTO organization (customer_id, type)
+        VALUES (cusid, orgtype);
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `createFD` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `createFD`(IN cusID VARCHAR(6), IN amount DECIMAL(10,2), IN DURATION INT)
+BEGIN
+    DECLARE start_date DATE;
+    DECLARE rate DECIMAL(4,2);
+    DECLARE end_date DATETIME;
+    DECLARE savingsAccNo VARCHAR(20);
+     DECLARE savingsBalance DECIMAL(10,2);
+
+    -- Find the savings account linked to the customer
+    SELECT account_no INTO savingsAccNo
+    FROM account
+    WHERE customer_id = cusID AND account_type = 'savings';
+
+    IF savingsAccNo IS NULL THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Customer does not have a linked savings account.';
+    ELSE
+        -- Check if the savings account has enough balance
+       
+        SELECT balance INTO savingsBalance
+        FROM savings_account
+        WHERE account_no = savingsAccNo;
+
+        IF savingsBalance >= amount THEN
+            -- Deduct the amount from savings account
+            UPDATE savings_account
+            SET balance = balance - amount
+            WHERE account_no = savingsAccNo;
+
+            -- Set the start date, rate, and end date based on DURATION
+            SET start_date = CURDATE();
+            CASE DURATION
+                WHEN 6 THEN
+                    SET rate = 13;
+                WHEN 12 THEN
+                    SET rate = 14;
+                WHEN 36 THEN
+                    SET rate = 15;
+            END CASE;
+            SET end_date = DATE_ADD(start_date, INTERVAL DURATION MONTH);
+
+            -- Insert a record into the fixed deposit table
+            INSERT INTO fixed_deposit (fd_id, account_no, amount, start_date, duration, rate, end_date)
+            VALUES (NULL, savingsAccNo, amount, start_date, DURATION, rate, end_date);
+        ELSE
+            SIGNAL SQLSTATE '45000'
+            SET MESSAGE_TEXT = 'Insufficient balance in the linked savings account.';
+        END IF;
+    END IF;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getloandetails` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getloandetails`(
+
+	IN customerid varchar(20)
+)
+BEGIN
+
+	declare loanid varchar (20);
+    
+    select getloanid(customerid) INTO loanid; 
+    
+    select *
+    from loan 
+    where loan_id = loanid
+    limit 1;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `getLoansToApprove` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `getLoansToApprove`()
+BEGIN
+	select
+    c.customer_id,
+    request_id,
+    loan_amount,
+    interest_rate,
+    name,
+    customer_type,
+    address,
+    telephone
+			
+    from loan_request lr
+    join customer c on c.customer_id=lr.customer_id
+    where approval_status=0;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `lateloanpayments` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `lateloanpayments`()
+BEGIN
+	select * from loan_payment
+    where due_date < settle_date;
+    
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1098,17 +1468,58 @@ BEGIN
 
 	DECLARE loan_request_id VARCHAR(20);
     -- Insert a new loan request
-    INSERT INTO loan_request (customer_id, loan_amount, interest_rate, employee_id)
-    VALUES (customer_id, loan_amount, interest_rate, employee_id);
+    INSERT INTO loan_request (customer_id, loan_amount, interest_rate, employee_id,loan_id, approval_status)
+    VALUES (customer_id, loan_amount, interest_rate, employee_id,null,0);
 
-    SELECT request_id INTO loan_request_id
-	FROM loan_request
-	WHERE customer_id = customer_id AND loan_amount = loan_amount AND interest_rate = interest_rate AND employee_id = employee_id
-	LIMIT 1;
+    -- SELECT request_id INTO loan_request_id
+	-- FROM loan_request
+	-- WHERE customer_id = customer_id AND loan_amount = loan_amount AND interest_rate = interest_rate AND employee_id = employee_id
+	-- LIMIT 1;
 
     -- Insert a new loan with approval = "pending" and fd_id = null
-    INSERT INTO loan (loan_amount,request_id,interest_rate, total_installments, start_date, approval, fd_id)
-    VALUES (loan_amount, loan_request_id, interest_rate, no_of_installments, NOW(), 'pending', NULL);
+   -- INSERT INTO loan (loan_amount,request_id,interest_rate, total_installments, start_date, approval, fd_id)
+    -- VALUES (loan_amount, loan_request_id, interest_rate, no_of_installments, NOW(), 0, NULL);
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `transactionreport` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `transactionreport`(
+IN cusid varchar (20)
+)
+BEGIN
+	DECLARE savingno varchar (20);
+    DECLARE currentno varchar (20);
+    
+SELECT account_no 
+INTO currentno
+FROM account 
+WHERE customer_id = cusid AND account_type = 'current'
+LIMIT 1;
+
+SELECT account_no 
+INTO savingno
+FROM account 
+WHERE customer_id = cusid AND account_type = 'savings'
+LIMIT 1;
+
+    
+    select * from customertransaction 
+    where (initiated_acc = savingno OR receiver_acc = savingno) or
+    (initiated_acc = currentno OR receiver_acc = currentno) ;
+    
+    
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -1148,6 +1559,24 @@ DELIMITER ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
+-- Final view structure for view `branchreport`
+--
+
+/*!50001 DROP VIEW IF EXISTS `branchreport`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `branchreport` AS select `tr`.`transaction_id` AS `transaction_id`,`tr`.`date` AS `date`,`tr`.`type` AS `type`,`tr`.`amount` AS `amount`,`a1`.`branch_id` AS `sender_branch`,`a2`.`branch_id` AS `receiver_branch`,`a1`.`account_no` AS `initiated_account`,`a2`.`account_no` AS `receiver_account` from (((`transactions` `tr` join `account` `a1` on((`a1`.`account_no` = `tr`.`account_no`))) left join `transfer` `t` on((`tr`.`transaction_id` = `t`.`transfer_id`))) left join `account` `a2` on((`a2`.`account_no` = `t`.`receiver_id`))) group by `tr`.`type`,`tr`.`transaction_id` */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
 -- Final view structure for view `currentdetails`
 --
 
@@ -1161,6 +1590,24 @@ DELIMITER ;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
 /*!50001 VIEW `currentdetails` AS select `c`.`account_no` AS `account_no`,`a`.`customer_id` AS `customer_id`,`a`.`branch_id` AS `branch_id`,`c`.`balance` AS `balance` from (`current_account` `c` join `account` `a` on((`c`.`account_no` = `a`.`account_no`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `customertransaction`
+--
+
+/*!50001 DROP VIEW IF EXISTS `customertransaction`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_0900_ai_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `customertransaction` AS select `tr`.`transaction_id` AS `transaction_id`,`tr`.`date` AS `date`,`tr`.`type` AS `type`,`tr`.`amount` AS `amount`,`tr`.`account_no` AS `initiated_acc`,`t`.`receiver_id` AS `receiver_acc` from (`transactions` `tr` left join `transfer` `t` on((`tr`.`transaction_id` = `t`.`transfer_id`))) */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -1192,4 +1639,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-11-03  8:57:41
+-- Dump completed on 2023-11-23 17:55:39
