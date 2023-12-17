@@ -183,7 +183,7 @@ app.get("/transfers-savings", authenticateUserToken, async (req, res) => {
     savingsAccountNo = savingsdet.account_no;
   }
   res.render("transfers-savings", {
-    "fromAccount": savingsAccountNo,
+    fromAccount: savingsAccountNo,
   });
 });
 
@@ -197,7 +197,7 @@ app.get("/transfers-current", authenticateUserToken, async (req, res) => {
   console.log(currentAccountNo);
   console.log(currentDet);
   res.render("transfers-current", {
-    "fromAccount": currentAccountNo,
+    fromAccount: currentAccountNo,
   });
 });
 ////////////////////////////////////////////////////////////////////////////
@@ -211,12 +211,11 @@ app.post("/transfer-do", async (req, res) => {
     let results = await makeMoneyTransfer(sender, receiver, amount);
     if (results === false) {
       res.render("transfers-do", { status: "Failed" });
-    }else{
+    } else {
       res.render("transfers-do", { status: "Successful" });
     }
   } catch (err) {
     console.log(err);
-    
   }
 });
 
@@ -285,12 +284,12 @@ app.post("/request-loan-online", async (req, res) => {
 
 ////////////////////////////////////////////////////////////////////////////
 //Loans
-app.get("/loan", authenticateUserToken,async (req, res) => {
+app.get("/loan", authenticateUserToken, async (req, res) => {
   const loanDet = await getLoanDetails(userId);
   res.render("loan", {
-    "loanID": loanDet[0][0].loan_id,
-    "amount": loanDet[0][0].loan_amount,
-    "Remins": loanDet[0][0].remaining_installments,
+    loanID: loanDet[0][0].loan_id,
+    amount: loanDet[0][0].loan_amount,
+    Remins: loanDet[0][0].remaining_installments,
   });
 });
 
@@ -329,7 +328,6 @@ app.post("/searched-customer", authenticateUserToken, async (req, res) => {
       let fdRate;
       let fdDet;
       let loanDet;
-
 
       if (loanDets != undefined) {
         try {
@@ -387,7 +385,6 @@ app.post("/searched-customer", authenticateUserToken, async (req, res) => {
         fdRate: fdRate,
         fdStart: fdStart,
         loan_exist: loanDet,
-        
       });
     }
   }
@@ -396,7 +393,6 @@ app.post("/searched-customer", authenticateUserToken, async (req, res) => {
 app.get("/approve-loan", authenticateUserToken, (req, res) => {
   res.render("loan-approve.ejs");
 });
-
 
 app.get("/searched-customer", authenticateUserToken, async (req, res) => {
   res.redirect("/dashboard");
@@ -494,7 +490,7 @@ app.get("/request-loan", authenticateUserToken, (req, res) => {
   res.render("/request-loan");
 });
 
-app.post("/requested-loan", authenticateUserToken,async (req, res) => {
+app.post("/requested-loan", authenticateUserToken, async (req, res) => {
   const cusId = req.body.cus_id;
   const amount = req.body.loan_amount;
   const rate = req.body.interest_rate;
