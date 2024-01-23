@@ -28,6 +28,8 @@ to be done
 ## Features
 
 ## Screenshots
+![image](https://github.com/Thejas0604/banking_system_G4/assets/109301978/ffc5c5be-8ec4-4dba-a0ce-35a0ac25bdee)
+
 
 ## Database Schema
 
