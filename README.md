@@ -1,17 +1,24 @@
-# Functional Banking Application
-## Steps to run in your computer
-**1. Clone this repo using terminal.**  
-```
-git clone https://github.com/Thejas0604/banking_system_G4.git
-```
+# Functional Banking System
 
-**2. Install node modules in to the respective folder.** 
-```
-npm i
-```
+## Description
 
-**3. Open the server using nodemon.**
-```
-nodemon app.js
-```
-**4. View using your browser. Go to your [localhost:3000](url) .**
+to be done
+
+## Table of Contents
+
+1. [Installation](#installation)
+2. [Usage](#usage)
+3. [Technologies Used](#technologies-used)
+4. [Features](#features)
+5. [Screenshots](#screenshots)
+6. [Database Schema](#database-schema)
+7. [API Documentation](#api-documentation)
+8. [Backend](#backend)
+9. [Frontend](#frontend)
+10. [Deployment](#deployment)
+11. [Contributing](#contributing)
+12. [License](#license)
+
+## Installation
+
+
