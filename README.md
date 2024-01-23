@@ -21,4 +21,15 @@ to be done
 
 ## Installation
 
+## Usage
+
+## Technologies Used
+
+## Features
+
+## Screenshots
+
+## Database Schema
+
+![image](https://github.com/Thejas0604/banking_system_G4/assets/109301978/dcd89c23-7708-4676-bafa-baaec30e28e8)
 
