@@ -20,6 +20,27 @@ to be done
 12. [License](#license)
 
 ## Installation
+1. Clone into your local file system. Make sure to have git install beforehand.
+
+```
+git clone https://github.com/Thejas0604/banking_system_G4.git
+```
+2. Open B_App directory with you terminal. Install node modules with below command. Make sure to install node modules beforehand.
+```
+npm i
+```
+3. Install mysql workbench(or a suitable client) into your PC. Create a database with the database dump in the directory `/Sql_Datbase/database.sql`.
+4. Create a .env file on the directory /B_App and fill it like below with your database info.
+```
+DB_HOST= (your host name)
+DB_USER= (your username)
+DB_PASS= (your password)
+DB_NAME= (database name)
+```
+ 5. Start the server using below command.
+```
+nodemon app.js
+```
 
 ## Usage
 
