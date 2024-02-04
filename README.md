@@ -1,7 +1,7 @@
 # Functional Banking System
 
-## Description
-This project is a comprehensive implementation of a functional bank system, developed as part of a Database Systems course. The system is designed to manage various banking operations efficiently, focusing on robust database architecture and effective data management.
+## Overview
+AgiHome is a revolutionary Android application, designed to bring farmers, gardeners, and buyers together on a social platform. The app facilitates a seamless connection between those cultivating fresh produce and individuals seeking quality agricultural products. AgiHome aims to empower local agriculture, foster community collaboration, and create a sustainable marketplace for growers and buyers.
 
 
 ## Table of Contents
