@@ -1,8 +1,8 @@
 # Functional Banking System
 
 ## Description
+This project is a comprehensive implementation of a functional bank system, developed as part of a Database Systems course. The system is designed to manage various banking operations efficiently, focusing on robust database architecture and effective data management.
 
-to be done
 
 ## Table of Contents
 
@@ -12,12 +12,6 @@ to be done
 4. [Features](#features)
 5. [Screenshots](#screenshots)
 6. [Database Schema](#database-schema)
-7. [API Documentation](#api-documentation)
-8. [Backend](#backend)
-9. [Frontend](#frontend)
-10. [Deployment](#deployment)
-11. [Contributing](#contributing)
-12. [License](#license)
 
 ## Installation
 1. Clone into your local file system. Make sure to have git install beforehand.
