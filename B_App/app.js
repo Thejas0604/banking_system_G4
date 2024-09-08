@@ -1,4 +1,5 @@
 // 1. Install necessary dependencies
+import { configDotenv } from "dotenv";
 import bcrypt from "bcrypt";
 import express from "express";
 import bodyParser from "body-parser";
@@ -287,10 +288,12 @@ app.post("/request-loan-online", async (req, res) => {
 //Loans
 app.get("/loan", authenticateUserToken,async (req, res) => {
   const loanDet = await getLoanDetails(userId);
+  console.log(loanDet);
+  
   res.render("loan", {
-    "loanID": loanDet[0][0].loan_id,
-    "amount": loanDet[0][0].loan_amount,
-    "Remins": loanDet[0][0].remaining_installments,
+    "loanID": loanDet[0][0]?.loan_id,
+    "amount": loanDet[0][0]?.loan_amount,
+    "Remins": loanDet[0][0]?.remaining_installments,
   });
 });
 
