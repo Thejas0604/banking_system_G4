@@ -18,7 +18,7 @@ This project is a comprehensive implementation of a functional bank system, deve
 ```
 git clone https://github.com/Thejas0604/banking_system_G4.git
 ```
-2. Open B_App directory with you terminal. Install node modules with below command. Make sure to install node modules beforehand.
+2. Open B_App directory with you terminal. Install node modules with below command. Make sure to install node beforehand.
 ```
 npm i
 ```
@@ -35,11 +35,34 @@ DB_NAME= (database name)
 nodemon app.js
 ```
 
+
 ## Usage
+1. Start the server as described in the installation steps.
+2. Access the application via `http://localhost:3000` in your web browser.
+3. Use the provided endpoints to manage customers, accounts, and loans.
+
+## API Endpoints
 
 ## Technologies Used
+- **Node.js**: JavaScript runtime for server-side development.
+- **Express.js**: Web framework for Node.js.
+- **MySQL**: Relational database management system.
+- **EJS**: Templating engine for rendering views.
+- **bcrypt**: Library for hashing passwords.
+- **jsonwebtoken**: Library for generating and verifying JWT tokens.
+- **dotenv**: Module for loading environment variables.
+- **body-parser**: Middleware for parsing request bodies.
+- **cookie-parser**: Middleware for parsing cookies.
 
 ## Features
+- **User Authentication and Authorization**: Secure login, registration, and role-based access control.
+- **Customer Management**: Create, retrieve, and manage customer records.
+- **Account Management**: Full CRUD operations for current, savings, and FD accounts.
+- **Loan Management**: Request, approve, and manage loan details.
+- **Branch Management**: Generate and retrieve branch reports.
+- **Environment Configuration**: Securely manage environment variables with dotenv.
+- **Middleware and Templating**: Use Express, body-parser, EJS, and cookie-parser for routing and views.
+
 
 ## Screenshots
 ![image](https://github.com/Thejas0604/banking_system_G4/assets/109301978/ffc5c5be-8ec4-4dba-a0ce-35a0ac25bdee)
