@@ -7,10 +7,11 @@ This project is a comprehensive implementation of a functional bank system, deve
 
 1. [Installation](#installation)
 2. [Usage](#usage)
-3. [Technologies Used](#technologies-used)
-4. [Features](#features)
-5. [Screenshots](#screenshots)
-6. [Database Schema](#database-schema)
+3. [API Endpoints](#api-endpoints)
+4. [Technologies Used](#technologies-used)
+5. [Features](#features)
+6. [Screenshots](#screenshots)
+7. [Database Schema](#database-schema)
 
 ## Installation
 1. Clone into your local file system. Make sure to have git install beforehand.
