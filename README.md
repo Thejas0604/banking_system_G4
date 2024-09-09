@@ -44,6 +44,10 @@ nodemon app.js
 
 ## API Endpoints
 
+For detailed information about the API endpoints, please refer to the [API Overview](docs/api/overview.md) documentation.
+
+
+
 ## Technologies Used
 - **Node.js**: JavaScript runtime for server-side development.
 - **Express.js**: Web framework for Node.js.
