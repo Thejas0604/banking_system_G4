@@ -27,3 +27,17 @@ Welcome to the API documentation for the banking system. This API provides a set
 - **POST /searched-customer**: View serached customer (Protected Route)
 - **GET /create-customer**: Customer creation page(Protected Route)
 - **POST /create-customer**: Customer Created page(Protected Route)
+## Manager Endpoints
+### Authentication Endpoints
+- **GET /**: Login page
+- **POST /dashboard**: Check credentials and redirect to the dashboard (Protected Route)
+### Customer Related Endpoints
+- **POST /searched-customer**: View serached customer (Protected Route)
+- **GET /create-customer**: Customer creation page(Protected Route)
+- **POST /create-customer**: Customer Created page(Protected Route)
+### Loan Related Endpoints
+- **GET /late-loan-payments**: Get late loans info
+- **GET /loans-to-approve**: View to be approved(or declined) loan requests
+- **GET /approve-loan/:id**: Successfully approved the loan
+### Branch Report Generation
+- **POST /generate-branch-report**: View the brach report of the selected branch from the dropdown
