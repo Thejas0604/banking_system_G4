@@ -2,7 +2,7 @@
   "name": "banking_system_g4",
   "version": "1.0.0",
   "description": "Hello",
-  "main": "index.js",
+  "main": "app.js",
   "type": "module",
   "dependencies": {
     "abbrev": "^1.1.1",

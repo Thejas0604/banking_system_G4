@@ -147,7 +147,7 @@ export async function getFDInfo(savingsAccountNo) {
       "SELECT * FROM fixed_deposit WHERE account_no = ?",
       [savingsAccountNo]
     );
-    console.log(rows[0]);
+    //console.log(rows[0]);
 
     return rows[0];
   } catch (err) {
